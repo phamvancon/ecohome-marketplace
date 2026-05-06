@@ -50,9 +50,11 @@
 </head>
 <body class="text-gray-800 font-sans">
 
+    <!-- Header Style Chợ Tốt -->
     <header class="bg-chotot-yellow shadow-sm sticky top-0 z-[60]">
         <div class="container mx-auto px-4 lg:px-20">
             <div class="flex items-center justify-between py-2 lg:py-4">
+                <!-- Logo -->
                 <a href="#" onclick="location.reload()" class="flex items-center space-x-2 shrink-0">
                     <div class="bg-white p-1.5 rounded-full shadow-sm">
                         <i class="fas fa-shopping-bag text-chotot-orange text-xl lg:text-2xl"></i>
@@ -60,6 +62,7 @@
                     <span class="text-gray-900 font-black text-lg lg:text-xl tracking-tighter">EcoHome <span class="hidden lg:inline">Nhơn Bình</span></span>
                 </a>
 
+                <!-- Search Bar (Desktop) -->
                 <div class="hidden lg:flex flex-grow mx-10 relative">
                     <input type="text" id="search-input" onkeyup="filterPosts()" placeholder="Tìm bất động sản, đồ gia dụng, thực phẩm..." 
                         class="w-full py-2.5 pl-4 pr-12 rounded-lg border-none shadow-inner focus:ring-0 outline-none text-sm">
@@ -68,18 +71,21 @@
                     </button>
                 </div>
 
+                <!-- Action Buttons -->
                 <div class="flex items-center space-x-2 lg:space-x-6">
                     <button id="admin-btn" onclick="promptAdminLogin()" class="text-xs font-bold bg-black/10 px-2 py-1 rounded hover:bg-black/20 transition">
                         ADMIN
                     </button>
                     <div id="auth-section" class="flex items-center">
-                        </div>
+                        <!-- Sẽ render bằng JS -->
+                    </div>
                     <button onclick="checkAuthBeforePost()" class="bg-chotot-orange text-white px-4 lg:px-6 py-2 rounded-lg font-bold text-sm shadow-md hover:bg-orange-600 transition flex items-center">
                         <i class="fas fa-edit mr-2"></i> <span class="hidden lg:inline">ĐĂNG TIN</span><span class="lg:hidden">TIN</span>
                     </button>
                 </div>
             </div>
             
+            <!-- Mobile Search Bar -->
             <div class="lg:hidden pb-3">
                 <div class="relative">
                     <input type="text" id="search-input-mobile" onkeyup="filterPostsMobile()" placeholder="Tìm món hàng bạn cần..." 
@@ -90,8 +96,10 @@
         </div>
     </header>
 
+    <!-- Main Content -->
     <main class="container mx-auto px-4 lg:px-20 py-6 lg:py-10">
         
+        <!-- Danh mục sản phẩm (Icons) -->
         <section class="mb-10 overflow-x-auto pb-4 scrollbar-hide">
             <div class="flex lg:grid lg:grid-cols-7 gap-4 min-w-max lg:min-w-0">
                 <button onclick="setCategoryFilter('Bất động sản')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
@@ -139,6 +147,7 @@
             </div>
         </section>
 
+        <!-- Bảng Hướng dẫn (Chỉ hiện khi lỗi permission) -->
         <div id="permission-guide" class="hidden mb-10 p-6 bg-white border-2 border-red-500 rounded-2xl shadow-xl">
             <h3 class="font-bold text-red-600 mb-2 flex items-center italic">
                 <i class="fas fa-lock mr-2"></i> LỖI PHÂN QUYỀN FIREBASE
@@ -158,19 +167,23 @@ service cloud.firestore {
             </div>
         </div>
 
+        <!-- Tin Ưu Tiên (Tin VIP) -->
         <section id="vip-section" class="mb-10 hidden">
             <h2 class="text-sm font-bold mb-4 text-gray-900 uppercase flex items-center tracking-tight">
                 <i class="fas fa-star text-chotot-orange mr-2"></i> Tin đăng ưu tiên
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-5" id="vip-list">
-                </div>
+                <!-- Rendered by JS -->
+            </div>
         </section>
 
+        <!-- Tin đăng mới nhất -->
         <section>
             <h2 class="text-sm font-bold mb-4 text-gray-900 uppercase flex items-center tracking-tight">
                 <i class="fas fa-list text-blue-600 mr-2"></i> Tin đăng mới nhất
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-5" id="normal-list">
+                <!-- Skeleton Loader -->
                 <div class="col-span-full py-20 text-center flex flex-col items-center">
                     <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-chotot-orange mb-4"></div>
                     <p class="text-gray-400 text-sm">Đang tải tin đăng...</p>
@@ -179,6 +192,7 @@ service cloud.firestore {
         </section>
     </main>
 
+    <!-- Modal Login (Chợ Tốt Style) -->
     <div id="modal-login" class="hidden fixed inset-0 login-overlay flex items-center justify-center p-4 z-[200]">
         <div class="bg-white rounded-xl w-full max-w-sm shadow-2xl p-6 lg:p-10 animate-in fade-in zoom-in-95">
             <div class="text-center mb-8">
@@ -198,6 +212,7 @@ service cloud.firestore {
         </div>
     </div>
 
+    <!-- Modal Đăng Tin (Chợ Tốt Style) -->
     <div id="modal-post" class="hidden fixed inset-0 login-overlay flex items-center justify-center p-4 z-[200]">
         <div class="bg-white rounded-xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="p-6 lg:p-8">
@@ -249,12 +264,13 @@ service cloud.firestore {
         </div>
     </div>
 
+    <!-- Firebase Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        // Cấu hình Firebase mới đã cập nhật
+        // CONFIG (BẠN THAY THÔNG SỐ CỦA BẠN VÀO ĐÂY)
         const firebaseConfig = {
             apiKey: "AIzaSyDueCwieBqfBHSjdKMZ5O-Y8Z1rPB-sFVM",
             authDomain: "ecohome-marketplace-97aa6.firebaseapp.com",
@@ -264,7 +280,7 @@ service cloud.firestore {
             appId: "1:1010934843766:web:c2ad5a5dbf43913bd8d257",
             measurementId: "G-HV0LS2FGM1"
         };
-        
+
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'ecohome-portal';
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
