@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chợ cư dân EcoHome Nhơn Bình - Phong cách Chợ Tốt</title>
+    <title>Chợ cư dân EcoHome Nhơn Bình - Giao diện Eco</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --chotot-yellow: #ffba00;
-            --chotot-orange: #ff8800;
-            --chotot-bg: #f4f4f4;
-            --chotot-red: #d0021b;
+            --eco-deep: #0a4d2c;
+            --eco-bright: #2ecc71;
+            --eco-blue: #0077b6;
+            --eco-bg: #f0f4f2;
         }
-        body { background-color: var(--chotot-bg); }
-        .bg-chotot-yellow { background-color: var(--chotot-yellow); }
-        .bg-chotot-orange { background-color: var(--chotot-orange); }
-        .text-chotot-red { color: var(--chotot-red); }
+        body { background-color: var(--eco-bg); }
+        .bg-eco-deep { background-color: var(--eco-deep); }
+        .bg-eco-bright { background-color: var(--eco-bright); }
+        .text-eco-deep { color: var(--eco-deep); }
+        .text-eco-blue { color: var(--eco-blue); }
         
         .line-clamp-2 {
             display: -webkit-box;
@@ -24,14 +25,11 @@
             -webkit-box-orient: vertical;  
             overflow: hidden;
         }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .category-icon {
-            transition: transform 0.2s;
-        }
-        .category-icon:hover { transform: scale(1.05); }
-
         .vip-badge {
-            background: linear-gradient(45deg, #ff8800, #ffba00);
+            background: linear-gradient(45deg, #0a4d2c, #2ecc71);
             color: white;
             padding: 2px 8px;
             font-size: 10px;
@@ -39,238 +37,248 @@
             border-radius: 4px;
             text-transform: uppercase;
         }
-
-        .login-overlay { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); }
+        .login-overlay { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); }
         
-        /* Chotot Sticky Header Mobile */
-        @media (max-width: 768px) {
-            .mobile-search { padding: 10px; background: var(--chotot-yellow); }
+        /* Hiệu ứng cho logo trong header */
+        .header-logo {
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+            mix-blend-mode: lighten; /* Giúp xử lý nền đen của logo nếu cần */
         }
     </style>
 </head>
 <body class="text-gray-800 font-sans">
 
-    <!-- Header Style Chợ Tốt -->
-    <header class="bg-chotot-yellow shadow-sm sticky top-0 z-[60]">
+    <!-- Header -->
+    <header class="bg-[#000000] shadow-xl sticky top-0 z-[60] border-b border-green-900">
         <div class="container mx-auto px-4 lg:px-20">
-            <div class="flex items-center justify-between py-2 lg:py-4">
-                <!-- Logo -->
-                <a href="#" onclick="location.reload()" class="flex items-center space-x-2 shrink-0">
-                    <div class="bg-white p-1.5 rounded-full shadow-sm">
-                        <i class="fas fa-shopping-bag text-chotot-orange text-xl lg:text-2xl"></i>
+            <div class="flex items-center justify-between py-1 lg:py-2">
+                <!-- Logo Image -->
+                <a href="#" onclick="location.reload()" class="flex items-center space-x-3 shrink-0">
+                    <img src="LOGO ECO.jpg" alt="Logo EcoHome" class="h-12 lg:h-16 header-logo rounded-md">
+                    <div class="hidden md:block">
+                        <span class="text-white font-black text-lg block leading-none tracking-tighter">ECOHOME</span>
+                        <span class="text-eco-bright text-[10px] font-bold uppercase tracking-[0.2em]">Nhơn Bình</span>
                     </div>
-                    <span class="text-gray-900 font-black text-lg lg:text-xl tracking-tighter">EcoHome <span class="hidden lg:inline">Nhơn Bình</span></span>
                 </a>
 
-                <!-- Search Bar (Desktop) -->
-                <div class="hidden lg:flex flex-grow mx-10 relative">
-                    <input type="text" id="search-input" onkeyup="filterPosts()" placeholder="Tìm bất động sản, đồ gia dụng, thực phẩm..." 
-                        class="w-full py-2.5 pl-4 pr-12 rounded-lg border-none shadow-inner focus:ring-0 outline-none text-sm">
-                    <button class="absolute right-0 top-0 h-full px-4 bg-gray-100 rounded-r-lg hover:bg-gray-200 transition">
-                        <i class="fas fa-search text-gray-500"></i>
+                <!-- Search Bar -->
+                <div class="hidden lg:flex flex-grow mx-8 relative">
+                    <input type="text" id="search-input" onkeyup="filterPosts()" placeholder="Tìm nhà đất, đồ dùng, thực phẩm..." 
+                        class="w-full py-2.5 pl-4 pr-12 rounded-full border-none bg-white/10 text-white placeholder-gray-400 focus:bg-white focus:text-gray-900 focus:ring-2 focus:ring-eco-bright transition-all outline-none text-sm">
+                    <button class="absolute right-3 top-2 text-gray-400">
+                        <i class="fas fa-search"></i>
                     </button>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="flex items-center space-x-2 lg:space-x-6">
-                    <button id="admin-btn" onclick="promptAdminLogin()" class="text-xs font-bold bg-black/10 px-2 py-1 rounded hover:bg-black/20 transition">
-                        ADMIN
+                <!-- Actions -->
+                <div class="flex items-center space-x-3 lg:space-x-5">
+                    <button id="admin-btn" onclick="toggleAdminPanel()" class="text-[10px] font-bold text-white/60 hover:text-white border border-white/20 px-2 py-1 rounded transition">
+                        BQT
                     </button>
-                    <div id="auth-section" class="flex items-center">
-                        <!-- Sẽ render bằng JS -->
-                    </div>
-                    <button onclick="checkAuthBeforePost()" class="bg-chotot-orange text-white px-4 lg:px-6 py-2 rounded-lg font-bold text-sm shadow-md hover:bg-orange-600 transition flex items-center">
-                        <i class="fas fa-edit mr-2"></i> <span class="hidden lg:inline">ĐĂNG TIN</span><span class="lg:hidden">TIN</span>
+                    <div id="auth-section" class="flex items-center"></div>
+                    <button onclick="checkAuthBeforePost()" class="bg-eco-bright hover:bg-green-500 text-white px-4 lg:px-5 py-2.5 rounded-full font-bold text-xs shadow-lg transition flex items-center gap-2">
+                        <i class="fas fa-plus-circle"></i> <span class="hidden sm:inline">ĐĂNG TIN</span>
                     </button>
                 </div>
             </div>
-            
-            <!-- Mobile Search Bar -->
+            <!-- Mobile Search -->
             <div class="lg:hidden pb-3">
-                <div class="relative">
-                    <input type="text" id="search-input-mobile" onkeyup="filterPostsMobile()" placeholder="Tìm món hàng bạn cần..." 
-                        class="w-full py-2 px-4 pl-10 rounded-md border-none shadow-sm outline-none text-sm">
-                    <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
-                </div>
+                <input type="text" id="search-input-mobile" onkeyup="filterPostsMobile()" placeholder="Bạn cần tìm gì hôm nay?" 
+                    class="w-full py-2 px-4 rounded-full border-none bg-white/10 text-white text-sm outline-none">
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 lg:px-20 py-6 lg:py-10">
-        
-        <!-- Danh mục sản phẩm (Icons) -->
-        <section class="mb-10 overflow-x-auto pb-4 scrollbar-hide">
-            <div class="flex lg:grid lg:grid-cols-7 gap-4 min-w-max lg:min-w-0">
-                <button onclick="setCategoryFilter('Bất động sản')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mb-2">
-                        <i class="fas fa-building"></i>
+    <!-- TRANG QUẢN TRỊ ADMIN -->
+    <div id="admin-panel" class="hidden fixed inset-0 bg-gray-50 z-[100] overflow-y-auto p-4 lg:p-8">
+        <div class="container mx-auto max-w-6xl">
+            <div class="flex justify-between items-center bg-white p-5 rounded-2xl shadow-sm mb-6 border-l-4 border-eco-deep">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-eco-deep text-white rounded-xl"><i class="fas fa-tasks"></i></div>
+                    <div>
+                        <h1 class="text-xl font-black text-gray-900">HỆ THỐNG QUẢN TRỊ BQT</h1>
+                        <p class="text-xs text-gray-500 uppercase font-bold tracking-widest">Dành cho văn phòng EcoHome Nhơn Bình</p>
                     </div>
-                    <span class="text-[10px] font-bold text-gray-600 text-center uppercase">BĐS</span>
-                </button>
-                <button onclick="setCategoryFilter('Thực phẩm')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
-                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xl mb-2">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-gray-600 text-center uppercase">Thực phẩm</span>
-                </button>
-                <button onclick="setCategoryFilter('Gia dụng')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl mb-2">
-                        <i class="fas fa-couch"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-gray-600 text-center uppercase">Gia dụng</span>
-                </button>
-                <button onclick="setCategoryFilter('Dịch vụ')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
-                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl mb-2">
-                        <i class="fas fa-tools"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-gray-600 text-center uppercase">Dịch vụ</span>
-                </button>
-                <button onclick="setCategoryFilter('Điện tử')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
-                    <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xl mb-2">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-gray-600 text-center uppercase">Điện tử</span>
-                </button>
-                <button onclick="setCategoryFilter('Mẹ & Bé')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
-                    <div class="w-12 h-12 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center text-xl mb-2">
-                        <i class="fas fa-baby"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-gray-600 text-center uppercase">Mẹ & Bé</span>
-                </button>
-                <button onclick="setCategoryFilter('Tất cả')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
-                    <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-xl mb-2">
-                        <i class="fas fa-th-large"></i>
-                    </div>
-                    <span class="text-[10px] font-bold text-gray-600 text-center uppercase">Tất cả</span>
+                </div>
+                <button onclick="toggleAdminPanel()" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="fas fa-times-circle text-3xl"></i>
                 </button>
             </div>
-        </section>
 
-        <!-- Bảng Hướng dẫn (Chỉ hiện khi lỗi permission) -->
-        <div id="permission-guide" class="hidden mb-10 p-6 bg-white border-2 border-red-500 rounded-2xl shadow-xl">
-            <h3 class="font-bold text-red-600 mb-2 flex items-center italic">
-                <i class="fas fa-lock mr-2"></i> LỖI PHÂN QUYỀN FIREBASE
-            </h3>
-            <p class="text-xs text-gray-600 mb-4 font-medium">Hãy dán mã quy tắc bảo mật vào Firebase Console của bạn:</p>
-            <div class="relative">
-                <pre id="rule-content" class="code-block text-[10px] bg-gray-900 text-blue-300 p-4 rounded-lg overflow-x-auto">rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /artifacts/{appId}/public/data/{document=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-  }
-}</pre>
-                <button onclick="copyRules()" class="absolute top-6 right-6 bg-gray-700 text-white px-2 py-1 rounded text-[10px] uppercase font-bold">Copy</button>
+            <!-- Stats -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div><p class="text-xs font-bold text-gray-400 uppercase">Tổng tin</p><span id="stat-total" class="text-2xl font-black">0</span></div>
+                    <i class="fas fa-layer-group text-eco-deep opacity-20 text-3xl"></i>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div><p class="text-xs font-bold text-eco-bright uppercase">Tin VIP</p><span id="stat-vip" class="text-2xl font-black text-eco-bright">0</span></div>
+                    <i class="fas fa-crown text-eco-bright opacity-20 text-3xl"></i>
+                </div>
+                <!-- ... các stats khác ... -->
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 text-gray-400 uppercase text-[10px] font-black border-b">
+                            <tr>
+                                <th class="p-4">Tin đăng</th>
+                                <th class="p-4">Phân loại</th>
+                                <th class="p-4">Giá / Liên hệ</th>
+                                <th class="p-4 text-center">Quản lý</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-gray-50"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Tin Ưu Tiên (Tin VIP) -->
-        <section id="vip-section" class="mb-10 hidden">
-            <h2 class="text-sm font-bold mb-4 text-gray-900 uppercase flex items-center tracking-tight">
-                <i class="fas fa-star text-chotot-orange mr-2"></i> Tin đăng ưu tiên
-            </h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-5" id="vip-list">
-                <!-- Rendered by JS -->
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 lg:px-20 py-8 lg:py-12">
+        <!-- Banner chào mừng -->
+        <div class="mb-10 p-6 lg:p-10 rounded-[2rem] bg-eco-deep text-white relative overflow-hidden shadow-2xl">
+            <div class="relative z-10">
+                <h2 class="text-2xl lg:text-4xl font-black mb-2">Chợ Cư Dân EcoHome</h2>
+                <p class="text-white/70 text-sm lg:text-base max-w-lg">Nền tảng kết nối giao thương chuyên nghiệp dành riêng cho cư dân dự án EcoHome Nhơn Bình.</p>
+            </div>
+            <img src="LOGO ECO.jpg" class="absolute -right-10 -bottom-10 h-48 lg:h-64 opacity-10 rotate-12">
+        </div>
+
+        <!-- Categories -->
+        <section class="mb-12 overflow-x-auto pb-4 scrollbar-hide">
+            <div class="flex lg:grid lg:grid-cols-7 gap-4 min-w-max lg:min-w-0">
+                <button onclick="setCategoryFilter('Bất động sản')" class="flex flex-col items-center group w-24 lg:w-full">
+                    <div class="w-14 h-14 bg-white text-eco-deep rounded-2xl shadow-sm flex items-center justify-center text-xl mb-2 group-hover:bg-eco-deep group-hover:text-white transition-all"><i class="fas fa-building"></i></div>
+                    <span class="text-[10px] font-black text-gray-500 uppercase">Bất động sản</span>
+                </button>
+                <button onclick="setCategoryFilter('Thực phẩm')" class="flex flex-col items-center group w-24 lg:w-full">
+                    <div class="w-14 h-14 bg-white text-green-600 rounded-2xl shadow-sm flex items-center justify-center text-xl mb-2 group-hover:bg-green-600 group-hover:text-white transition-all"><i class="fas fa-pepper-hot"></i></div>
+                    <span class="text-[10px] font-black text-gray-500 uppercase">Thực phẩm</span>
+                </button>
+                <button onclick="setCategoryFilter('Gia dụng')" class="flex flex-col items-center group w-24 lg:w-full">
+                    <div class="w-14 h-14 bg-white text-blue-600 rounded-2xl shadow-sm flex items-center justify-center text-xl mb-2 group-hover:bg-blue-600 group-hover:text-white transition-all"><i class="fas fa-couch"></i></div>
+                    <span class="text-[10px] font-black text-gray-500 uppercase">Gia dụng</span>
+                </button>
+                <button onclick="setCategoryFilter('Dịch vụ')" class="flex flex-col items-center group w-24 lg:w-full">
+                    <div class="w-14 h-14 bg-white text-purple-600 rounded-2xl shadow-sm flex items-center justify-center text-xl mb-2 group-hover:bg-purple-600 group-hover:text-white transition-all"><i class="fas fa-concierge-bell"></i></div>
+                    <span class="text-[10px] font-black text-gray-500 uppercase">Dịch vụ</span>
+                </button>
+                <button onclick="setCategoryFilter('Điện tử')" class="flex flex-col items-center group w-24 lg:w-full">
+                    <div class="w-14 h-14 bg-white text-red-600 rounded-2xl shadow-sm flex items-center justify-center text-xl mb-2 group-hover:bg-red-600 group-hover:text-white transition-all"><i class="fas fa-laptop"></i></div>
+                    <span class="text-[10px] font-black text-gray-500 uppercase">Điện tử</span>
+                </button>
+                <button onclick="setCategoryFilter('Mẹ & Bé')" class="flex flex-col items-center group w-24 lg:w-full">
+                    <div class="w-14 h-14 bg-white text-pink-500 rounded-2xl shadow-sm flex items-center justify-center text-xl mb-2 group-hover:bg-pink-500 group-hover:text-white transition-all"><i class="fas fa-baby-carriage"></i></div>
+                    <span class="text-[10px] font-black text-gray-500 uppercase">Mẹ & Bé</span>
+                </button>
+                <button onclick="setCategoryFilter('Tất cả')" class="flex flex-col items-center group w-24 lg:w-full">
+                    <div class="w-14 h-14 bg-white text-gray-600 rounded-2xl shadow-sm flex items-center justify-center text-xl mb-2 group-hover:bg-gray-600 group-hover:text-white transition-all"><i class="fas fa-th-list"></i></div>
+                    <span class="text-[10px] font-black text-gray-500 uppercase">Tất cả</span>
+                </button>
             </div>
         </section>
 
-        <!-- Tin đăng mới nhất -->
+        <!-- Tin VIP -->
+        <section id="vip-section" class="mb-12 hidden">
+            <div class="flex items-center gap-3 mb-6">
+                <i class="fas fa-fire text-orange-500 text-xl animate-pulse"></i>
+                <h2 class="text-lg font-black uppercase text-gray-800 tracking-tighter">Tin đăng tiêu biểu</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6" id="vip-list"></div>
+        </section>
+
+        <!-- Tin đăng thường -->
         <section>
-            <h2 class="text-sm font-bold mb-4 text-gray-900 uppercase flex items-center tracking-tight">
-                <i class="fas fa-list text-blue-600 mr-2"></i> Tin đăng mới nhất
-            </h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-5" id="normal-list">
-                <!-- Skeleton Loader -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-1.5 h-6 bg-eco-bright rounded-full"></div>
+                <h2 class="text-lg font-black uppercase text-gray-800 tracking-tighter">Tin mới đăng tải</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6" id="normal-list">
                 <div class="col-span-full py-20 text-center flex flex-col items-center">
-                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-chotot-orange mb-4"></div>
-                    <p class="text-gray-400 text-sm">Đang tải tin đăng...</p>
+                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-eco-bright mb-4"></div>
+                    <p class="text-gray-400 text-sm">Đang kết nối hệ thống dữ liệu...</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Modal Login (Chợ Tốt Style) -->
-    <div id="modal-login" class="hidden fixed inset-0 login-overlay flex items-center justify-center p-4 z-[200]">
-        <div class="bg-white rounded-xl w-full max-w-sm shadow-2xl p-6 lg:p-10 animate-in fade-in zoom-in-95">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-yellow-50 text-chotot-yellow rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <h2 class="text-xl font-bold text-gray-900">Đăng nhập tài khoản</h2>
-                <p class="text-gray-500 text-xs mt-2 leading-relaxed px-4">Chào mừng cư dân EcoHome quay trở lại.</p>
-            </div>
-            
-            <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center border-2 border-gray-100 p-3 rounded-lg hover:bg-gray-50 transition font-bold text-gray-700 mb-4">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 mr-3">
-                Đăng nhập với Google
-            </button>
-            
-            <button onclick="toggleModal('modal-login')" class="w-full text-gray-400 text-xs mt-2 hover:underline">Hủy bỏ</button>
-        </div>
-    </div>
-
-    <!-- Modal Đăng Tin (Chợ Tốt Style) -->
+    <!-- Modal Post (5 Images Upload) -->
     <div id="modal-post" class="hidden fixed inset-0 login-overlay flex items-center justify-center p-4 z-[200]">
-        <div class="bg-white rounded-xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="p-6 lg:p-8">
-                <div class="flex justify-between items-center mb-8 border-b pb-4">
-                    <h2 class="text-xl font-bold text-gray-900 flex items-center">
-                        <i class="fas fa-edit text-chotot-orange mr-2"></i> TẠO TIN ĐĂNG
-                    </h2>
-                    <button onclick="toggleModal('modal-post')" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-times-circle text-2xl"></i></button>
-                </div>
-                
-                <form id="post-form" onsubmit="handlePostSubmit(event)" class="space-y-6">
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Tiêu đề tin đăng</label>
-                        <input type="text" id="p-title" placeholder="VD: Bán căn hộ 2PN Block A tầng cao view đẹp" required class="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 outline-none focus:border-chotot-yellow transition">
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Danh mục</label>
-                            <select id="p-category" class="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 outline-none focus:border-chotot-yellow appearance-none">
-                                <option value="Bất động sản">Bất động sản</option>
-                                <option value="Thực phẩm">Thực phẩm & Ăn uống</option>
-                                <option value="Gia dụng">Đồ dùng gia đình</option>
-                                <option value="Dịch vụ">Dịch vụ tại cư xá</option>
-                                <option value="Điện tử">Đồ điện tử</option>
-                                <option value="Mẹ & Bé">Mẹ & Bé</option>
-                                <option value="Khác">Phân loại khác</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Số điện thoại Zalo</label>
-                            <input type="text" id="p-phone" placeholder="09xxxxxxxx" required class="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 outline-none">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Mô tả chi tiết</label>
-                        <textarea id="p-desc" placeholder="Tình trạng, diện tích, giá chốt, khu vực nhận hàng..." rows="3" required class="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 outline-none"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Giá bán (VNĐ)</label>
-                        <input type="text" id="p-price" placeholder="VD: 1.5 Tỷ" required class="w-full p-4 rounded-lg bg-gray-50 border-none outline-none font-black text-xl text-chotot-orange shadow-inner">
-                    </div>
-
-                    <button type="submit" id="submit-btn" class="w-full bg-chotot-orange text-white py-4 rounded-lg font-black text-lg hover:bg-orange-600 shadow-lg transition-all uppercase tracking-widest">XÁC NHẬN ĐĂNG TIN</button>
-                </form>
+        <div class="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden max-h-[90vh]">
+            <div class="bg-eco-deep p-6 text-white flex justify-between items-center">
+                <h2 class="text-xl font-bold flex items-center gap-3">
+                    <i class="fas fa-edit"></i> SOẠN TIN ĐĂNG MỚI
+                </h2>
+                <button onclick="toggleModal('modal-post')" class="text-white/50 hover:text-white transition-colors"><i class="fas fa-times-circle text-2xl"></i></button>
             </div>
+            
+            <form id="post-form" onsubmit="handlePostSubmit(event)" class="p-6 lg:p-8 space-y-5 overflow-y-auto max-h-[70vh]">
+                <!-- Upload Area -->
+                <div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 block">Ảnh sản phẩm (Tối đa 5 hình)</label>
+                    <div class="grid grid-cols-5 gap-2" id="image-upload-wrapper">
+                        <label id="upload-trigger" class="aspect-square border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 hover:border-eco-bright transition-all">
+                            <i class="fas fa-plus text-gray-300 mb-1"></i>
+                            <span class="text-[8px] font-bold text-gray-400 uppercase">Thêm ảnh</span>
+                            <input type="file" id="p-images" accept="image/*" multiple class="hidden" onchange="previewImages(event)">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Tiêu đề ngắn gọn</label>
+                        <input type="text" id="p-title" placeholder="VD: Bán căn Block A tầng 15" required class="w-full p-3 rounded-xl bg-gray-50 border-none ring-1 ring-gray-100 outline-none focus:ring-2 focus:ring-eco-bright text-sm">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Giá mong muốn (VNĐ)</label>
+                        <input type="text" id="p-price" placeholder="VD: 1.5 Tỷ" required class="w-full p-3 rounded-xl bg-gray-50 border-none ring-1 ring-gray-100 outline-none focus:ring-2 focus:ring-eco-bright text-sm font-bold text-eco-deep">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Danh mục</label>
+                        <select id="p-category" class="w-full p-3 rounded-xl bg-gray-50 border-none ring-1 ring-gray-100 outline-none text-sm">
+                            <option value="Bất động sản">Bất động sản</option>
+                            <option value="Thực phẩm">Thực phẩm</option>
+                            <option value="Gia dụng">Đồ gia dụng</option>
+                            <option value="Dịch vụ">Dịch vụ</option>
+                            <option value="Điện tử">Điện tử</option>
+                            <option value="Mẹ & Bé">Mẹ & Bé</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">SĐT Zalo liên hệ</label>
+                        <input type="text" id="p-phone" placeholder="09xxxxxxx" required class="w-full p-3 rounded-xl bg-gray-50 border-none ring-1 ring-gray-100 outline-none text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Mô tả chi tiết sản phẩm</label>
+                    <textarea id="p-desc" placeholder="Tình trạng, vị trí, ưu đãi..." rows="3" required class="w-full p-3 rounded-xl bg-gray-50 border-none ring-1 ring-gray-100 outline-none text-sm"></textarea>
+                </div>
+
+                <button type="submit" id="submit-btn" class="w-full bg-eco-deep text-white py-4 rounded-2xl font-black text-sm hover:bg-black shadow-xl transition-all uppercase tracking-widest">
+                    XÁC NHẬN ĐĂNG TIN
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Firebase Logic -->
+    <!-- Firebase SDK & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-        // CONFIG (BẠN THAY THÔNG SỐ CỦA BẠN VÀO ĐÂY)
+        // Cấu hình Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDueCwieBqfBHSjdKMZ5O-Y8Z1rPB-sFVM",
             authDomain: "ecohome-marketplace-97aa6.firebaseapp.com",
@@ -281,30 +289,27 @@ service cloud.firestore {
             measurementId: "G-HV0LS2FGM1"
         };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ecohome-portal';
+        const appId = 'ecohome-portal';
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        const storage = getStorage(app);
         const provider = new GoogleAuthProvider();
 
         let currentUser = null;
         let allPosts = [];
         let currentCategory = 'Tất cả';
         let isAdmin = false;
+        let selectedFiles = [];
 
-        // RULE 3: Auth trước khi Query
+        // Auth
         const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (err) {
-                console.error("Auth Error:", err);
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
             }
         };
-
         initAuth();
 
         onAuthStateChanged(auth, (user) => {
@@ -312,106 +317,66 @@ service cloud.firestore {
             const authSection = document.getElementById('auth-section');
             if (user && !user.isAnonymous) {
                 authSection.innerHTML = `
-                    <div class="flex items-center bg-white/30 p-0.5 pr-3 rounded-full hover:bg-white/40 transition cursor-pointer">
-                        <img src="${user.photoURL || 'https://via.placeholder.com/32'}" class="w-8 h-8 rounded-full border border-white shadow-sm">
-                        <span class="text-[10px] font-black ml-2 text-gray-900 hidden lg:block uppercase tracking-tighter">${user.displayName}</span>
-                        <button onclick="logout()" class="ml-2 text-gray-700 hover:text-red-500"><i class="fas fa-sign-out-alt text-sm"></i></button>
+                    <div class="flex items-center bg-white/10 p-1 pr-3 rounded-full hover:bg-white/20 transition cursor-pointer" onclick="logout()">
+                        <img src="${user.photoURL || ''}" class="w-6 h-6 rounded-full border border-white/30">
+                        <span class="text-[9px] font-bold text-white ml-2 hidden lg:block uppercase tracking-tight">${user.displayName}</span>
                     </div>
                 `;
-                closeModal('modal-login');
             } else {
-                authSection.innerHTML = `<button onclick="toggleModal('modal-login')" class="text-gray-900 text-sm font-bold flex items-center"><i class="fas fa-user-circle text-xl mr-2"></i> <span class="hidden lg:inline">Tài khoản</span></button>`;
+                authSection.innerHTML = `<button onclick="toggleModal('modal-login')" class="text-white text-[10px] font-bold uppercase tracking-widest"><i class="fas fa-user-circle mr-1"></i> Đăng nhập</button>`;
             }
             startDataListener();
         });
 
-        window.loginWithGoogle = async () => {
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                if (error.code === 'auth/unauthorized-domain') {
-                    alert("Lỗi: Domain chưa được ủy quyền trên Firebase.");
-                } else {
-                    console.error("Login Fail:", error);
-                }
-            }
-        };
-
         window.logout = () => signOut(auth);
+        window.loginWithGoogle = async () => { try { await signInWithPopup(auth, provider); } catch(e){} };
 
-        window.checkAuthBeforePost = () => {
-            if(!currentUser || currentUser.isAnonymous) {
-                toggleModal('modal-login');
-            } else {
-                toggleModal('modal-post');
-            }
+        // Images Logic
+        window.previewImages = (e) => {
+            const files = Array.from(e.target.files);
+            if (selectedFiles.length + files.length > 5) return alert("Tối đa 5 ảnh!");
+            selectedFiles = [...selectedFiles, ...files];
+            renderPreviews();
         };
 
-        // ADMIN LOGIC
-        window.promptAdminLogin = () => {
-            if(isAdmin) {
-                if(confirm("Bạn muốn thoát chế độ Admin?")) {
-                    isAdmin = false;
-                    document.getElementById('admin-btn').classList.remove('bg-red-500', 'text-white');
-                    applyFilters();
-                }
-                return;
-            }
-            const pass = prompt("Nhập mật khẩu Admin:");
-            if(pass === "215151365") {
-                isAdmin = true;
-                alert("Đã đăng nhập quyền Admin!");
-                document.getElementById('admin-btn').classList.add('bg-red-500', 'text-white');
-                applyFilters();
-            } else if(pass !== null) {
-                alert("Mật khẩu sai!");
-            }
-        };
+        window.removeImg = (i) => { selectedFiles.splice(i, 1); renderPreviews(); };
 
-        window.deletePostAdmin = async (postId) => {
-            if(!isAdmin) return;
-            if(confirm("Bạn có chắc chắn muốn XÓA bài đăng này?")) {
-                try {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId));
-                    alert("Đã xóa bài viết.");
-                } catch (e) {
-                    alert("Lỗi khi xóa: " + e.message);
-                }
-            }
-        };
+        function renderPreviews() {
+            const wrapper = document.getElementById('image-upload-wrapper');
+            const trigger = document.getElementById('upload-trigger');
+            wrapper.innerHTML = '';
+            wrapper.appendChild(trigger);
+            selectedFiles.forEach((file, i) => {
+                const url = URL.createObjectURL(file);
+                const div = document.createElement('div');
+                div.className = "relative aspect-square rounded-2xl overflow-hidden border border-gray-100 shadow-sm";
+                div.innerHTML = `<img src="${url}" class="w-full h-full object-cover"><button onclick="removeImg(${i})" class="absolute top-1 right-1 bg-black/50 text-white rounded-full w-4 h-4 flex items-center justify-center text-[8px]"><i class="fas fa-times"></i></button>`;
+                wrapper.insertBefore(div, trigger);
+            });
+            trigger.style.display = selectedFiles.length >= 5 ? 'none' : 'flex';
+        }
 
-        window.toggleVipAdmin = async (postId, currentStatus) => {
-            if(!isAdmin) return;
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId), {
-                    isVip: !currentStatus,
-                    lastPush: serverTimestamp()
-                });
-                alert("Đã cập nhật trạng thái VIP.");
-            } catch (e) {
-                alert("Lỗi: " + e.message);
-            }
-        };
-
-        // RULE 1: Đường dẫn dữ liệu chuẩn
-        const getPostCollection = () => collection(db, 'artifacts', appId, 'public', 'data', 'posts');
-
+        // Posting
         window.handlePostSubmit = async (e) => {
             e.preventDefault();
             if (!currentUser || currentUser.isAnonymous) return toggleModal('modal-login');
-
             const btn = document.getElementById('submit-btn');
-            btn.disabled = true;
-            btn.innerText = "ĐANG ĐĂNG TIN...";
-
+            btn.disabled = true; btn.innerText = "ĐANG TẢI DỮ LIỆU...";
+            
+            const urls = [];
             try {
-                await addDoc(getPostCollection(), {
+                for(let file of selectedFiles) {
+                    const sRef = ref(storage, `posts/${Date.now()}_${file.name}`);
+                    await uploadBytes(sRef, file);
+                    urls.push(await getDownloadURL(sRef));
+                }
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), {
                     title: document.getElementById('p-title').value,
-                    category: document.getElementById('p-category').value,
-                    desc: document.getElementById('p-desc').value,
                     price: document.getElementById('p-price').value,
+                    category: document.getElementById('p-category').value,
                     phone: document.getElementById('p-phone').value,
-                    userId: currentUser.uid,
+                    desc: document.getElementById('p-desc').value,
+                    images: urls,
                     userName: currentUser.displayName || "Cư dân",
                     userAvatar: currentUser.photoURL || "",
                     isVip: false,
@@ -419,118 +384,116 @@ service cloud.firestore {
                     lastPush: serverTimestamp()
                 });
                 alert("Đăng tin thành công!");
-                e.target.reset();
-                toggleModal('modal-post');
-            } catch (err) {
-                if (err.code === 'permission-denied') {
-                    document.getElementById('permission-guide').classList.remove('hidden');
-                } else {
-                    console.error("Post Error:", err);
-                }
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "XÁC NHẬN ĐĂNG TIN";
-            }
+                e.target.reset(); selectedFiles = []; toggleModal('modal-post');
+            } catch(e) { alert(e.message); }
+            btn.disabled = false; btn.innerText = "XÁC NHẬN ĐĂNG TIN";
         };
 
+        // Data Management
         function startDataListener() {
-            const q = query(getPostCollection());
-            onSnapshot(q, (snapshot) => {
+            onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'posts')), (snap) => {
                 allPosts = [];
-                snapshot.forEach(doc => allPosts.push({id: doc.id, ...doc.data()}));
+                snap.forEach(d => allPosts.push({id: d.id, ...d.data()}));
                 applyFilters();
-                document.getElementById('permission-guide').classList.add('hidden');
-            }, (error) => {
-                if (error.code === 'permission-denied') document.getElementById('permission-guide').classList.remove('hidden');
+                if(isAdmin) renderAdminDashboard();
             });
         }
 
-        window.setCategoryFilter = (cat) => {
-            currentCategory = cat;
-            applyFilters();
-        };
-
+        window.setCategoryFilter = (cat) => { currentCategory = cat; applyFilters(); };
         window.filterPosts = () => applyFilters();
-        window.filterPostsMobile = () => applyFilters();
 
         function applyFilters() {
-            const searchTerm = (document.getElementById('search-input').value || document.getElementById('search-input-mobile').value).toLowerCase();
-            
-            let filtered = allPosts.filter(p => {
-                const matchSearch = (p.title || "").toLowerCase().includes(searchTerm) || (p.desc || "").toLowerCase().includes(searchTerm);
-                const matchCategory = currentCategory === 'Tất cả' || p.category === currentCategory;
-                return matchSearch && matchCategory;
+            const term = (document.getElementById('search-input').value || document.getElementById('search-input-mobile').value || '').toLowerCase();
+            const filtered = allPosts.filter(p => {
+                const matchTerm = (p.title||'').toLowerCase().includes(term) || (p.desc||'').toLowerCase().includes(term);
+                const matchCat = currentCategory === 'Tất cả' || p.category === currentCategory;
+                return matchTerm && matchCat;
+            }).sort((a,b) => {
+                if(a.isVip !== b.isVip) return a.isVip ? -1 : 1;
+                return (b.lastPush?.seconds||0) - (a.lastPush?.seconds||0);
             });
-
-            // RULE 2: Sort Client
-            filtered.sort((a, b) => {
-                if (a.isVip !== b.isVip) return a.isVip ? -1 : 1;
-                const timeA = a.lastPush?.seconds || 0;
-                const timeB = b.lastPush?.seconds || 0;
-                return timeB - timeA;
-            });
-
-            renderPosts(filtered);
+            renderList(filtered);
         }
 
-        function renderPosts(posts) {
-            const vipList = document.getElementById('vip-list');
-            const normalList = document.getElementById('normal-list');
-            
-            vipList.innerHTML = '';
-            normalList.innerHTML = '';
+        function renderList(posts) {
+            const vList = document.getElementById('vip-list');
+            const nList = document.getElementById('normal-list');
+            vList.innerHTML = ''; nList.innerHTML = '';
 
-            posts.forEach((p) => {
-                const adminControls = isAdmin ? `
-                    <div class="flex space-x-1 mt-2">
-                        <button onclick="deletePostAdmin('${p.id}')" class="flex-1 bg-red-600 text-white text-[9px] py-1 rounded font-bold uppercase">Xóa</button>
-                        <button onclick="toggleVipAdmin('${p.id}', ${p.isVip})" class="flex-1 bg-blue-600 text-white text-[9px] py-1 rounded font-bold uppercase">${p.isVip ? 'Hủy VIP' : 'Lên VIP'}</button>
-                    </div>
-                ` : '';
-
+            posts.forEach(p => {
+                const img = p.images && p.images.length > 0 ? p.images[0] : '';
                 const card = `
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group">
-                        <div class="h-36 lg:h-44 bg-gray-100 flex flex-col items-center justify-center text-gray-300 relative">
-                            <i class="fas ${p.category === 'Bất động sản' ? 'fa-building' : 'fa-camera'} text-3xl"></i>
-                            <span class="text-[9px] font-bold uppercase mt-2">${p.category}</span>
-                            ${p.isVip ? '<span class="vip-badge absolute top-2 left-2 shadow-lg">Ưu tiên</span>' : ''}
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all group cursor-pointer border border-gray-50">
+                        <div class="h-40 lg:h-48 bg-gray-100 flex items-center justify-center relative">
+                            ${img ? `<img src="${img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">` : `<i class="fas fa-image text-gray-200 text-3xl"></i>`}
+                            ${p.isVip ? `<span class="vip-badge absolute top-3 left-3 shadow-lg">Ưu tiên</span>` : ''}
+                            ${p.images?.length > 1 ? `<span class="absolute bottom-3 right-3 bg-black/60 text-white text-[9px] px-2 py-1 rounded-full font-bold"><i class="fas fa-images mr-1"></i> ${p.images.length}</span>` : ''}
                         </div>
-                        <div class="p-2 lg:p-3">
-                            <h3 class="font-medium text-gray-800 text-[13px] lg:text-[14px] line-clamp-2 leading-tight mb-1 h-8 lg:h-10">${p.title}</h3>
-                            <p class="text-chotot-red font-bold text-[14px] lg:text-[16px] mb-2">${p.price} VNĐ</p>
-                            <div class="flex justify-between items-center text-[10px] text-gray-400 mt-2 pt-2 border-t border-gray-50">
-                                <div class="flex items-center truncate max-w-[60%]">
-                                    <img src="${p.userAvatar || 'https://ui-avatars.com/api/?name=' + p.userName}" class="w-3 h-3 rounded-full mr-1">
-                                    <span class="truncate uppercase font-bold">${p.userName}</span>
-                                </div>
-                                <a href="https://zalo.me/${p.phone}" target="_blank" class="text-blue-500 font-bold hover:underline shrink-0 flex items-center">
-                                    <i class="fas fa-comment-dots mr-1"></i> LIÊN HỆ
-                                </a>
+                        <div class="p-4">
+                            <span class="text-[9px] font-black text-eco-bright uppercase tracking-widest">${p.category}</span>
+                            <h3 class="font-bold text-gray-800 text-sm mt-1 line-clamp-2 h-10 leading-tight">${p.title}</h3>
+                            <div class="mt-3 flex items-center justify-between">
+                                <span class="text-eco-deep font-black text-[15px]">${p.price} VNĐ</span>
+                                <a href="https://zalo.me/${p.phone}" target="_blank" class="text-eco-blue text-[10px] font-black hover:underline uppercase tracking-tight">Liên hệ <i class="fas fa-arrow-right ml-1"></i></a>
                             </div>
-                            ${adminControls}
                         </div>
                     </div>
                 `;
-                if(p.isVip) vipList.innerHTML += card;
-                else normalList.innerHTML += card;
+                if(p.isVip) vList.innerHTML += card; else nList.innerHTML += card;
             });
-            
-            document.getElementById('vip-section').classList.toggle('hidden', vipList.innerHTML === '');
-            if (normalList.innerHTML === '') {
-                normalList.innerHTML = '<p class="text-gray-400 text-xs italic col-span-full text-center py-20 font-medium">Hiện tại không tìm thấy tin đăng phù hợp.</p>';
-            }
+            document.getElementById('vip-section').classList.toggle('hidden', vList.innerHTML === '');
         }
 
-        window.copyRules = () => {
-            const code = document.getElementById('rule-content').innerText;
-            const el = document.createElement('textarea'); el.value = code; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-            alert("Đã copy Rules!");
+        // Admin Dash
+        window.toggleAdminPanel = () => {
+            if(isAdmin) return document.getElementById('admin-panel').classList.toggle('hidden');
+            if(prompt("Mã bảo mật BQT:") === "215151365") {
+                isAdmin = true;
+                document.getElementById('admin-panel').classList.remove('hidden');
+                renderAdminDashboard();
+            }
+        };
+
+        function renderAdminDashboard() {
+            document.getElementById('stat-total').innerText = allPosts.length;
+            document.getElementById('stat-vip').innerText = allPosts.filter(p => p.isVip).length;
+            const tbody = document.getElementById('admin-table-body');
+            tbody.innerHTML = '';
+            allPosts.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-4 flex items-center gap-3">
+                        <img src="${p.images?.[0] || ''}" class="w-10 h-10 rounded-lg object-cover bg-gray-50">
+                        <span class="font-bold text-gray-800 truncate max-w-[200px]">${p.title}</span>
+                    </td>
+                    <td class="p-4"><span class="text-[10px] font-black bg-gray-100 px-2 py-1 rounded uppercase">${p.category}</span></td>
+                    <td class="p-4">
+                        <div class="font-black text-eco-deep">${p.price} VNĐ</div>
+                        <div class="text-[10px] text-gray-400">SĐT: ${p.phone}</div>
+                    </td>
+                    <td class="p-4 text-center">
+                        <div class="flex gap-2 justify-center">
+                            <button onclick="toggleVip('${p.id}', ${p.isVip})" class="w-8 h-8 rounded-full ${p.isVip ? 'bg-eco-bright text-white' : 'bg-gray-100 text-gray-300'}"><i class="fas fa-crown"></i></button>
+                            <button onclick="delPost('${p.id}')" class="w-8 h-8 rounded-full bg-red-50 text-red-500"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.toggleVip = async (id, s) => { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), { isVip: !s, lastPush: serverTimestamp() }); };
+        window.delPost = async (id) => { if(confirm("Xóa tin này?")) await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id)); };
+
+        window.checkAuthBeforePost = () => {
+            if(!currentUser || currentUser.isAnonymous) toggleModal('modal-login');
+            else toggleModal('modal-post');
         };
     </script>
 
+    <!-- UI Helpers -->
     <script>
-        window.toggleModal = (id) => document.getElementById(id)?.classList.toggle('hidden');
-        window.closeModal = (id) => document.getElementById(id)?.classList.add('hidden');
+        window.toggleModal = (id) => document.getElementById(id).classList.toggle('hidden');
     </script>
 </body>
 </html>
