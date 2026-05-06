@@ -271,13 +271,14 @@ service cloud.firestore {
         import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         // CONFIG (BẠN THAY THÔNG SỐ CỦA BẠN VÀO ĐÂY)
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "", 
-            authDomain: "",
-            projectId: "",
-            storageBucket: "",
-            messagingSenderId: "",
-            appId: ""
+        const firebaseConfig = {
+            apiKey: "AIzaSyBarAIDkBaifVuPg7yJV14gFd0lUPzUXH4",
+            authDomain: "ecohome-marketplace.firebaseapp.com",
+            projectId: "ecohome-marketplace",
+            storageBucket: "ecohome-marketplace.firebasestorage.app",
+            messagingSenderId: "735893375122",
+            appId: "1:735893375122:web:479e1c186b15291f5abe4b",
+            measurementId: "G-NH34FETZGT"
         };
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'ecohome-portal';
