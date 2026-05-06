@@ -73,25 +73,38 @@ window.logout = async () => {
 };
 
 
+
 // AUTH STATE
 onAuthStateChanged(auth, (user) => {
+
     currentUser = user;
 
     const authSection = document.getElementById("auth-section");
 
+    if (!authSection) return;
+
     if (user) {
+
         authSection.innerHTML = `
             <div class="flex items-center gap-2">
-                <img src="${user.photoURL}" class="w-8 h-8 rounded-full">
-                <span class="text-white text-xs hidden lg:block">${user.displayName}</span>
+
+                <img src="${user.photoURL || ''}"
+                    class="w-8 h-8 rounded-full">
+
+                <span class="text-white text-xs hidden lg:block">
+                    ${user.displayName || 'User'}
+                </span>
 
                 <button onclick="logout()"
                     class="bg-red-500 text-white px-3 py-1 rounded-full text-xs">
                     Đăng xuất
                 </button>
+
             </div>
         `;
+
     } else {
+
         authSection.innerHTML = `
             <button onclick="toggleModal('modal-login')"
                 class="text-white text-xs font-bold">
@@ -100,6 +113,7 @@ onAuthStateChanged(auth, (user) => {
         `;
     }
 });
+
 
 
 // PREVIEW ẢNH
