@@ -1,88 +1,470 @@
 <!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chợ cư dân EcoHome Nhơn Bình - Phong cách Chợ Tốt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --chotot-yellow: #ffba00;
+            --chotot-orange: #ff8800;
+            --chotot-bg: #f4f4f4;
+            --chotot-red: #d0021b;
+        }
+        body { background-color: var(--chotot-bg); }
+        .bg-chotot-yellow { background-color: var(--chotot-yellow); }
+        .bg-chotot-orange { background-color: var(--chotot-orange); }
+        .text-chotot-red { color: var(--chotot-red); }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+        }
+        
+        .category-icon {
+            transition: transform 0.2s;
+        }
+        .category-icon:hover { transform: scale(1.05); }
 
-            <div id="user-info" class="hidden items-center gap-2 text-white">
-                <img id="user-avatar"
-                class="w-8 h-8 rounded-full border-2 border-white">
+        .vip-badge {
+            background: linear-gradient(45deg, #ff8800, #ffba00);
+            color: white;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
 
-                <span id="user-name" class="font-medium"></span>
+        .login-overlay { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); }
+        
+        /* Chotot Sticky Header Mobile */
+        @media (max-width: 768px) {
+            .mobile-search { padding: 10px; background: var(--chotot-yellow); }
+        }
+    </style>
+</head>
+<body class="text-gray-800 font-sans">
+
+    <!-- Header Style Chợ Tốt -->
+    <header class="bg-chotot-yellow shadow-sm sticky top-0 z-[60]">
+        <div class="container mx-auto px-4 lg:px-20">
+            <div class="flex items-center justify-between py-2 lg:py-4">
+                <!-- Logo -->
+                <a href="#" onclick="location.reload()" class="flex items-center space-x-2 shrink-0">
+                    <div class="bg-white p-1.5 rounded-full shadow-sm">
+                        <i class="fas fa-shopping-bag text-chotot-orange text-xl lg:text-2xl"></i>
+                    </div>
+                    <span class="text-gray-900 font-black text-lg lg:text-xl tracking-tighter">EcoHome <span class="hidden lg:inline">Nhơn Bình</span></span>
+                </a>
+
+                <!-- Search Bar (Desktop) -->
+                <div class="hidden lg:flex flex-grow mx-10 relative">
+                    <input type="text" id="search-input" onkeyup="filterPosts()" placeholder="Tìm kiếm trên EcoHome Nhơn Bình..." 
+                        class="w-full py-2.5 pl-4 pr-12 rounded-lg border-none shadow-inner focus:ring-0 outline-none text-sm">
+                    <button class="absolute right-0 top-0 h-full px-4 bg-gray-100 rounded-r-lg hover:bg-gray-200 transition">
+                        <i class="fas fa-search text-gray-500"></i>
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center space-x-4 lg:space-x-6">
+                    <div id="auth-section" class="flex items-center">
+                        <!-- Sẽ render bằng JS -->
+                    </div>
+                    <button onclick="checkAuthBeforePost()" class="bg-chotot-orange text-white px-4 lg:px-6 py-2 rounded-lg font-bold text-sm shadow-md hover:bg-orange-600 transition flex items-center">
+                        <i class="fas fa-edit mr-2"></i> <span class="hidden lg:inline">ĐĂNG TIN</span><span class="lg:hidden">TIN</span>
+                    </button>
+                </div>
             </div>
+            
+            <!-- Mobile Search Bar -->
+            <div class="lg:hidden pb-3">
+                <div class="relative">
+                    <input type="text" id="search-input-mobile" onkeyup="filterPostsMobile()" placeholder="Tìm món hàng bạn cần..." 
+                        class="w-full py-2 px-4 pl-10 rounded-md border-none shadow-sm outline-none text-sm">
+                    <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </header>
 
-            <button onclick="loginGoogle()"
-            id="login-btn"
-            class="bg-white text-red-500 px-4 py-1.5 rounded-lg font-medium hover:bg-red-50 transition">
-                <i class="fab fa-google mr-1"></i>
-                Đăng nhập Google
-            </button>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 lg:px-20 py-6 lg:py-10">
+        
+        <!-- Danh mục sản phẩm (Icons) -->
+        <section class="mb-10 overflow-x-auto pb-4 scrollbar-hide">
+            <div class="flex lg:grid lg:grid-cols-6 gap-4 min-w-max lg:min-w-0">
+                <button onclick="setCategoryFilter('Thực phẩm')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xl mb-2">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-600 text-center uppercase">Thực phẩm</span>
+                </button>
+                <button onclick="setCategoryFilter('Gia dụng')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl mb-2">
+                        <i class="fas fa-couch"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-600 text-center uppercase">Gia dụng</span>
+                </button>
+                <button onclick="setCategoryFilter('Dịch vụ')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl mb-2">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-600 text-center uppercase">Dịch vụ</span>
+                </button>
+                <button onclick="setCategoryFilter('Điện tử')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
+                    <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xl mb-2">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-600 text-center uppercase">Điện tử</span>
+                </button>
+                <button onclick="setCategoryFilter('Mẹ & Bé')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
+                    <div class="w-12 h-12 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center text-xl mb-2">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-600 text-center uppercase">Mẹ & Bé</span>
+                </button>
+                <button onclick="setCategoryFilter('Tất cả')" class="category-icon flex flex-col items-center p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition w-24 lg:w-full">
+                    <div class="w-12 h-12 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-xl mb-2">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-gray-600 text-center uppercase">Tất cả</span>
+                </button>
+            </div>
+        </section>
 
-            <button onclick="logout()"
-            id="logout-btn"
-            class="hidden bg-red-500 text-white px-4 py-1.5 rounded-lg font-medium hover:bg-red-600 transition">
-                Đăng xuất
-            </button>
-
-            <a href="https://zalo.me/0901234567"
-            target="_blank"
-            class="bg-blue-500 text-white px-4 py-1.5 rounded-lg font-medium hover:bg-blue-600 transition">
-                <i class="fas fa-comments mr-1"></i>
-                Chat Zalo
-            </a>
-
-            <button onclick="toggleModal('modal-post')"
-            class="bg-white text-blue-600 px-4 py-1.5 rounded-lg font-medium hover:bg-blue-50 transition">
-                <i class="fas fa-plus-circle mr-1"></i>
-                Đăng tin
-            </button>
-
+        <!-- Bảng Hướng dẫn (Chỉ hiện khi lỗi permission) -->
+        <div id="permission-guide" class="hidden mb-10 p-6 bg-white border-2 border-red-500 rounded-2xl shadow-xl">
+            <h3 class="font-bold text-red-600 mb-2 flex items-center italic">
+                <i class="fas fa-lock mr-2"></i> LỖI PHÂN QUYỀN FIREBASE
+            </h3>
+            <p class="text-xs text-gray-600 mb-4 font-medium">Hãy dán mã quy tắc bảo mật vào Firebase Console của bạn:</p>
+            <div class="relative">
+                <pre id="rule-content" class="code-block text-[10px]">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /artifacts/{appId}/public/data/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}</pre>
+                <button onclick="copyRules()" class="absolute top-2 right-2 bg-gray-700 text-white px-2 py-1 rounded text-[10px] uppercase font-bold">Copy</button>
+            </div>
         </div>
 
-    </div>
-
-</header>
-
-<main class="container mx-auto px-4 py-6">
-
-    <div class="mb-8 flex flex-col md:flex-row gap-4">
-
-        <input type="text"
-        placeholder="Tìm sản phẩm, dịch vụ..."
-        class="flex-grow p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none shadow-sm">
-
-        <select class="p-3 rounded-xl border border-gray-200 bg-white shadow-sm">
-            <option>Tất cả danh mục</option>
-            <option>Đồ gia dụng</option>
-            <option>Thực phẩm</option>
-            <option>Dịch vụ</option>
-            <option>Bất động sản</option>
-        </select>
-
-    </div>
-
-</main>
-
-<div id="modal-post"
-class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[100]">
-
-    <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl">
-
-        <div class="p-6">
-
-            <div class="flex justify-between items-center mb-6">
-
-                <h2 class="text-xl font-bold text-gray-900">
-                    Đăng tin giao dịch
-                </h2>
-
-                <button onclick="toggleModal('modal-post')"
-                class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-
+        <!-- Tin Ưu Tiên (Tin VIP) -->
+        <section id="vip-section" class="mb-10 hidden">
+            <h2 class="text-sm font-bold mb-4 text-gray-900 uppercase flex items-center tracking-tight">
+                <i class="fas fa-star text-chotot-orange mr-2"></i> Tin đăng ưu tiên
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-5" id="vip-list">
+                <!-- Rendered by JS -->
             </div>
+        </section>
 
-            <form class="space-y-4">
+        <!-- Tin đăng mới nhất -->
+        <section>
+            <h2 class="text-sm font-bold mb-4 text-gray-900 uppercase flex items-center tracking-tight">
+                <i class="fas fa-list text-blue-600 mr-2"></i> Tin đăng mới nhất
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-5" id="normal-list">
+                <!-- Skeleton Loader -->
+                <div class="col-span-full py-20 text-center flex flex-col items-center">
+                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-chotot-orange mb-4"></div>
+                    <p class="text-gray-400 text-sm">Đang tải tin đăng...</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
-                <input type="text"
-                placeholder="Tiêu đề tin"
-                class="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 outline-none">
+    <!-- Modal Login (Chợ Tốt Style) -->
+    <div id="modal-login" class="hidden fixed inset-0 login-overlay flex items-center justify-center p-4 z-[200]">
+        <div class="bg-white rounded-xl w-full max-w-sm shadow-2xl p-6 lg:p-10 animate-in fade-in zoom-in-95">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-yellow-50 text-chotot-yellow rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900">Đăng nhập tài khoản</h2>
+                <p class="text-gray-500 text-xs mt-2 leading-relaxed px-4">Chào mừng cư dân EcoHome quay trở lại.</p>
+            </div>
+            
+            <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center border-2 border-gray-100 p-3 rounded-lg hover:bg-gray-50 transition font-bold text-gray-700 mb-4">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 mr-3">
+                Đăng nhập với Google
+            </button>
+            
+            <button onclick="toggleModal('modal-login')" class="w-full text-gray-400 text-xs mt-2 hover:underline">Hủy bỏ</button>
+        </div>
+    </div>
 
+    <!-- Modal Đăng Tin (Chợ Tốt Style) -->
+    <div id="modal-post" class="hidden fixed inset-0 login-overlay flex items-center justify-center p-4 z-[200]">
+        <div class="bg-white rounded-xl w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6 lg:p-8">
+                <div class="flex justify-between items-center mb-8 border-b pb-4">
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-edit text-chotot-orange mr-2"></i> TẠO TIN ĐĂNG
+                    </h2>
+                    <button onclick="toggleModal('modal-post')" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-times-circle text-2xl"></i></button>
+                </div>
+                
+                <form id="post-form" onsubmit="handlePostSubmit(event)" class="space-y-6">
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Tiêu đề tin đăng</label>
+                        <input type="text" id="p-title" placeholder="VD: Bán máy giặt Toshiba mới dùng 3 tháng" required class="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 outline-none focus:border-chotot-yellow transition">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Danh mục</label>
+                            <select id="p-category" class="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 outline-none focus:border-chotot-yellow appearance-none">
+                                <option value="Thực phẩm">Thực phẩm & Ăn uống</option>
+                                <option value="Gia dụng">Đồ dùng gia đình</option>
+                                <option value="Dịch vụ">Dịch vụ tại cư xá</option>
+                                <option value="Điện tử">Đồ điện tử</option>
+                                <option value="Mẹ & Bé">Mẹ & Bé</option>
+                                <option value="Khác">Phân loại khác</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Số điện thoại Zalo</label>
+                            <input type="text" id="p-phone" placeholder="09xxxxxxxx" required class="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Mô tả chi tiết</label>
+                        <textarea id="p-desc" placeholder="Tình trạng món đồ, khu vực nhận hàng (VD: Block A, tầng 15)..." rows="3" required class="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 outline-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 mb-2 block uppercase tracking-wider">Giá bán (VNĐ)</label>
+                        <input type="text" id="p-price" placeholder="VD: 500,000" required class="w-full p-4 rounded-lg bg-gray-50 border-none outline-none font-black text-xl text-chotot-orange shadow-inner">
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="w-full bg-chotot-orange text-white py-4 rounded-lg font-black text-lg hover:bg-orange-600 shadow-lg transition-all uppercase tracking-widest">XÁC NHẬN ĐĂNG TIN</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // CONFIG (BẠN THAY THÔNG SỐ CỦA BẠN VÀO ĐÂY)
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "", 
+            authDomain: "",
+            projectId: "",
+            storageBucket: "",
+            messagingSenderId: "",
+            appId: ""
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ecohome-portal';
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+        let allPosts = [];
+        let currentCategory = 'Tất cả';
+
+        // RULE 3: Auth trước khi Query
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.error("Auth Error:", err);
+            }
+        };
+
+        initAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const authSection = document.getElementById('auth-section');
+            if (user && !user.isAnonymous) {
+                authSection.innerHTML = `
+                    <div class="flex items-center bg-white/30 p-0.5 pr-3 rounded-full hover:bg-white/40 transition cursor-pointer">
+                        <img src="${user.photoURL || 'https://via.placeholder.com/32'}" class="w-8 h-8 rounded-full border border-white shadow-sm">
+                        <span class="text-[10px] font-black ml-2 text-gray-900 hidden lg:block uppercase tracking-tighter">${user.displayName}</span>
+                        <button onclick="logout()" class="ml-2 text-gray-700 hover:text-red-500"><i class="fas fa-sign-out-alt text-sm"></i></button>
+                    </div>
+                `;
+                closeModal('modal-login');
+            } else {
+                authSection.innerHTML = `<button onclick="toggleModal('modal-login')" class="text-gray-900 text-sm font-bold flex items-center"><i class="fas fa-user-circle text-xl mr-2"></i> <span class="hidden lg:inline">Tài khoản</span></button>`;
+            }
+            startDataListener();
+        });
+
+        window.loginWithGoogle = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                if (error.code === 'auth/unauthorized-domain') {
+                    alert("Lỗi: Domain chưa được ủy quyền trên Firebase.");
+                } else {
+                    console.error("Login Fail:", error);
+                }
+            }
+        };
+
+        window.logout = () => signOut(auth);
+
+        window.checkAuthBeforePost = () => {
+            if(!currentUser || currentUser.isAnonymous) {
+                toggleModal('modal-login');
+            } else {
+                toggleModal('modal-post');
+            }
+        };
+
+        // RULE 1: Đường dẫn dữ liệu chuẩn
+        const getPostCollection = () => collection(db, 'artifacts', appId, 'public', 'data', 'posts');
+
+        window.handlePostSubmit = async (e) => {
+            e.preventDefault();
+            if (!currentUser || currentUser.isAnonymous) return toggleModal('modal-login');
+
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.innerText = "ĐANG ĐĂNG TIN...";
+
+            try {
+                await addDoc(getPostCollection(), {
+                    title: document.getElementById('p-title').value,
+                    category: document.getElementById('p-category').value,
+                    desc: document.getElementById('p-desc').value,
+                    price: document.getElementById('p-price').value,
+                    phone: document.getElementById('p-phone').value,
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName || "Cư dân",
+                    userAvatar: currentUser.photoURL || "",
+                    isVip: false,
+                    createdAt: serverTimestamp(),
+                    lastPush: serverTimestamp()
+                });
+                alert("Đăng tin thành công!");
+                e.target.reset();
+                toggleModal('modal-post');
+            } catch (err) {
+                if (err.code === 'permission-denied') {
+                    document.getElementById('permission-guide').classList.remove('hidden');
+                } else {
+                    console.error("Post Error:", err);
+                }
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "XÁC NHẬN ĐĂNG TIN";
+            }
+        };
+
+        function startDataListener() {
+            const q = query(getPostCollection());
+            onSnapshot(q, (snapshot) => {
+                allPosts = [];
+                snapshot.forEach(doc => allPosts.push({id: doc.id, ...doc.data()}));
+                applyFilters();
+                document.getElementById('permission-guide').classList.add('hidden');
+            }, (error) => {
+                if (error.code === 'permission-denied') document.getElementById('permission-guide').classList.remove('hidden');
+            });
+        }
+
+        window.setCategoryFilter = (cat) => {
+            currentCategory = cat;
+            applyFilters();
+        };
+
+        window.filterPosts = () => applyFilters();
+        window.filterPostsMobile = () => applyFilters();
+
+        function applyFilters() {
+            const searchTerm = (document.getElementById('search-input').value || document.getElementById('search-input-mobile').value).toLowerCase();
+            
+            let filtered = allPosts.filter(p => {
+                const matchSearch = (p.title || "").toLowerCase().includes(searchTerm) || (p.desc || "").toLowerCase().includes(searchTerm);
+                const matchCategory = currentCategory === 'Tất cả' || p.category === currentCategory;
+                return matchSearch && matchCategory;
+            });
+
+            // RULE 2: Sort Client
+            filtered.sort((a, b) => {
+                if (a.isVip !== b.isVip) return a.isVip ? -1 : 1;
+                const timeA = a.lastPush?.seconds || 0;
+                const timeB = b.lastPush?.seconds || 0;
+                return timeB - timeA;
+            });
+
+            renderPosts(filtered);
+        }
+
+        function renderPosts(posts) {
+            const vipList = document.getElementById('vip-list');
+            const normalList = document.getElementById('normal-list');
+            
+            vipList.innerHTML = '';
+            normalList.innerHTML = '';
+
+            posts.forEach((p) => {
+                const card = `
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group">
+                        <div class="h-36 lg:h-44 bg-gray-100 flex flex-col items-center justify-center text-gray-300 relative">
+                            <i class="fas fa-camera text-3xl"></i>
+                            <span class="text-[9px] font-bold uppercase mt-2">${p.category}</span>
+                            ${p.isVip ? '<span class="vip-badge absolute top-2 left-2 shadow-lg">Ưu tiên</span>' : ''}
+                        </div>
+                        <div class="p-2 lg:p-3">
+                            <h3 class="font-medium text-gray-800 text-[13px] lg:text-[14px] line-clamp-2 leading-tight mb-1 h-8 lg:h-10">${p.title}</h3>
+                            <p class="text-chotot-red font-bold text-[14px] lg:text-[16px] mb-2">${p.price} VNĐ</p>
+                            <div class="flex justify-between items-center text-[10px] text-gray-400 mt-2 pt-2 border-t border-gray-50">
+                                <div class="flex items-center truncate max-w-[60%]">
+                                    <img src="${p.userAvatar || 'https://ui-avatars.com/api/?name=' + p.userName}" class="w-3 h-3 rounded-full mr-1">
+                                    <span class="truncate uppercase font-bold">${p.userName}</span>
+                                </div>
+                                <a href="https://zalo.me/${p.phone}" target="_blank" class="text-blue-500 font-bold hover:underline shrink-0 flex items-center">
+                                    <i class="fas fa-comment-dots mr-1"></i> LIÊN HỆ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                if(p.isVip) vipList.innerHTML += card;
+                else normalList.innerHTML += card;
+            });
+            
+            document.getElementById('vip-section').classList.toggle('hidden', vipList.innerHTML === '');
+            if (normalList.innerHTML === '') {
+                normalList.innerHTML = '<p class="text-gray-400 text-xs italic col-span-full text-center py-20 font-medium">Hiện tại không tìm thấy tin đăng phù hợp.</p>';
+            }
+        }
+
+        window.copyRules = () => {
+            const code = document.getElementById('rule-content').innerText;
+            const el = document.createElement('textarea'); el.value = code; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+            alert("Đã copy Rules!");
+        };
+    </script>
+
+    <script>
+        window.toggleModal = (id) => document.getElementById(id)?.classList.toggle('hidden');
+        window.closeModal = (id) => document.getElementById(id)?.classList.add('hidden');
+    </script>
+</body>
 </html>
