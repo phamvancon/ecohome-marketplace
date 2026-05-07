@@ -30,7 +30,7 @@ app.post("/webhook-sepay", (req, res) => {
 
         // Nếu có nội dung, thêm vào danh sách đã thanh toán
         if (content) {
-            // Bạn có thể xử lý logic tách mã đơn hàng ở đây nếu cần
+            // Xử lý logic lưu mã giao dịch
             paidCodes.add(content.trim());
         }
 
