@@ -103,7 +103,6 @@
             <button onclick="checkAuthAndPost()" class="flex items-center gap-1 opacity-80 hover:text-black font-black">
                 <i class="fa-solid fa-pen-to-square"></i> Đăng tin
             </button>
-            <!-- NÚT ADMIN: ẨN MẶC ĐỊNH (hidden) -->
             <button id="admin-bqt-nav-btn" onclick="accessAdminBQT()" class="hidden items-center gap-1 text-red-700 bg-red-500/10 px-2 py-0.5 rounded-full hover:bg-red-500/20 transition active-scale font-black">
                 <i class="fa-solid fa-shield-halved"></i> BQT ADMIN
             </button>
@@ -192,16 +191,6 @@
         </div>
     </div>
 
-    <!-- TIN TÀI TRỢ -->
-    <div id="sponsored-section" class="hidden mb-8 text-left">
-        <div class="flex items-center justify-between mb-3 px-1">
-            <h3 class="text-[11px] font-black text-orange-600 uppercase tracking-widest flex items-center gap-2">
-                <i class="fa-solid fa-award text-sm"></i> Tin tài trợ nổi bật
-            </h3>
-        </div>
-        <div id="sponsored-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
-    </div>
-
     <!-- BỘ LỌC -->
     <div class="flex flex-wrap items-center gap-2 mb-6 px-1">
         <div class="bg-white px-3 py-2 rounded-xl border border-gray-200 flex items-center gap-2 shadow-sm">
@@ -217,7 +206,7 @@
 
     <!-- FEED -->
     <div class="mb-5 px-1 flex items-center justify-between">
-        <h2 class="text-base font-black text-gray-800 uppercase tracking-tighter">Tin cư dân mới nhất</h2>
+        <h2 class="text-base font-black text-gray-800 uppercase tracking-tighter text-left">Tin cư dân mới nhất</h2>
         <p id="post-count-label" class="text-[10px] text-gray-400 font-bold uppercase italic"></p>
     </div>
 
@@ -236,28 +225,42 @@
     </div>
 </div>
 
-<!-- MODAL THANH TOÁN -->
+<!-- MODAL THANH TOÁN SEPAY -->
 <div id="modal-payment" class="hidden fixed inset-0 bg-black/95 z-[300] flex items-center justify-center p-4 backdrop-blur-md">
     <div class="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl modal-animate-in">
         <div class="flex justify-between items-center mb-4">
             <div class="text-left">
                 <h3 class="text-lg font-black text-gray-800 uppercase tracking-tighter">Gia hạn 30 ngày</h3>
-                <p class="text-[10px] text-gray-400 font-bold uppercase">Thanh toán tự động 24/7</p>
+                <p class="text-[10px] text-gray-400 font-bold uppercase">Cộng dồn vào thời hạn cũ</p>
             </div>
             <button onclick="closePaymentModal()" class="text-gray-400 text-2xl p-1"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="qr-frame bg-white p-3 mb-4"><img id="payment-qr" src="" class="w-full aspect-square object-contain"></div>
-        <a id="payment-app-link" href="#" target="_blank" class="w-full bg-[#00457C] text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg active-scale mb-6 flex items-center justify-center gap-2">
+        
+        <a id="payment-app-link" href="#" target="_blank" class="w-full bg-[#00457C] text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg active-scale mb-4 flex items-center justify-center gap-2">
             <i class="fa-solid fa-mobile-screen-button"></i> MỞ APP NGÂN HÀNG
         </a>
+
+        <!-- THÔNG TIN NGÂN HÀNG CHI TIẾT -->
+        <div class="bg-gray-50 rounded-2xl p-4 text-left border border-gray-100 mb-6">
+            <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ngân hàng</div>
+            <div class="font-black text-lg text-gray-800">MB BANK (Quân Đội)</div>
+            
+            <div class="text-[10px] text-gray-400 font-bold mt-3 uppercase tracking-wider">Số tài khoản</div>
+            <div class="font-black text-xl text-blue-700 tracking-tight">5555553659999</div>
+            
+            <div class="text-[10px] text-gray-400 font-bold mt-3 uppercase tracking-wider">Chủ tài khoản</div>
+            <div class="font-black text-gray-800 uppercase">PHAM VAN CON</div>
+        </div>
+
         <div class="space-y-2 mb-6 text-left">
             <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100 uppercase font-black">
                 <span class="text-[9px] text-gray-400">Số tiền:</span>
                 <span class="text-lg text-red-600">50.000 đ</span>
             </div>
-            <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex flex-col gap-1">
+            <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex flex-col gap-1 text-left">
                 <div class="flex justify-between items-center">
-                    <span class="text-[9px] font-bold text-blue-400 uppercase">Nội dung CK:</span>
+                    <span class="text-[9px] font-bold text-blue-400 uppercase font-black text-left">Nội dung CK:</span>
                     <button onclick="copyPaymentCode()" class="text-[8px] font-black bg-blue-600 text-white px-1.5 py-0.5 rounded uppercase">Copy</button>
                 </div>
                 <span id="payment-code" class="text-xl font-black text-blue-700 tracking-[0.1em] text-center">---</span>
@@ -265,16 +268,16 @@
         </div>
         <div class="flex items-center justify-center gap-2 text-orange-600 animate-pulse mb-2">
             <div class="loader !w-3 !h-3"></div>
-            <span class="text-[10px] font-black uppercase tracking-widest">Đang kiểm tra giao dịch...</span>
+            <span class="text-[10px] font-black uppercase tracking-widest">Đang quét thanh toán...</span>
         </div>
     </div>
 </div>
 
-<!-- MODAL ĐĂNG TIN -->
+<!-- MODAL ĐĂNG TIN / SỬA TIN -->
 <div id="modal-post" class="hidden fixed inset-0 bg-black/80 z-[210] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
     <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar">
         <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10">
-            <div><h3 id="post-modal-title" class="text-lg font-black uppercase tracking-tighter text-gray-800">Đăng tin miễn phí</h3></div>
+            <div><h3 id="post-modal-title" class="text-lg font-black uppercase tracking-tighter text-gray-800">Đăng tin cư dân</h3></div>
             <button onclick="toggleModal('modal-post')" class="text-gray-400 text-3xl"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <form id="post-form" class="p-6 space-y-6 pb-16 text-left">
@@ -296,11 +299,11 @@
                 </select>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                <input id="p-price" type="text" placeholder="Nhập giá (Vd: 10.000đ - 50.000đ) *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black font-bold">
+                <input id="p-price" type="text" placeholder="Giá (Vd: 10.000đ - 50.000đ) *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black font-bold">
                 <input id="p-phone" placeholder="Số Zalo liên hệ *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black">
             </div>
             <textarea id="p-desc" rows="4" placeholder="Mô tả chi tiết sản phẩm..." required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black text-left"></textarea>
-            <button id="submit-btn" class="w-full chotot-orange text-white py-4.5 rounded-2xl font-black shadow-xl active-scale text-base uppercase">Đăng tin ngay</button>
+            <button id="submit-btn" class="w-full chotot-orange text-white py-4.5 rounded-2xl font-black shadow-xl active-scale text-base uppercase">XÁC NHẬN TIN</button>
         </form>
     </div>
 </div>
@@ -327,7 +330,7 @@
     </div>
 </div>
 
-<!-- LOGIN MODAL -->
+<!-- LOGIN / REGISTER MODAL -->
 <div id="modal-login" class="hidden fixed inset-0 bg-black/90 z-[300] flex items-center justify-center p-4 backdrop-blur-sm text-center">
     <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl modal-animate-in relative text-center">
         <div class="w-16 h-16 chotot-orange rounded-2xl flex items-center justify-center text-white text-2xl font-black mx-auto mb-6 shadow-lg transform rotate-3">BQT</div>
@@ -358,9 +361,12 @@
     <p id="lightbox-counter" class="text-white font-black text-xs uppercase mt-6 tracking-widest"></p>
 </div>
 
+<!-- TOAST -->
+<div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 z-[1000] transform -translate-y-24 transition-all duration-300 bg-black/90 text-white px-6 py-4 rounded-2xl text-[11px] font-black shadow-2xl flex items-center gap-3 pointer-events-none text-center"></div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, deleteDoc, doc, updateDoc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     // --- CONFIG ---
@@ -379,9 +385,9 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // SEPAY
-    const SEPAY_BANK_ACC = "19036724391011"; 
-    const SEPAY_BANK_NAME = "Techcombank"; 
+    // SEPAY CONFIG
+    const bank = 'MB';
+    const stk = '5555553659999';
     const SEPAY_RENEW_PRICE = 50000; 
     let paymentInterval = null;
 
@@ -405,7 +411,7 @@
         if(!t) return;
         t.innerHTML = `<i class="fa-solid ${icon} text-lg text-orange-400"></i> <span>${msg}</span>`;
         t.classList.remove('-translate-y-24');
-        setTimeout(() => t.classList.add('-translate-y-24'), 3000);
+        setTimeout(() => t.classList.add('-translate-y-24'), 4000);
     };
 
     window.formatPrice = (v) => {
@@ -428,15 +434,18 @@
         document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
         if(id === 'modal-post' && el.classList.contains('hidden')) {
             editingPostId = null; 
-            document.getElementById('post-form')?.reset(); 
+            const form = document.getElementById('post-form');
+            if(form) form.reset(); 
             uploadedImages = []; 
             renderPrev();
+            const modalTitle = document.getElementById('post-modal-title');
+            if(modalTitle) modalTitle.innerText = "Đăng tin cư dân";
         }
     };
 
     const getSortablePrice = (pStr) => pStr ? parseInt(pStr.toString().split('-')[0].replace(/\D/g, '')) || 0 : 0;
 
-    // --- AUTH LOGIC (MODIFIED FOR ADMIN HIDING) ---
+    // --- AUTH FLOW ---
     async function initAuth() {
         try {
             // @ts-ignore
@@ -448,26 +457,27 @@
     }
 
     onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-            currentUser = null;
-            updateAuthUI(null);
-            // Auto fallback to anonymous for data fetching
-            try { await signInAnonymously(auth); } catch (e) {}
-        } else {
+        if (user) {
             currentUser = user;
             updateAuthUI(user);
             startSync();
+        } else {
+            currentUser = null;
+            updateAuthUI(null);
+            try { await signInAnonymously(auth); } catch (e) {}
         }
     });
 
     function updateAuthUI(user) {
         const top = document.getElementById('top-auth-section');
         const bar = document.getElementById('auth-status-bar');
+        const userNameEl = document.getElementById('auth-user-name');
+        const expiryInfoEl = document.getElementById('auth-expiry-info');
+        const typeIconEl = document.getElementById('auth-type-icon');
         const bqtBtn = document.getElementById('admin-bqt-nav-btn');
 
         if (!top || !bar || !bqtBtn) return;
 
-        // 1. Logic ẩn/hiện nút Admin MASTER
         if (user && user.email === 'phamvanconcn@gmail.com') {
             bqtBtn.classList.remove('hidden');
             bqtBtn.classList.add('flex', 'bg-red-600', 'text-white', 'px-3', 'animate-pulse');
@@ -477,25 +487,22 @@
             bqtBtn.classList.remove('flex');
         }
 
-        // 2. Cập nhật UI đăng nhập trên Header
         if (!user || user.isAnonymous) {
             top.innerHTML = `<button onclick="toggleModal('modal-login')" class="text-[10px] font-black bg-white hover:bg-orange-50 px-3 py-2 rounded-xl border border-black/5 uppercase active-scale shadow-sm text-black">ĐĂNG NHẬP / ĐĂNG KÝ</button>`;
             if(user) {
                 bar.classList.remove('hidden');
-                document.getElementById('auth-user-name').innerText = "Cư dân Ẩn danh";
-                document.getElementById('auth-expiry-info').innerText = "Hạn 3 ngày";
-                const icon = document.getElementById('auth-type-icon');
-                if(icon) icon.innerHTML = `<i class="fa-solid fa-user-secret text-2xl text-gray-400"></i>`;
+                if(userNameEl) userNameEl.innerText = "Cư dân Ẩn danh";
+                if(expiryInfoEl) expiryInfoEl.innerText = "Hạn 3 ngày";
+                if(typeIconEl) typeIconEl.innerHTML = `<i class="fa-solid fa-user-secret text-2xl text-gray-400"></i>`;
                 top.innerHTML = `<i onclick="toggleModal('modal-login')" class="fa-solid fa-user-secret text-gray-400 text-xl p-2 cursor-pointer active-scale"></i>`;
             } else { bar.classList.add('hidden'); }
         } else {
             bar.classList.remove('hidden');
             const dn = user.displayName || "Thành viên";
-            document.getElementById('auth-user-name').innerText = dn;
-            document.getElementById('auth-expiry-info').innerText = "Xác thực (Hạn 30 ngày)";
+            if(userNameEl) userNameEl.innerText = dn;
+            if(expiryInfoEl) expiryInfoEl.innerText = "Xác thực (Hạn 30 ngày)";
             const pic = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(dn)}&background=random&color=fff`;
-            const icon = document.getElementById('auth-type-icon');
-            if(icon) icon.innerHTML = `<img src="${pic}" class="w-full h-full object-cover">`;
+            if(typeIconEl) typeIconEl.innerHTML = `<img src="${pic}" class="w-full h-full object-cover">`;
             top.innerHTML = `<img onclick="openUserAdmin()" src="${pic}" class="w-9 h-9 rounded-xl border-2 border-white object-cover cursor-pointer shadow-sm active-scale">`;
         }
     }
@@ -508,19 +515,21 @@
             showToast("Chào cư dân!", "fa-circle-check");
         } catch (err) { showToast("Lỗi đăng nhập"); } 
     };
+
     window.loginAnonymously = async () => { try { await signInAnonymously(auth); toggleModal('modal-login'); } catch(e){} };
     window.logout = async () => { if(confirm("Bạn muốn đăng xuất?")) { await signOut(auth); window.location.reload(); } };
 
-    // --- SEPAY ---
+    // --- SEPAY (LOGIC GIA HẠN CỘNG DỒN) ---
     window.startPaymentRenew = (postId) => {
         const transId = Math.random().toString(36).substring(2, 7).toUpperCase();
         const code = `GH${transId}`;
         const paymentCodeEl = document.getElementById('payment-code');
         if(paymentCodeEl) paymentCodeEl.innerText = code;
         const paymentQrEl = document.getElementById('payment-qr');
-        if(paymentQrEl) paymentQrEl.src = `https://qr.sepay.vn/img?acc=${SEPAY_BANK_ACC}&bank=${SEPAY_BANK_NAME}&amount=${SEPAY_RENEW_PRICE}&des=${code}`;
+        if(paymentQrEl) paymentQrEl.src = `https://qr.sepay.vn/img?acc=${stk}&bank=${bank}&amount=${SEPAY_RENEW_PRICE}&des=${code}`;
         const paymentAppLinkEl = document.getElementById('payment-app-link');
-        if(paymentAppLinkEl) paymentAppLinkEl.href = `https://dl.vietqr.io/pay?bank=techcombank&amount=${SEPAY_RENEW_PRICE}&des=${code}&acc=${SEPAY_BANK_ACC}`;
+        if(paymentAppLinkEl) paymentAppLinkEl.href = `https://dl.vietqr.io/pay?bank=${bank.toLowerCase()}&amount=${SEPAY_RENEW_PRICE}&des=${code}&acc=${stk}`;
+        
         toggleModal('modal-payment');
         if (paymentInterval) clearInterval(paymentInterval);
         paymentInterval = setInterval(async () => {
@@ -530,18 +539,51 @@
                     const data = await res.json();
                     if (data.paid === true) {
                         clearInterval(paymentInterval);
-                        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId), { createdAt: serverTimestamp(), isRenewedPaid: true });
-                        closePaymentModal(); showToast("Gia hạn thành công!", "fa-circle-check");
+                        await finalizeRenewPost(postId);
                     }
                 }
             } catch(e) {}
         }, 3000); 
     };
 
+    async function finalizeRenewPost(postId) {
+        try {
+            const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
+            const postSnap = await getDoc(postRef);
+            const postData = postSnap.data();
+
+            const limit = (postData.isAnonymous && !postData.isRenewedPaid) ? EXP_ANON : EXP_USER;
+            const now = Date.now();
+            const currentExpiry = (postData.createdAt?.seconds * 1000 || now) + limit;
+            
+            let newBaseTime;
+            if (currentExpiry > now) {
+                // Nếu vẫn còn hạn, cộng dồn vào thời điểm hết hạn hiện tại
+                newBaseTime = currentExpiry;
+            } else {
+                // Nếu đã hết hạn, tính từ lúc này
+                newBaseTime = now;
+            }
+
+            // Mốc thời gian mới (giảm đi 30 ngày so với EXP_USER tính toán để render đúng 30 ngày từ mốc mới)
+            const newCreatedAtDate = new Date(newBaseTime);
+            
+            await updateDoc(postRef, { 
+                createdAt: Timestamp.fromDate(newCreatedAtDate), 
+                isRenewedPaid: true 
+            });
+
+            closePaymentModal(); 
+            showToast("Thanh toán thành công! Tin đã được cộng thêm 30 ngày.", "fa-circle-check");
+        } catch (e) {
+            showToast("Lỗi hệ thống sau thanh toán!");
+        }
+    }
+
     window.closePaymentModal = () => { if (paymentInterval) clearInterval(paymentInterval); document.getElementById('modal-payment')?.classList.add('hidden'); document.body.style.overflow = 'auto'; };
     window.copyPaymentCode = () => { const c = document.getElementById('payment-code')?.innerText; if(c) { navigator.clipboard.writeText(c).then(() => showToast("Đã copy nội dung!")); } };
 
-    // --- SYNC & RENDER ---
+    // --- SYNC ---
     function startSync() {
         if(unsubscribePosts) unsubscribePosts();
         unsubscribePosts = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), snap => {
@@ -598,39 +640,25 @@
                     <div class="flex gap-2 p-4 overflow-x-auto hide-scrollbar bg-white">${post.images.map((img, i) => `<img src="${img}" onclick="document.getElementById('detail-slider').scrollTo({left: ${i}*document.getElementById('detail-slider').clientWidth, behavior:'smooth'})" class="w-12 h-12 rounded object-cover cursor-pointer opacity-70 hover:opacity-100">`).join('')}</div>
                 </div>
                 <div class="w-full sm:w-1/2 p-6 text-left space-y-4 bg-white">
-                    <h2 class="text-xl font-black uppercase text-gray-800 leading-tight">${post.title}</h2>
-                    <div class="text-3xl font-black text-[#ee4d2d] bg-[#fff5f5] p-4 rounded-xl border border-red-100">${formatPrice(post.price)}</div>
-                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 text-sm text-gray-600 font-medium whitespace-pre-line text-left">${post.desc}</div>
-                    <div class="flex items-center justify-between py-4 border-t border-gray-100"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 shadow-inner"><i class="fa-solid fa-house-user text-xl"></i></div><div><p class="text-xs font-black text-gray-800 uppercase">${post.isAnonymous ? 'Ẩn danh' : 'Cư dân'}</p><p class="text-[9px] text-green-500 font-bold uppercase"><i class="fa-solid fa-circle text-[6px]"></i> Online</p></div></div><a href="https://zalo.me/${post.phone}" target="_blank" class="bg-[#ee4d2d] text-white px-6 py-4 rounded-2xl font-black text-xs uppercase shadow-lg shadow-red-100 active-scale">ZALO NGAY</a></div>
+                    <h2 class="text-xl font-black uppercase text-gray-800 leading-tight text-left">${post.title}</h2>
+                    <div class="text-3xl font-black text-[#ee4d2d] bg-[#fff5f5] p-4 rounded-xl border border-red-100 shadow-sm">${formatPrice(post.price)}</div>
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100"><h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 border-b border-gray-200 pb-1">Mô tả sản phẩm</h4><div class="text-sm text-gray-600 leading-relaxed font-medium whitespace-pre-line text-left">${post.desc}</div></div>
+                    <div class="flex items-center justify-between py-4 border-t border-gray-100"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 shadow-inner"><i class="fa-solid fa-house-user text-xl"></i></div><div><p class="text-xs font-black text-gray-800 uppercase tracking-tighter">${post.isAnonymous ? 'Ẩn danh' : 'Cư dân'}</p><p class="text-[9px] text-green-500 font-bold uppercase tracking-widest italic"><i class="fa-solid fa-circle text-[6px]"></i> Online</p></div></div><a href="https://zalo.me/${post.phone}" target="_blank" class="bg-[#ee4d2d] text-white px-6 py-4 rounded-2xl font-black text-xs uppercase shadow-lg shadow-red-100 active-scale">ZALO NGAY</a></div>
                 </div>
             </div>`;
         toggleModal('modal-detail');
     };
 
-    // --- BQT ADMIN LOGIC ---
+    // --- ADMIN ---
     window.accessAdminBQT = () => {
-        // Chỉ email đặc biệt mới vào thẳng
-        if (currentUser && currentUser.email === 'phamvanconcn@gmail.com') {
-            toggleModal('modal-bqt-admin');
-            renderBqtAdmin();
-            return;
-        }
-        // Fallback mật mã (vẫn giữ để admin dự phòng nếu login lỗi)
+        if (currentUser && currentUser.email === 'phamvanconcn@gmail.com') { toggleModal('modal-bqt-admin'); renderBqtAdmin(); return; }
         const p = prompt("MẬT MÃ BQT:");
-        if (p === '215151365') {
-            toggleModal('modal-bqt-admin');
-            renderBqtAdmin();
-        } else if (p !== null) showToast("Sai mật mã!");
+        if (p === '215151365') { toggleModal('modal-bqt-admin'); renderBqtAdmin(); }
+        else if (p !== null) showToast("Sai mật mã!");
     };
-
-    function renderBqtAdmin() {
-        const wrap = document.getElementById('bqt-admin-posts');
-        if(!wrap) return;
-        wrap.innerHTML = allPosts.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).map(p => `<div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4 text-left shadow-sm"><img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover cursor-pointer" onclick="viewPostDetail('${p.id}')"><div class="flex-1 min-w-0"><div class="text-[10px] font-black truncate uppercase text-gray-800">${p.title}</div><div class="text-orange-600 font-black text-[10px]">${formatPrice(p.price)}</div></div><div class="flex gap-1 shrink-0"><button onclick="pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Đẩy</button><button onclick="togglePromote('${p.id}', ${p.isPromoted || false})" class="${p.isPromoted ? 'bg-orange-600' : 'bg-gray-200'} text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Ads</button><button onclick="confirmDeletePost('${p.id}')" class="bg-red-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Xóa</button></div></div>`).join('');
-    }
-
+    function renderBqtAdmin() { const wrap = document.getElementById('bqt-admin-posts'); if(!wrap) return; wrap.innerHTML = allPosts.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).map(p => `<div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4 text-left shadow-sm"><img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover cursor-pointer" onclick="viewPostDetail('${p.id}')"><div class="flex-1 min-w-0"><div class="text-[10px] font-black truncate uppercase text-gray-800">${p.title}</div><div class="text-orange-600 font-black text-[10px]">${formatPrice(p.price)}</div></div><div class="flex gap-1 shrink-0"><button onclick="pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Đẩy</button><button onclick="togglePromote('${p.id}', ${p.isPromoted || false})" class="${p.isPromoted ? 'bg-orange-600' : 'bg-gray-200'} text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Ads</button><button onclick="confirmDeletePost('${p.id}')" class="bg-red-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Xóa</button></div></div>`).join(''); }
     window.pushToTop = async (id) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {createdAt:serverTimestamp()}); showToast("Đã đẩy tin!"); } catch { showToast("Lỗi!"); } };
-    window.togglePromote = async (id, cur) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {isPromoted:!cur}); showToast("Đã cập nhật!"); } catch { showToast("Lỗi!"); } };
+    window.togglePromote = async (id, cur) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {isPromoted:!cur}); showToast("Cập nhật thành công!"); } catch { showToast("Lỗi!"); } };
 
     function renderAdmin() {
         const wrap = document.getElementById('admin-posts');
@@ -644,16 +672,32 @@
         }).join('');
     }
 
+    // --- TRANG CHỈNH SỬA TỨC THÌ ---
     window.openEditModal = (id) => {
-        const p = allPosts.find(x => x.id === id); if(!p) return;
+        const p = allPosts.find(x => x.id === id); 
+        if(!p) return;
         editingPostId = id;
-        document.getElementById('p-title').value = p.title;
-        document.getElementById('p-price').value = formatPrice(p.price);
-        document.getElementById('p-category').value = p.category;
-        document.getElementById('p-phone').value = p.phone;
-        document.getElementById('p-desc').value = p.desc;
-        uploadedImages = [...(p.images || [])]; renderPrev();
-        document.getElementById('post-modal-title').innerText = "Chỉnh sửa bài đăng";
+        
+        // Điền dữ liệu vào form ngay lập tức
+        const titleEl = document.getElementById('p-title');
+        const priceEl = document.getElementById('p-price');
+        const catEl = document.getElementById('p-category');
+        const phoneEl = document.getElementById('p-phone');
+        const descEl = document.getElementById('p-desc');
+        const modalTitle = document.getElementById('post-modal-title');
+        
+        if(titleEl) titleEl.value = p.title || "";
+        if(priceEl) priceEl.value = formatPrice(p.price) || "";
+        if(catEl) catEl.value = p.category || "Gia dụng";
+        if(phoneEl) phoneEl.value = p.phone || "";
+        if(descEl) descEl.value = p.desc || "";
+        if(modalTitle) modalTitle.innerText = "Chỉnh sửa bài đăng";
+        
+        // Tải lại danh sách ảnh
+        uploadedImages = [...(p.images || [])]; 
+        renderPrev();
+        
+        // "Bung" modal chỉnh sửa lên ngay
         toggleModal('modal-post');
     };
 
@@ -677,12 +721,11 @@
             if (editingPostId) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', editingPostId), postData); 
             else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), { ...postData, isPromoted: false, createdAt: serverTimestamp(), isRenewedPaid: false }); 
             showToast("Thành công!"); toggleModal('modal-post'); 
-        } catch { showToast("Lỗi hệ thống!"); } finally { btn.disabled = false; btn.innerText = editingPostId ? "CẬP NHẬT" : "ĐĂNG TIN NGAY"; } 
+        } catch { showToast("Lỗi hệ thống!"); } finally { btn.disabled = false; btn.innerText = "XÁC NHẬN TIN"; } 
     });
 
     document.getElementById('searchInput')?.addEventListener('input', renderPosts);
 
-    // Initial auth
     initAuth();
 </script>
 </body>
