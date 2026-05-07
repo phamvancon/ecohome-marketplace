@@ -191,8 +191,18 @@
         </div>
     </div>
 
+    <!-- TIN TÀI TRỢ -->
+    <div id="sponsored-section" class="hidden mb-8 text-left">
+        <div class="flex items-center justify-between mb-3 px-1">
+            <h3 class="text-[11px] font-black text-orange-600 uppercase tracking-widest flex items-center gap-2">
+                <i class="fa-solid fa-award text-sm"></i> Tin tài trợ nổi bật
+            </h3>
+        </div>
+        <div id="sponsored-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+    </div>
+
     <!-- BỘ LỌC -->
-    <div class="flex flex-wrap items-center gap-2 mb-6 px-1">
+    <div class="flex flex-wrap items-center gap-2 mb-6 px-1 text-left">
         <div class="bg-white px-3 py-2 rounded-xl border border-gray-200 flex items-center gap-2 shadow-sm">
             <select id="sortOrder" onchange="renderPosts()" class="bg-transparent text-[10px] font-black uppercase outline-none cursor-pointer">
                 <option value="newest">Mới nhất</option>
@@ -273,7 +283,7 @@
     </div>
 </div>
 
-<!-- MODAL ĐĂNG TIN / SỬA TIN -->
+<!-- MODAL ĐĂNG TIN -->
 <div id="modal-post" class="hidden fixed inset-0 bg-black/80 z-[210] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
     <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar">
         <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10">
@@ -303,7 +313,7 @@
                 <input id="p-phone" placeholder="Số Zalo liên hệ *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black">
             </div>
             <textarea id="p-desc" rows="4" placeholder="Mô tả chi tiết sản phẩm..." required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black text-left"></textarea>
-            <button id="submit-btn" class="w-full chotot-orange text-white py-4.5 rounded-2xl font-black shadow-xl active-scale text-base uppercase">XÁC NHẬN TIN</button>
+            <button id="submit-btn" class="w-full chotot-orange text-white py-4.5 rounded-2xl font-black shadow-xl active-scale text-base uppercase">Xác nhận tin</button>
         </form>
     </div>
 </div>
@@ -369,7 +379,7 @@
     import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, deleteDoc, doc, updateDoc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-    // --- CONFIG ---
+    // --- FIREBASE INIT ---
     const firebaseConfig = { 
         apiKey : "AIzaSyDueCwieBqfBHSjdKMZ5O-Y8Z1rPB-sFVM" , 
         authDomain : "ecohome-marketplace-97aa6.firebaseapp.com" , 
@@ -379,17 +389,16 @@
         appId : "1:1010934843766:web:c2ad5a5dbf43913bd8d257" 
     };
     
-    const appId = 'ecohome-marketplace-97aa6';
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'ecohome-marketplace-97aa6';
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // SEPAY CONFIG
-    const bank = 'MB';
+    // BANK SETTINGS
+    const bank = 'mbb'; // Sử dụng ID mbb cho VietQR MB Bank
     const stk = '5555553659999';
-    const SEPAY_RENEW_PRICE = 50000; 
-    let paymentInterval = null;
+    const SEPAY_RENEW_PRICE = 50000;
 
     // STATE
     let currentUser = null;
@@ -401,9 +410,80 @@
     let lightboxIndex = 0;
     let editingPostId = null;
     let unsubscribePosts = null;
+    let paymentInterval = null;
 
     const EXP_ANON = 3 * 24 * 60 * 60 * 1000;
     const EXP_USER = 30 * 24 * 60 * 60 * 1000;
+
+    // --- GLOBAL FUNCTION EXPOSURE (FOR ONCLICK FIX) ---
+    window.checkAuthAndPost = () => { 
+        if(!currentUser) toggleModal('modal-login'); 
+        else { editingPostId = null; toggleModal('modal-post'); } 
+    };
+
+    window.toggleModal = (id) => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.classList.toggle('hidden');
+        document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+        if(id === 'modal-post' && el.classList.contains('hidden')) {
+            editingPostId = null;
+            document.getElementById('post-form')?.reset();
+            uploadedImages = [];
+            renderPrev();
+            const modalTitle = document.getElementById('post-modal-title');
+            if(modalTitle) modalTitle.innerText = "Đăng tin cư dân";
+        }
+    };
+
+    window.logout = async () => { if(confirm("Bạn muốn thoát tài khoản?")) { await signOut(auth); window.location.reload(); } };
+
+    window.filterCategory = (c) => { currentFilter = c; renderPosts(); showToast(c); };
+    window.toggleAuthFilter = (t) => { currentAuthFilter = t; const bAll = document.getElementById('filter-auth-all'); const bVer = document.getElementById('filter-auth-verified'); if(bAll) bAll.classList.toggle('filter-active', t === 'all'); if(bVer) bVer.classList.toggle('filter-active', t === 'verified'); renderPosts(); };
+
+    window.accessAdminBQT = () => {
+        if (currentUser && currentUser.email === 'phamvanconcn@gmail.com') { toggleModal('modal-bqt-admin'); renderBqtAdmin(); return; }
+        const p = prompt("MẬT MÃ BQT:");
+        if (p === '215151365') { toggleModal('modal-bqt-admin'); renderBqtAdmin(); }
+        else if (p !== null) showToast("Sai mật mã!");
+    };
+
+    window.openUserAdmin = () => { renderAdmin(); toggleModal('admin-panel'); };
+
+    window.openEditModal = (id) => {
+        const p = allPosts.find(x => x.id === id); 
+        if(!p) return;
+        editingPostId = id;
+        
+        const titleEl = document.getElementById('p-title');
+        const priceEl = document.getElementById('p-price');
+        const catEl = document.getElementById('p-category');
+        const phoneEl = document.getElementById('p-phone');
+        const descEl = document.getElementById('p-desc');
+        const modalTitle = document.getElementById('post-modal-title');
+        
+        if(titleEl) titleEl.value = p.title || "";
+        if(priceEl) priceEl.value = formatPrice(p.price) || "";
+        if(catEl) catEl.value = p.category || "Gia dụng";
+        if(phoneEl) phoneEl.value = p.phone || "";
+        if(descEl) descEl.value = p.desc || "";
+        if(modalTitle) modalTitle.innerText = "Chỉnh sửa bài đăng";
+        
+        uploadedImages = [...(p.images || [])]; 
+        renderPrev();
+        toggleModal('modal-post');
+    };
+
+    window.confirmDeletePost = (id) => { if(confirm("Xác nhận gỡ tin này?")) { deleteDoc(doc(db,'artifacts',appId,'public','data','posts',id)); showToast("Đã gỡ bài!"); } };
+
+    window.copyPaymentCode = () => { const c = document.getElementById('payment-code')?.innerText; if(c) { navigator.clipboard.writeText(c).then(() => showToast("Đã copy nội dung!", "fa-copy")); } };
+
+    window.closePaymentModal = () => { if (paymentInterval) clearInterval(paymentInterval); document.getElementById('modal-payment')?.classList.add('hidden'); document.body.style.overflow = 'auto'; };
+
+    window.openLightbox = (src, pid = null) => { lightboxList = pid ? (allPosts.find(x => x.id === pid)?.images || [src]) : [src]; lightboxIndex = Math.max(0, lightboxList.indexOf(src)); updateLB(); document.getElementById('image-lightbox').classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
+    window.changeLightboxImage = (d) => { if (lightboxList.length <= 1) return; lightboxIndex = (lightboxIndex + d + lightboxList.length) % lightboxList.length; updateLB(); };
+    window.closeLightbox = () => { document.getElementById('image-lightbox').classList.add('hidden'); if(document.getElementById('modal-detail').classList.contains('hidden')) document.body.style.overflow = 'auto'; };
+    window.removeImg = i => { uploadedImages.splice(i,1); renderPrev(); };
 
     // --- UTILS ---
     window.showToast = (msg, icon = 'fa-circle-info') => {
@@ -427,30 +507,18 @@
         return num ? num.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ" : "0đ";
     };
 
-    window.toggleModal = (id) => {
-        const el = document.getElementById(id);
-        if(!el) return;
-        el.classList.toggle('hidden');
-        document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
-        if(id === 'modal-post' && el.classList.contains('hidden')) {
-            editingPostId = null; 
-            const form = document.getElementById('post-form');
-            if(form) form.reset(); 
-            uploadedImages = []; 
-            renderPrev();
-            const modalTitle = document.getElementById('post-modal-title');
-            if(modalTitle) modalTitle.innerText = "Đăng tin cư dân";
-        }
-    };
-
     const getSortablePrice = (pStr) => pStr ? parseInt(pStr.toString().split('-')[0].replace(/\D/g, '')) || 0 : 0;
 
-    // --- AUTH FLOW ---
+    const renderPrev = () => { const list = document.getElementById('preview-list'); if(!list) return; list.innerHTML = uploadedImages.map((s,i) => `<div class="w-20 h-20 relative rounded-xl overflow-hidden border shadow-sm"><img src="${s}" class="w-full h-full object-cover"><div onclick="removeImg(${i})" class="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 flex items-center justify-center rounded-full text-[10px] cursor-pointer shadow-lg transition-transform hover:scale-110"><i class="fa-solid fa-xmark"></i></div></div>`).join(''); };
+
+    async function compress(file) { return new Promise(res => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = img.width > 600 ? 600 / img.width : 1; canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0,0, canvas.width, canvas.height); res(canvas.toDataURL('image/jpeg', 0.6)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
+
+    function updateLB() { document.getElementById('lightbox-image').src = lightboxList[lightboxIndex]; const ctr = document.getElementById('lightbox-counter'); if (ctr) ctr.innerText = lightboxList.length > 1 ? `ẢNH ${lightboxIndex + 1} / ${lightboxList.length}` : ""; }
+
+    // --- AUTH ---
     async function initAuth() {
         try {
-            // @ts-ignore
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                // @ts-ignore
                 await signInWithCustomToken(auth, __initial_auth_token).catch(() => {});
             }
         } catch (e) {}
@@ -471,9 +539,6 @@
     function updateAuthUI(user) {
         const top = document.getElementById('top-auth-section');
         const bar = document.getElementById('auth-status-bar');
-        const userNameEl = document.getElementById('auth-user-name');
-        const expiryInfoEl = document.getElementById('auth-expiry-info');
-        const typeIconEl = document.getElementById('auth-type-icon');
         const bqtBtn = document.getElementById('admin-bqt-nav-btn');
 
         if (!top || !bar || !bqtBtn) return;
@@ -488,21 +553,25 @@
         }
 
         if (!user || user.isAnonymous) {
-            top.innerHTML = `<button onclick="toggleModal('modal-login')" class="text-[10px] font-black bg-white hover:bg-orange-50 px-3 py-2 rounded-xl border border-black/5 uppercase active-scale shadow-sm text-black">ĐĂNG NHẬP / ĐĂNG KÝ</button>`;
+            top.innerHTML = `<button onclick="toggleModal('modal-login')" class="text-[10px] font-black bg-white hover:bg-orange-50 px-3 py-2 rounded-xl border border-black/5 uppercase active-scale shadow-sm text-black whitespace-nowrap">Đăng nhập / Đăng ký</button>`;
             if(user) {
                 bar.classList.remove('hidden');
+                const userNameEl = document.getElementById('auth-user-name');
+                const expiryInfoEl = document.getElementById('auth-expiry-info');
                 if(userNameEl) userNameEl.innerText = "Cư dân Ẩn danh";
                 if(expiryInfoEl) expiryInfoEl.innerText = "Hạn 3 ngày";
-                if(typeIconEl) typeIconEl.innerHTML = `<i class="fa-solid fa-user-secret text-2xl text-gray-400"></i>`;
+                const icon = document.getElementById('auth-type-icon');
+                if(icon) icon.innerHTML = `<i class="fa-solid fa-user-secret text-2xl text-gray-400"></i>`;
                 top.innerHTML = `<i onclick="toggleModal('modal-login')" class="fa-solid fa-user-secret text-gray-400 text-xl p-2 cursor-pointer active-scale"></i>`;
             } else { bar.classList.add('hidden'); }
         } else {
             bar.classList.remove('hidden');
             const dn = user.displayName || "Thành viên";
-            if(userNameEl) userNameEl.innerText = dn;
-            if(expiryInfoEl) expiryInfoEl.innerText = "Xác thực (Hạn 30 ngày)";
+            document.getElementById('auth-user-name').innerText = dn;
+            document.getElementById('auth-expiry-info').innerText = "Xác thực (Hạn 30 ngày)";
             const pic = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(dn)}&background=random&color=fff`;
-            if(typeIconEl) typeIconEl.innerHTML = `<img src="${pic}" class="w-full h-full object-cover">`;
+            const icon = document.getElementById('auth-type-icon');
+            if(icon) icon.innerHTML = `<img src="${pic}" class="w-full h-full object-cover">`;
             top.innerHTML = `<img onclick="openUserAdmin()" src="${pic}" class="w-9 h-9 rounded-xl border-2 border-white object-cover cursor-pointer shadow-sm active-scale">`;
         }
     }
@@ -517,9 +586,8 @@
     };
 
     window.loginAnonymously = async () => { try { await signInAnonymously(auth); toggleModal('modal-login'); } catch(e){} };
-    window.logout = async () => { if(confirm("Bạn muốn đăng xuất?")) { await signOut(auth); window.location.reload(); } };
 
-    // --- SEPAY (LOGIC GIA HẠN CỘNG DỒN) ---
+    // --- PAYMENTS ---
     window.startPaymentRenew = (postId) => {
         const transId = Math.random().toString(36).substring(2, 7).toUpperCase();
         const code = `GH${transId}`;
@@ -528,7 +596,12 @@
         const paymentQrEl = document.getElementById('payment-qr');
         if(paymentQrEl) paymentQrEl.src = `https://qr.sepay.vn/img?acc=${stk}&bank=${bank}&amount=${SEPAY_RENEW_PRICE}&des=${code}`;
         const paymentAppLinkEl = document.getElementById('payment-app-link');
-        if(paymentAppLinkEl) paymentAppLinkEl.href = `https://dl.vietqr.io/pay?bank=${bank.toLowerCase()}&amount=${SEPAY_RENEW_PRICE}&des=${code}&acc=${stk}`;
+        
+        // Cập nhật Deep Link chính xác cho MB Bank
+        if(paymentAppLinkEl) {
+            const deepLink = `https://dl.vietqr.io/pay?bank=${bank.toLowerCase()}&amount=${SEPAY_RENEW_PRICE}&des=${code}&acc=${stk}`;
+            paymentAppLinkEl.href = deepLink;
+        }
         
         toggleModal('modal-payment');
         if (paymentInterval) clearInterval(paymentInterval);
@@ -550,38 +623,24 @@
         try {
             const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
             const postSnap = await getDoc(postRef);
+            if(!postSnap.exists()) return;
             const postData = postSnap.data();
 
             const limit = (postData.isAnonymous && !postData.isRenewedPaid) ? EXP_ANON : EXP_USER;
             const now = Date.now();
             const currentExpiry = (postData.createdAt?.seconds * 1000 || now) + limit;
             
-            let newBaseTime;
-            if (currentExpiry > now) {
-                // Nếu vẫn còn hạn, cộng dồn vào thời điểm hết hạn hiện tại
-                newBaseTime = currentExpiry;
-            } else {
-                // Nếu đã hết hạn, tính từ lúc này
-                newBaseTime = now;
-            }
+            let newBaseTime = (currentExpiry > now) ? currentExpiry : now;
 
-            // Mốc thời gian mới (giảm đi 30 ngày so với EXP_USER tính toán để render đúng 30 ngày từ mốc mới)
-            const newCreatedAtDate = new Date(newBaseTime);
-            
             await updateDoc(postRef, { 
-                createdAt: Timestamp.fromDate(newCreatedAtDate), 
+                createdAt: Timestamp.fromDate(new Date(newBaseTime)), 
                 isRenewedPaid: true 
             });
 
             closePaymentModal(); 
             showToast("Thanh toán thành công! Tin đã được cộng thêm 30 ngày.", "fa-circle-check");
-        } catch (e) {
-            showToast("Lỗi hệ thống sau thanh toán!");
-        }
+        } catch (e) { showToast("Lỗi hệ thống sau thanh toán!"); }
     }
-
-    window.closePaymentModal = () => { if (paymentInterval) clearInterval(paymentInterval); document.getElementById('modal-payment')?.classList.add('hidden'); document.body.style.overflow = 'auto'; };
-    window.copyPaymentCode = () => { const c = document.getElementById('payment-code')?.innerText; if(c) { navigator.clipboard.writeText(c).then(() => showToast("Đã copy nội dung!")); } };
 
     // --- SYNC ---
     function startSync() {
@@ -591,9 +650,6 @@
             renderPosts(); renderAdmin(); renderBqtAdmin();
         });
     }
-
-    window.filterCategory = (c) => { currentFilter = c; renderPosts(); showToast(c); };
-    window.toggleAuthFilter = (t) => { currentAuthFilter = t; const bAll = document.getElementById('filter-auth-all'); const bVer = document.getElementById('filter-auth-verified'); if(bAll) bAll.classList.toggle('filter-active', t === 'all'); if(bVer) bVer.classList.toggle('filter-active', t === 'verified'); renderPosts(); };
 
     function renderPosts() {
         const wrap = document.getElementById('posts-container');
@@ -617,7 +673,11 @@
         wrap.innerHTML = regular.length ? regular.map(p => renderPostCard(p, false)).join('') : `<p class="col-span-full py-20 text-gray-400 font-bold border-2 border-dashed rounded-xl uppercase text-xs">Trống</p>`;
         const sponsored = list.filter(p => p.isPromoted);
         const spSec = document.getElementById('sponsored-section');
-        if (sponsored.length > 0 && spSec) { spSec.classList.remove('hidden'); document.getElementById('sponsored-container').innerHTML = sponsored.map(p => renderPostCard(p, true)).join(''); }
+        if (sponsored.length > 0 && spSec) { 
+            spSec.classList.remove('hidden'); 
+            const spWrap = document.getElementById('sponsored-container');
+            if(spWrap) spWrap.innerHTML = sponsored.map(p => renderPostCard(p, true)).join(''); 
+        }
         else if(spSec) spSec.classList.add('hidden');
     }
 
@@ -642,23 +702,12 @@
                 <div class="w-full sm:w-1/2 p-6 text-left space-y-4 bg-white">
                     <h2 class="text-xl font-black uppercase text-gray-800 leading-tight text-left">${post.title}</h2>
                     <div class="text-3xl font-black text-[#ee4d2d] bg-[#fff5f5] p-4 rounded-xl border border-red-100 shadow-sm">${formatPrice(post.price)}</div>
-                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100"><h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 border-b border-gray-200 pb-1">Mô tả sản phẩm</h4><div class="text-sm text-gray-600 leading-relaxed font-medium whitespace-pre-line text-left">${post.desc}</div></div>
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 text-sm text-gray-600 font-medium whitespace-pre-line text-left">${post.desc}</div>
                     <div class="flex items-center justify-between py-4 border-t border-gray-100"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 shadow-inner"><i class="fa-solid fa-house-user text-xl"></i></div><div><p class="text-xs font-black text-gray-800 uppercase tracking-tighter">${post.isAnonymous ? 'Ẩn danh' : 'Cư dân'}</p><p class="text-[9px] text-green-500 font-bold uppercase tracking-widest italic"><i class="fa-solid fa-circle text-[6px]"></i> Online</p></div></div><a href="https://zalo.me/${post.phone}" target="_blank" class="bg-[#ee4d2d] text-white px-6 py-4 rounded-2xl font-black text-xs uppercase shadow-lg shadow-red-100 active-scale">ZALO NGAY</a></div>
                 </div>
             </div>`;
         toggleModal('modal-detail');
     };
-
-    // --- ADMIN ---
-    window.accessAdminBQT = () => {
-        if (currentUser && currentUser.email === 'phamvanconcn@gmail.com') { toggleModal('modal-bqt-admin'); renderBqtAdmin(); return; }
-        const p = prompt("MẬT MÃ BQT:");
-        if (p === '215151365') { toggleModal('modal-bqt-admin'); renderBqtAdmin(); }
-        else if (p !== null) showToast("Sai mật mã!");
-    };
-    function renderBqtAdmin() { const wrap = document.getElementById('bqt-admin-posts'); if(!wrap) return; wrap.innerHTML = allPosts.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).map(p => `<div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4 text-left shadow-sm"><img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover cursor-pointer" onclick="viewPostDetail('${p.id}')"><div class="flex-1 min-w-0"><div class="text-[10px] font-black truncate uppercase text-gray-800">${p.title}</div><div class="text-orange-600 font-black text-[10px]">${formatPrice(p.price)}</div></div><div class="flex gap-1 shrink-0"><button onclick="pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Đẩy</button><button onclick="togglePromote('${p.id}', ${p.isPromoted || false})" class="${p.isPromoted ? 'bg-orange-600' : 'bg-gray-200'} text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Ads</button><button onclick="confirmDeletePost('${p.id}')" class="bg-red-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Xóa</button></div></div>`).join(''); }
-    window.pushToTop = async (id) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {createdAt:serverTimestamp()}); showToast("Đã đẩy tin!"); } catch { showToast("Lỗi!"); } };
-    window.togglePromote = async (id, cur) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {isPromoted:!cur}); showToast("Cập nhật thành công!"); } catch { showToast("Lỗi!"); } };
 
     function renderAdmin() {
         const wrap = document.getElementById('admin-posts');
@@ -672,47 +721,12 @@
         }).join('');
     }
 
-    // --- TRANG CHỈNH SỬA TỨC THÌ ---
-    window.openEditModal = (id) => {
-        const p = allPosts.find(x => x.id === id); 
-        if(!p) return;
-        editingPostId = id;
-        
-        // Điền dữ liệu vào form ngay lập tức
-        const titleEl = document.getElementById('p-title');
-        const priceEl = document.getElementById('p-price');
-        const catEl = document.getElementById('p-category');
-        const phoneEl = document.getElementById('p-phone');
-        const descEl = document.getElementById('p-desc');
-        const modalTitle = document.getElementById('post-modal-title');
-        
-        if(titleEl) titleEl.value = p.title || "";
-        if(priceEl) priceEl.value = formatPrice(p.price) || "";
-        if(catEl) catEl.value = p.category || "Gia dụng";
-        if(phoneEl) phoneEl.value = p.phone || "";
-        if(descEl) descEl.value = p.desc || "";
-        if(modalTitle) modalTitle.innerText = "Chỉnh sửa bài đăng";
-        
-        // Tải lại danh sách ảnh
-        uploadedImages = [...(p.images || [])]; 
-        renderPrev();
-        
-        // "Bung" modal chỉnh sửa lên ngay
-        toggleModal('modal-post');
-    };
+    function renderBqtAdmin() { const wrap = document.getElementById('bqt-admin-posts'); if(!wrap) return; wrap.innerHTML = allPosts.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).map(p => `<div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4 text-left shadow-sm"><img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover cursor-pointer" onclick="viewPostDetail('${p.id}')"><div class="flex-1 min-w-0"><div class="text-[10px] font-black truncate uppercase text-gray-800">${p.title}</div><div class="text-orange-600 font-black text-[10px]">${formatPrice(p.price)}</div></div><div class="flex gap-1 shrink-0"><button onclick="pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Đẩy</button><button onclick="togglePromote('${p.id}', ${p.isPromoted || false})" class="${p.isPromoted ? 'bg-orange-600' : 'bg-gray-200'} text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Ads</button><button onclick="confirmDeletePost('${p.id}')" class="bg-red-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale">Xóa</button></div></div>`).join(''); }
+    
+    window.pushToTop = async (id) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {createdAt:serverTimestamp()}); showToast("Đã đẩy tin!"); } catch { showToast("Lỗi!"); } };
+    window.togglePromote = async (id, cur) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {isPromoted:!cur}); showToast("Cập nhật thành công!"); } catch { showToast("Lỗi!"); } };
 
-    window.confirmDeletePost = (id) => { if(confirm("Xác nhận gỡ tin này?")) { deleteDoc(doc(db,'artifacts',appId,'public','data','posts',id)); showToast("Đã gỡ bài!"); } };
-    window.openUserAdmin = () => { renderAdmin(); toggleModal('admin-panel'); };
-    window.openLightbox = (src, pid = null) => { lightboxList = pid ? (allPosts.find(x => x.id === pid)?.images || [src]) : [src]; lightboxIndex = Math.max(0, lightboxList.indexOf(src)); updateLB(); document.getElementById('image-lightbox').classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
-    function updateLB() { document.getElementById('lightbox-image').src = lightboxList[lightboxIndex]; const ctr = document.getElementById('lightbox-counter'); if (ctr) ctr.innerText = lightboxList.length > 1 ? `ẢNH ${lightboxIndex + 1} / ${lightboxList.length}` : ""; }
-    window.changeLightboxImage = (d) => { if (lightboxList.length <= 1) return; lightboxIndex = (lightboxIndex + d + lightboxList.length) % lightboxList.length; updateLB(); };
-    window.closeLightbox = () => { document.getElementById('image-lightbox').classList.add('hidden'); if(document.getElementById('modal-detail').classList.contains('hidden')) document.body.style.overflow = 'auto'; };
-    
-    async function compress(file) { return new Promise(res => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = img.width > 600 ? 600 / img.width : 1; canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0,0, canvas.width, canvas.height); res(canvas.toDataURL('image/jpeg', 0.6)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
-    document.getElementById('image-upload')?.addEventListener('change', async e => { const files = Array.from(e.target.files); if (uploadedImages.length + files.length > 5) return showToast("Tối đa 5 ảnh", "fa-image"); for (let f of files) { uploadedImages.push(await compress(f)); } renderPrev(); });
-    const renderPrev = () => { const list = document.getElementById('preview-list'); if(!list) return; list.innerHTML = uploadedImages.map((s,i) => `<div class="w-20 h-20 relative rounded-xl overflow-hidden border shadow-sm"><img src="${s}" class="w-full h-full object-cover"><div onclick="removeImg(${i})" class="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 flex items-center justify-center rounded-full text-[10px] cursor-pointer shadow-lg transition-transform hover:scale-110"><i class="fa-solid fa-xmark"></i></div></div>`).join(''); };
-    window.removeImg = i => { uploadedImages.splice(i,1); renderPrev(); };
-    
+    // --- FORM SUBMIT ---
     document.getElementById('post-form')?.addEventListener('submit', async e => { 
         e.preventDefault(); if (!currentUser) return toggleModal('modal-login'); if (!uploadedImages.length) return showToast("Thêm ảnh!"); 
         const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.innerHTML = `<div class="loader mr-2"></div> ĐANG ĐĂNG...`; 
@@ -725,6 +739,7 @@
     });
 
     document.getElementById('searchInput')?.addEventListener('input', renderPosts);
+    document.getElementById('p-price')?.addEventListener('input', (e) => { const cleanVal = e.target.value.replace(/[^\d-]/g, ""); e.target.value = formatPrice(cleanVal); });
 
     initAuth();
 </script>
