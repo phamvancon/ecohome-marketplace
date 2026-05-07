@@ -207,7 +207,10 @@
 
     <!-- FEED -->
     <div id="posts-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
-        <!-- Loading skeletons -->
+        <div class="bg-white rounded-xl h-64 skeleton"></div>
+        <div class="bg-white rounded-xl h-64 skeleton"></div>
+        <div class="bg-white rounded-xl h-64 skeleton"></div>
+        <div class="bg-white rounded-xl h-64 skeleton"></div>
     </div>
 </main>
 
@@ -238,7 +241,6 @@
             <img id="payment-qr" src="" class="w-full aspect-square object-contain" alt="Payment QR">
         </div>
 
-        <!-- NÚT MỞ APP NGÂN HÀNG -->
         <a id="payment-app-link" href="#" target="_blank" class="w-full bg-[#00457C] text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg active-scale mb-6 flex items-center justify-center gap-2">
             <i class="fa-solid fa-mobile-screen-button"></i> MỞ APP NGÂN HÀNG
         </a>
@@ -315,7 +317,7 @@
 <div id="modal-login" class="hidden fixed inset-0 bg-black/90 z-[300] flex items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl modal-animate-in">
         <div class="w-16 h-16 chotot-orange rounded-2xl flex items-center justify-center text-white text-2xl font-black mx-auto mb-6 transform rotate-3 shadow-lg">BQT</div>
-        <h3 class="text-xl font-black text-gray-800 mb-2 uppercase tracking-tighter">Tham gia Chợ Ecohome</h3>
+        <h3 class="text-xl font-black text-gray-800 mb-2 uppercase tracking-tighter text-center">Tham gia Chợ Ecohome</h3>
         <p class="text-gray-400 text-[10px] font-bold mb-10 uppercase tracking-widest leading-relaxed text-center">Xác thực để tin đăng được ưu tiên</p>
         <div class="space-y-4">
             <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 border-2 border-orange-100 py-4.5 rounded-2xl font-black active-scale text-sm hover:bg-orange-50 transition shadow-sm">
@@ -341,10 +343,21 @@
 <!-- TOAST -->
 <div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 z-[1000] transform -translate-y-24 transition-all duration-300 bg-black/90 text-white px-6 py-4 rounded-2xl text-[11px] font-black shadow-2xl flex items-center gap-3 pointer-events-none"></div>
 
+<!-- MODAL CẢNH BÁO DOMAIN -->
+<div id="modal-domain-fix" class="hidden fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center p-4 backdrop-blur-md">
+    <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border-4 border-red-500">
+        <div class="text-red-500 text-5xl mb-4 text-center"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3 class="text-xl font-black text-gray-800 mb-4 text-center uppercase tracking-tighter">Cấp phép tên miền</h3>
+        <p class="text-sm text-gray-600 mb-6 leading-relaxed">Firebase chặn đăng nhập từ môi trường này. Bạn cần thêm tên miền này vào danh sách được phép:</p>
+        <div class="bg-gray-100 p-4 rounded-2xl mb-6 select-all font-mono text-[10px] border border-dashed border-gray-400 break-all" id="current-hostname-display"></div>
+        <button onclick="document.getElementById('modal-domain-fix').classList.add('hidden')" class="w-full bg-black text-white py-4 rounded-2xl font-black uppercase active-scale">ĐÃ HIỂU</button>
+    </div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
     // --- CONFIG ---
     const firebaseConfig = { 
@@ -362,13 +375,13 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // --- SEPAY CONFIG ---
+    // SEPAY
     const SEPAY_BANK_ACC = "19036724391011"; 
     const SEPAY_BANK_NAME = "Techcombank"; 
     const SEPAY_RENEW_PRICE = 50000; 
     let paymentInterval = null;
 
-    // --- STATE ---
+    // STATE
     let currentUser = null;
     let allPosts = [];
     let uploadedImages = [];
@@ -381,7 +394,7 @@
     const EXP_ANON = 3 * 24 * 60 * 60 * 1000;
     const EXP_USER = 30 * 24 * 60 * 60 * 1000;
 
-    // --- UTILS ---
+    // UTILS
     window.showToast = (msg, icon = 'fa-circle-info') => {
         const t = document.getElementById('toast');
         if(!t) return;
@@ -399,40 +412,100 @@
         el.classList.toggle('hidden');
         document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
         if(id === 'modal-post' && el.classList.contains('hidden')) {
-            editingPostId = null; const form = document.getElementById('post-form');
-            if(form) form.reset(); uploadedImages = []; renderPrev();
+            editingPostId = null;
+            const form = document.getElementById('post-form');
+            if(form) form.reset();
+            uploadedImages = []; renderPrev();
             document.getElementById('post-modal-title').innerText = "Đăng tin miễn phí";
             document.getElementById('submit-btn').innerText = "Đăng tin ngay";
         }
     };
 
-    // --- SEPAY PAYMENT FLOW ---
+    // AUTH
+    const initAuth = async () => {
+        try {
+            // @ts-ignore
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                // @ts-ignore
+                await signInWithCustomToken(auth, __initial_auth_token).catch(async () => {
+                    await signInAnonymously(auth);
+                });
+            } else {
+                await signInAnonymously(auth);
+            }
+        } catch (e) { console.error("Auth Init Error", e); }
+    };
+
+    onAuthStateChanged(auth, user => {
+        currentUser = user;
+        updateAuthUI();
+        if (user) startSync();
+    });
+
+    function updateAuthUI() {
+        const top = document.getElementById('top-auth-section');
+        const bar = document.getElementById('auth-status-bar');
+        if (!top || !bar) return;
+
+        if (!currentUser) {
+            bar.classList.add('hidden');
+            top.innerHTML = `<button onclick="toggleModal('modal-login')" class="text-[10px] font-black bg-white/40 px-3 py-2 rounded-xl border border-black/5 uppercase active-scale shadow-sm">Đăng nhập</button>`;
+            return;
+        }
+
+        bar.classList.remove('hidden');
+        const dn = currentUser.isAnonymous ? "Cư dân Ẩn danh" : (currentUser.displayName || "Cư dân");
+        const nameEl = document.getElementById('auth-user-name');
+        const expEl = document.getElementById('auth-expiry-info');
+        if(nameEl) nameEl.innerText = dn;
+        if(expEl) expEl.innerText = `Loại: ${currentUser.isAnonymous ? 'Ẩn danh' : 'Xác thực'}`;
+        
+        const pic = currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(dn)}&background=random&color=fff`;
+        const iconEl = document.getElementById('auth-type-icon');
+        if(iconEl) iconEl.innerHTML = `<img src="${pic}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://ui-avatars.com/api/?name=User&background=orange&color=fff'">`;
+        
+        top.innerHTML = `<img onclick="openUserAdmin()" src="${pic}" class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer shadow-sm active-scale" onerror="this.src='https://ui-avatars.com/api/?name=User&background=orange&color=fff'">`;
+        
+        const bqtBtn = document.getElementById('admin-bqt-nav-btn');
+        if(bqtBtn && currentUser?.email === 'phamvanconcn@gmail.com') {
+            bqtBtn.classList.add('bg-red-600', 'text-white', 'px-3', 'animate-pulse');
+        }
+    }
+
+    window.loginWithGoogle = async () => { 
+        try { 
+            showToast("Đang mở Google...", "fa-spinner fa-spin");
+            await signInWithPopup(auth, provider); 
+            toggleModal('modal-login'); 
+            showToast("Chào cư dân!", "fa-circle-check");
+        } catch (err) { 
+            if (err.code === 'auth/unauthorized-domain') {
+                const hostname = window.location.hostname;
+                document.getElementById('current-hostname-display').innerText = hostname;
+                document.getElementById('modal-domain-fix').classList.remove('hidden');
+                showToast("Lỗi tên miền!", "fa-circle-xmark");
+            } else if (err.code === 'auth/popup-blocked') {
+                showToast("Bị chặn Popup!", "fa-circle-xmark");
+            } else { showToast("Lỗi đăng nhập", "fa-circle-xmark"); }
+        } 
+    };
+    window.loginAnonymously = async () => { await signInAnonymously(auth); toggleModal('modal-login'); };
+    window.logout = () => signOut(auth);
+
+    // SEPAY FLOW
     window.startPaymentRenew = (postId) => {
         const post = allPosts.find(p => p.id === postId);
         if(!post) return;
-
         const transactionId = Math.random().toString(36).substring(2, 7).toUpperCase();
         const paymentCode = `GH${transactionId}`;
         document.getElementById('payment-code').innerText = paymentCode;
-        
-        // QR Image
-        const qrUrl = `https://qr.sepay.vn/img?acc=${SEPAY_BANK_ACC}&bank=${SEPAY_BANK_NAME}&amount=${SEPAY_RENEW_PRICE}&des=${paymentCode}`;
-        document.getElementById('payment-qr').src = qrUrl;
-
-        // Deep Link for Mobile Apps (VietQR Universal Link)
-        // techcombank = techcombank (lowercase for deep link)
-        const deepLink = `https://dl.vietqr.io/pay?bank=techcombank&amount=${SEPAY_RENEW_PRICE}&des=${paymentCode}&acc=${SEPAY_BANK_ACC}`;
-        document.getElementById('payment-app-link').href = deepLink;
-
+        document.getElementById('payment-qr').src = `https://qr.sepay.vn/img?acc=${SEPAY_BANK_ACC}&bank=${SEPAY_BANK_NAME}&amount=${SEPAY_RENEW_PRICE}&des=${paymentCode}`;
+        document.getElementById('payment-app-link').href = `https://dl.vietqr.io/pay?bank=techcombank&amount=${SEPAY_RENEW_PRICE}&des=${paymentCode}&acc=${SEPAY_BANK_ACC}`;
         toggleModal('modal-payment');
-
         if (paymentInterval) clearInterval(paymentInterval);
         paymentInterval = setInterval(async () => {
             const success = await checkSePayPayment(paymentCode);
-            if (success) {
-                clearInterval(paymentInterval);
-                await finalizeRenewPost(postId, paymentCode);
-            }
+            if (success) { clearInterval(paymentInterval); await finalizeRenewPost(postId, paymentCode); }
         }, 3000); 
     };
 
@@ -448,31 +521,16 @@
     async function finalizeRenewPost(id, code) {
         try {
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), {
-                createdAt: serverTimestamp(),
-                isRenewedPaid: true,
-                lastPaymentCode: code
+                createdAt: serverTimestamp(), isRenewedPaid: true, lastPaymentCode: code
             });
-            closePaymentModal();
-            showToast("Thanh toán thành công! Tin của bạn đã được gia hạn 30 ngày.", "fa-circle-check");
-        } catch (e) { showToast("Lỗi hệ thống sau thanh toán!"); }
+            closePaymentModal(); showToast("Đã gia hạn 30 ngày thành công!", "fa-circle-check");
+        } catch (e) { showToast("Lỗi hệ thống!"); }
     }
 
-    window.closePaymentModal = () => {
-        if (paymentInterval) clearInterval(paymentInterval);
-        document.getElementById('modal-payment').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    };
+    window.closePaymentModal = () => { if (paymentInterval) clearInterval(paymentInterval); document.getElementById('modal-payment').classList.add('hidden'); document.body.style.overflow = 'auto'; };
+    window.copyPaymentCode = () => { const code = document.getElementById('payment-code').innerText; navigator.clipboard.writeText(code).then(() => showToast("Đã copy!", "fa-copy")); };
 
-    window.copyPaymentCode = () => {
-        const code = document.getElementById('payment-code').innerText;
-        const temp = document.createElement("input");
-        temp.value = code; document.body.appendChild(temp);
-        temp.select(); document.execCommand("copy");
-        document.body.removeChild(temp);
-        showToast("Đã copy nội dung!", "fa-copy");
-    };
-
-    // --- SHOPEE VIEW & LOGIC ---
+    // DETAIL VIEW
     window.viewPostDetail = (id) => {
         const post = allPosts.find(p => p.id === id);
         if(!post) return;
@@ -496,10 +554,10 @@
                     <div class="space-y-4">
                         <div class="flex items-center gap-2"><span class="bg-red-50 text-[#ee4d2d] text-[10px] font-black px-2 py-0.5 rounded border border-red-100 uppercase tracking-tighter">Yêu thích</span><h2 class="text-lg font-bold text-gray-800 uppercase tracking-tighter line-clamp-2">${post.title}</h2></div>
                         <div class="bg-[#fafafa] p-4 rounded-lg"><div class="text-3xl font-black text-[#ee4d2d] tracking-tighter">${formatPrice(post.price)} đ</div><div class="flex items-center gap-2 mt-2 text-[10px] text-gray-500 font-bold uppercase tracking-widest"><i class="fa-solid fa-bolt text-yellow-500"></i> Giá cư dân</div></div>
-                        <div class="grid grid-cols-3 gap-2 py-4 border-y border-gray-50 text-center"><div class="px-1"><p class="text-[9px] text-gray-400 font-bold uppercase">Mục</p><p class="text-[11px] font-black mt-1 truncate">${post.category}</p></div><div class="px-1 border-x border-gray-100"><p class="text-[9px] text-gray-400 font-bold uppercase">Khu vực</p><p class="text-[11px] font-black mt-1">Ecohome</p></div><div class="px-1"><p class="text-[9px] text-gray-400 font-bold uppercase">Tình trạng</p><p class="text-[11px] font-black mt-1 text-green-600">Sẵn có</p></div></div>
-                        <div class="pt-2"><h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fa-solid fa-circle-info text-orange-400"></i> Miêu tả sản phẩm</h4><div class="text-sm text-gray-600 leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-xl border border-gray-100 font-medium">${post.desc}</div></div>
+                        <div class="grid grid-cols-3 gap-2 py-4 border-y border-gray-50 text-center text-black font-black uppercase text-[9px]"><div class="px-1 border-r border-gray-100"><p class="text-gray-400 mb-1">Mục</p><p>${post.category}</p></div><div class="px-1 border-r border-gray-100"><p class="text-gray-400 mb-1">Ecohome</p><p>Nhơn Bình</p></div><div class="px-1"><p class="text-gray-400 mb-1">Tình trạng</p><p class="text-green-600">Đang bán</p></div></div>
+                        <div class="pt-2"><h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fa-solid fa-circle-info text-orange-400"></i> Chi tiết sản phẩm</h4><div class="text-sm text-gray-600 leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-xl border border-gray-100 font-medium">${post.desc}</div></div>
                     </div>
-                    <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 text-xl shadow-inner"><i class="fa-solid fa-shop"></i></div><div><p class="text-xs font-black text-gray-800 uppercase">${post.isAnonymous ? 'Ẩn danh' : 'Cư dân'}</p><p class="text-[9px] text-green-500 font-bold uppercase"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Đang trực tuyến</p></div></div><a href="https://zalo.me/${post.phone}" target="_blank" class="bg-[#ee4d2d] text-white px-6 py-3 rounded-xl text-xs font-black uppercase shadow-lg shadow-red-100 active-scale">Zalo ngay</a></div>
+                    <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 text-xl shadow-inner"><i class="fa-solid fa-shop"></i></div><div><p class="text-xs font-black text-gray-800 uppercase">${post.isAnonymous ? 'Ẩn danh' : 'Cư dân'}</p><p class="text-[9px] text-green-500 font-bold uppercase tracking-widest"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Đang trực tuyến</p></div></div><a href="https://zalo.me/${post.phone}" target="_blank" class="bg-[#ee4d2d] text-white px-6 py-3 rounded-xl text-xs font-black uppercase shadow-lg shadow-red-100 active-scale">Liên hệ ngay</a></div>
                 </div>
             </div>
             <div class="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-white/90 backdrop-blur-md border-t flex gap-3 z-50"><a href="https://zalo.me/${post.phone}" target="_blank" class="flex-1 bg-[#ee4d2d] text-white py-4 rounded-2xl font-black text-xs uppercase text-center active-scale shadow-xl">Liên hệ qua Zalo ngay</a></div>
@@ -512,28 +570,6 @@
     window.switchDetailImage = (idx) => { const sl = document.getElementById('detail-slider'); if(sl) sl.scrollTo({ left: idx * sl.clientWidth, behavior: 'smooth' }); updateActiveThumbnail(idx); };
     function updateActiveThumbnail(idx) { document.querySelectorAll('.detail-thumb-item').forEach(el => el.classList.remove('thumbnail-active')); document.getElementById(`thumb-${idx}`)?.classList.add('thumbnail-active'); }
     window.scrollDetailSlider = (dir) => { const sl = document.getElementById('detail-slider'); if(sl) switchDetailImage(Math.round(sl.scrollLeft / sl.clientWidth) + dir); };
-
-    // --- AUTH & SYNC ---
-    const initAuth = async () => { try { await signInAnonymously(auth); } catch (e) {} };
-    onAuthStateChanged(auth, user => { currentUser = user; updateAuthUI(); if (user) startSync(); });
-
-    function updateAuthUI() {
-        const top = document.getElementById('top-auth-section');
-        const bar = document.getElementById('auth-status-bar');
-        if (!currentUser || !top || !bar) return;
-        if (!currentUser.uid) { bar.classList.add('hidden'); top.innerHTML = `<button onclick="toggleModal('modal-login')" class="text-[10px] font-black bg-white/40 px-3 py-2 rounded-xl border border-black/5 uppercase shadow-sm">Đăng nhập</button>`; return; }
-        bar.classList.remove('hidden');
-        const dn = currentUser.isAnonymous ? "Cư dân Ẩn danh" : (currentUser.displayName || "Cư dân");
-        const nameEl = document.getElementById('auth-user-name');
-        const expEl = document.getElementById('auth-expiry-info');
-        if(nameEl) nameEl.innerText = dn;
-        if(expEl) expEl.innerText = `Loại: ${currentUser.isAnonymous ? 'Ẩn danh' : 'Xác thực'}`;
-        const pic = currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(dn)}&background=random&color=fff`;
-        const icon = document.getElementById('auth-type-icon');
-        if(icon) icon.innerHTML = `<img src="${pic}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://ui-avatars.com/api/?name=User&background=orange&color=fff'">`;
-        top.innerHTML = `<img onclick="openUserAdmin()" src="${pic}" class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer shadow-sm active-scale" onerror="this.src='https://ui-avatars.com/api/?name=User&background=orange&color=fff'">`;
-        if(currentUser?.email === 'phamvanconcn@gmail.com') document.getElementById('admin-bqt-nav-btn')?.classList.add('bg-red-600', 'text-white', 'px-3', 'animate-pulse');
-    }
 
     function startSync() { onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), snap => { allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderPosts(); renderAdmin(); renderBqtAdmin(); }); }
     window.filterCategory = (c) => { currentFilter = c; renderPosts(); showToast(c, 'fa-filter'); };
@@ -586,7 +622,7 @@
         }).join('');
     }
 
-    // --- OTHER ACTIONS ---
+    // ACTIONS
     window.accessAdminBQT = () => { if (currentUser?.email === 'phamvanconcn@gmail.com' || prompt("MẬT MÃ BQT:") === '215151365') { toggleModal('modal-bqt-admin'); renderBqtAdmin(); } else if (currentUser) showToast("Sai mật mã!", "fa-circle-xmark"); };
     function renderBqtAdmin() { const wrap = document.getElementById('bqt-admin-posts'); if (!wrap) return; wrap.innerHTML = allPosts.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).map(p => `<div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4"><img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover cursor-pointer" onclick="viewPostDetail('${p.id}')"><div class="flex-1 min-w-0"><div class="text-[10px] font-black truncate uppercase">${p.title}</div><div class="text-orange-600 font-black text-[10px] tracking-tighter">${formatPrice(p.price)} đ</div></div><div class="flex gap-1 shrink-0"><button onclick="pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase">Đẩy</button><button onclick="togglePromote('${p.id}', ${p.isPromoted || false})" class="${p.isPromoted ? 'bg-orange-600' : 'bg-gray-200'} text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase">Ads</button><button onclick="confirmDeletePost('${p.id}')" class="bg-red-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase">Xóa</button></div></div>`).join(''); }
     window.pushToTop = async (id) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {createdAt:serverTimestamp()}); showToast("Đã đẩy tin!"); } catch { showToast("Lỗi!"); } };
