@@ -3,17 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chợ Tốt EcoHome - Phân Loại Tin Đăng</title>
+    <title>Chợ Ecohome - Cổng Mua Bán Cư Dân</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --chotot-yellow: #ffba00;
+            --chotot-orange: #ff8800;
+            --shopee-red: #ee4d2d;
+            --shopee-bg: #f5f5f5;
+            --sepay-blue: #00457C;
+        }
         body {
-            background-color: #f4f4f4;
+            background-color: var(--shopee-bg);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
+            color: #333;
+            overflow-x: hidden;
         }
-        .chotot-yellow { background-color: #ffba00; }
-        .chotot-orange { background-color: #ff8800; }
+        .chotot-yellow { background-color: var(--chotot-yellow); }
+        .chotot-orange { background-color: var(--chotot-orange); }
         
         .line-clamp-2 {
             display: -webkit-box;
@@ -25,46 +34,109 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .active-scale:active { transform: scale(0.95); transition: 0.1s; }
+        .active-scale { transition: all .2s ease; }
+        .active-scale:active { transform: scale(.96); }
+
+        .post-card { transition: all .25s ease; border: 1px solid transparent; background: #fff; border-radius: 8px; }
+        .post-card:hover { border-color: var(--shopee-red); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         
         input, select, textarea { font-size: 16px !important; }
 
         .tag-anon { background-color: #6b7280; color: white; }
-        .tag-google { background-color: #ff8800; color: white; }
+        .tag-google { background-color: var(--chotot-orange); color: white; }
+
+        .modal-animate-in { animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .loader {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--chotot-orange);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes zoomIn {
+            from { transform:scale(.9); opacity:0; }
+            to { transform:scale(1); opacity:1; }
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading { to { background-position: -200% 0; } }
+
+        #detail-slider {
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+        }
+        .detail-slide-item {
+            scroll-snap-align: start;
+        }
+
+        .thumbnail-active {
+            border: 2px solid var(--shopee-red) !important;
+            opacity: 1 !important;
+        }
+
+        .qr-frame {
+            border: 8px solid white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 16px;
+        }
     </style>
 </head>
-<body class="min-h-screen pb-24">
+<body class="min-h-screen pb-24 md:pb-10">
 
 <!-- HEADER -->
-<header class="chotot-yellow sticky top-0 z-50 shadow-md">
-    <div class="max-w-6xl mx-auto px-2 py-2">
-        <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar text-[10px] md:text-sm mb-2 font-bold text-[#444] whitespace-nowrap border-b border-black/5 pb-1">
-            <a href="#" class="opacity-70">Chợ Tốt</a>
-            <a href="https://www.ecohome.id.vn/trang-ch%E1%BB%A7" target="_blank" class="flex items-center gap-1 opacity-70">
+<header class="chotot-yellow sticky top-0 z-50 shadow-sm">
+    <div class="max-w-6xl mx-auto px-3 py-2">
+        <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar text-[10px] md:text-xs mb-2 font-bold text-[#333] whitespace-nowrap border-b border-black/5 pb-1.5 uppercase tracking-tighter">
+            <a href="#" class="hover:text-black">Trang chủ</a>
+            <a href="https://www.ecohome.id.vn/trang-ch%E1%BB%A7" target="_blank" class="flex items-center gap-1 opacity-80">
                 <i class="fa-solid fa-newspaper"></i> Bản tin cư dân
             </a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSep-FpEWr6Q9494w3P0J_cO_4AtpwedFfEKCX1XDQXRNFG32g/viewform?usp=sharing&ouid=105185169175411534412" target="_blank" class="flex items-center gap-1 opacity-70">
-                <i class="fa-solid fa-folder-open"></i> Tài liệu BQT
-            </a>
+            <button onclick="checkAuthAndPost()" class="flex items-center gap-1 opacity-80 hover:text-black font-black">
+                <i class="fa-solid fa-pen-to-square"></i> Đăng tin
+            </button>
+            <button id="admin-bqt-nav-btn" onclick="accessAdminBQT()" class="flex items-center gap-1 text-red-700 bg-red-500/10 px-2 py-0.5 rounded-full hover:bg-red-500/20 transition active-scale font-black">
+                <i class="fa-solid fa-shield-halved"></i> BQT ADMIN
+            </button>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2.5">
             <div class="flex items-center gap-1 cursor-pointer shrink-0 active-scale" onclick="window.location.reload()">
-                <div class="bg-orange-600 text-white w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shadow-lg transform rotate-2">
-                    <span class="font-black text-sm md:text-lg">BQT</span>
+                <div class="bg-orange-600 text-white w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shadow-lg transform rotate-2">
+                    <span class="font-black text-sm md:text-xl tracking-tighter">BQT</span>
+                </div>
+                <div class="hidden xs:block leading-tight border-l border-black/10 pl-2 text-black">
+                    <h1 class="font-black text-xs md:text-base">Chợ Ecohome</h1>
+                    <p class="text-[8px] font-bold uppercase opacity-60">Nhơn Bình</p>
                 </div>
             </div>
 
             <div class="flex-1 relative min-w-0">
-                <input id="searchInput" type="text" placeholder="Tìm sản phẩm cư dân..." 
-                    class="w-full py-2 px-3 pr-8 rounded-lg border-none focus:ring-2 focus:ring-orange-500 outline-none shadow-sm text-sm">
-                <i class="fa-solid fa-magnifying-glass absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]"></i>
+                <input id="searchInput" type="text" placeholder="Tìm kiếm sản phẩm..." 
+                    class="w-full py-2.5 px-3.5 pr-10 rounded-xl border-none focus:ring-2 focus:ring-orange-500 outline-none shadow-sm text-sm text-black">
+                <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
             </div>
 
             <div class="flex items-center gap-2 shrink-0">
-                <button id="admin-btn" onclick="toggleModal('admin-panel')" class="flex items-center gap-1 text-[#222] active-scale p-1">
-                    <i class="fa-solid fa-user-shield text-xl md:text-base"></i>
-                    <span class="hidden md:inline text-sm font-bold">Quản lý</span>
+                <button onclick="checkAuthAndPost()" class="flex flex-col items-center text-[#222] active-scale p-1">
+                    <i class="fa-solid fa-camera-retro text-xl md:text-2xl"></i>
+                    <span class="text-[8px] font-black uppercase mt-0.5">Đăng tin</span>
+                </button>
+                <button id="user-manage-btn" onclick="openUserAdmin()" class="flex flex-col items-center text-[#222] active-scale p-1">
+                    <i class="fa-solid fa-box-archive text-xl md:text-2xl"></i>
+                    <span class="text-[8px] font-black uppercase mt-0.5">Kho tin</span>
                 </button>
                 <div id="top-auth-section" class="flex items-center"></div>
             </div>
@@ -73,445 +145,480 @@
 </header>
 
 <main class="max-w-6xl mx-auto px-2 md:px-4 py-4">
-    <!-- DANH MỤC -->
-    <div class="bg-white rounded-2xl p-4 shadow-sm mb-6">
-        <div class="grid grid-cols-4 md:grid-cols-8 gap-4">
-            <div class="flex flex-col items-center gap-1 cursor-pointer active-scale" onclick="filterCategory('Bất động sản')">
-                <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 shadow-sm border border-blue-100">
-                    <i class="fa-solid fa-house-chimney text-lg"></i>
-                </div>
-                <span class="text-[10px] font-bold text-gray-600">Nhà đất</span>
+    <!-- AUTH BAR -->
+    <div id="auth-status-bar" class="hidden mb-5 p-4 bg-white rounded-xl shadow-sm border border-orange-100 flex items-center justify-between">
+        <div class="flex items-center gap-3.5">
+            <div id="auth-type-icon" class="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-inner"></div>
+            <div>
+                <p id="auth-user-name" class="text-sm font-black text-gray-800"></p>
+                <p id="auth-expiry-info" class="text-[10px] text-orange-600 font-bold uppercase tracking-tight"></p>
             </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer active-scale" onclick="filterCategory('Xe cộ')">
-                <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 shadow-sm border border-orange-100">
-                    <i class="fa-solid fa-motorcycle text-lg"></i>
-                </div>
-                <span class="text-[10px] font-bold text-gray-600">Xe cộ</span>
+        </div>
+        <button onclick="logout()" class="text-[10px] font-black text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition active-scale uppercase">Đăng xuất</button>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="bg-white rounded-xl p-4 shadow-sm mb-6 border border-gray-100 overflow-x-auto hide-scrollbar">
+        <div class="flex md:grid md:grid-cols-8 gap-4 min-w-max md:min-w-0">
+            <div class="flex flex-col items-center gap-1.5 cursor-pointer active-scale w-16 md:w-auto" onclick="filterCategory('Bất động sản')">
+                <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 shadow-sm border border-blue-100"><i class="fa-solid fa-house-chimney text-lg"></i></div>
+                <span class="text-[10px] font-bold text-gray-600 text-center">Nhà đất</span>
             </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer active-scale" onclick="filterCategory('Đồ điện tử')">
-                <div class="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-500 shadow-sm border border-purple-100">
-                    <i class="fa-solid fa-mobile-screen text-lg"></i>
-                </div>
-                <span class="text-[10px] font-bold text-gray-600">Điện tử</span>
+            <div class="flex flex-col items-center gap-1.5 cursor-pointer active-scale w-16 md:w-auto" onclick="filterCategory('Xe cộ')">
+                <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 shadow-sm border border-orange-100"><i class="fa-solid fa-motorcycle text-lg"></i></div>
+                <span class="text-[10px] font-bold text-gray-600 text-center">Xe cộ</span>
             </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer active-scale" onclick="filterCategory('Gia dụng')">
-                <div class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shadow-sm border border-green-100">
-                    <i class="fa-solid fa-couch text-lg"></i>
-                </div>
-                <span class="text-[10px] font-bold text-gray-600">Gia dụng</span>
+            <div class="flex flex-col items-center gap-1.5 cursor-pointer active-scale w-16 md:w-auto" onclick="filterCategory('Đồ điện tử')">
+                <div class="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-500 shadow-sm border border-purple-100"><i class="fa-solid fa-mobile-screen text-lg"></i></div>
+                <span class="text-[10px] font-bold text-gray-600 text-center">Điện tử</span>
             </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer active-scale" onclick="filterCategory('Thực phẩm')">
-                <div class="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-red-500 shadow-sm border border-red-100">
-                    <i class="fa-solid fa-bowl-food text-lg"></i>
-                </div>
-                <span class="text-[10px] font-bold text-gray-600">Đồ ăn</span>
+            <div class="flex flex-col items-center gap-1.5 cursor-pointer active-scale w-16 md:w-auto" onclick="filterCategory('Gia dụng')">
+                <div class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shadow-sm border border-green-100"><i class="fa-solid fa-couch text-lg"></i></div>
+                <span class="text-[10px] font-bold text-gray-600 text-center">Gia dụng</span>
             </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer active-scale" onclick="filterCategory('Thú cưng')">
-                <div class="w-12 h-12 bg-yellow-50 rounded-2xl flex items-center justify-center text-yellow-600 shadow-sm border border-yellow-100">
-                    <i class="fa-solid fa-paw text-lg"></i>
-                </div>
-                <span class="text-[10px] font-bold text-gray-600">Thú cưng</span>
+            <div class="flex flex-col items-center gap-1.5 cursor-pointer active-scale w-16 md:w-auto" onclick="filterCategory('Thực phẩm')">
+                <div class="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-red-500 shadow-sm border border-red-100"><i class="fa-solid fa-bowl-food text-lg"></i></div>
+                <span class="text-[10px] font-bold text-gray-600 text-center">Đồ ăn</span>
             </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer active-scale" onclick="filterCategory('Thời trang')">
-                <div class="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-500 shadow-sm border border-pink-100">
-                    <i class="fa-solid fa-shirt text-lg"></i>
-                </div>
-                <span class="text-[10px] font-bold text-gray-600">Váy áo</span>
+            <div class="flex flex-col items-center gap-1.5 cursor-pointer active-scale w-16 md:w-auto" onclick="filterCategory('Thú cưng')">
+                <div class="w-12 h-12 bg-yellow-50 rounded-2xl flex items-center justify-center text-yellow-600 shadow-sm border border-yellow-100"><i class="fa-solid fa-paw text-lg"></i></div>
+                <span class="text-[10px] font-bold text-gray-600 text-center">Thú cưng</span>
             </div>
-            <div class="flex flex-col items-center gap-1 cursor-pointer active-scale" onclick="filterCategory('Tất cả')">
-                <div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-500 shadow-sm border border-gray-100">
-                    <i class="fa-solid fa-grid-2 text-lg"></i>
-                </div>
-                <span class="text-[10px] font-bold text-gray-600">Tất cả</span>
+            <div class="flex flex-col items-center gap-1.5 cursor-pointer active-scale w-16 md:w-auto" onclick="filterCategory('Thời trang')">
+                <div class="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-500 shadow-sm border border-pink-100"><i class="fa-solid fa-shirt text-lg"></i></div>
+                <span class="text-[10px] font-bold text-gray-600 text-center">Thời trang</span>
+            </div>
+            <div class="flex flex-col items-center gap-1.5 cursor-pointer active-scale w-16 md:w-auto" onclick="filterCategory('Tất cả')">
+                <div class="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-500 shadow-sm border border-gray-200"><i class="fa-solid fa-border-all text-lg"></i></div>
+                <span class="text-[10px] font-bold text-gray-600 text-center">Tất cả</span>
             </div>
         </div>
     </div>
 
-    <!-- TIÊU ĐỀ -->
-    <div class="mb-4 px-1 flex justify-between items-end">
-        <div>
-            <h2 class="text-lg font-black text-gray-800 uppercase leading-none">Tin Đăng Cư Dân</h2>
-            <p class="text-[9px] text-gray-500 mt-1 font-bold">Tự động xóa tin hết hạn hiển thị</p>
+    <!-- TIN TÀI TRỢ -->
+    <div id="sponsored-section" class="hidden mb-8">
+        <div class="flex items-center justify-between mb-3 px-1">
+            <h3 class="text-[11px] font-black text-orange-600 uppercase tracking-widest flex items-center gap-2">
+                <i class="fa-solid fa-award text-sm"></i> Tin tài trợ nổi bật
+            </h3>
         </div>
+        <div id="sponsored-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
     </div>
 
-    <!-- DANH SÁCH -->
-    <div id="posts-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5">
-        <div class="col-span-full py-20 text-center text-gray-300">Đang chuẩn bị tin đăng...</div>
+    <!-- FEED -->
+    <div id="posts-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
+        <!-- Loading skeletons -->
     </div>
 </main>
 
-<!-- ĐĂNG TIN MOBILE -->
-<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 md:hidden">
-    <button onclick="checkAuthAndPost()" class="chotot-orange text-white px-8 py-3.5 rounded-full font-black shadow-2xl flex items-center gap-2 active-scale border-2 border-white/20">
-        <i class="fa-solid fa-camera-retro text-xl"></i>
-        ĐĂNG TIN
-    </button>
+<!-- MODAL CHI TIẾT (SHOPEE STYLE) -->
+<div id="modal-detail" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
+    <div class="bg-[#f5f5f5] rounded-t-3xl sm:rounded-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar">
+        <div class="sm:hidden w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-1" onclick="toggleModal('modal-detail')"></div>
+        <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-40">
+            <h3 class="text-sm font-black text-gray-800 uppercase tracking-tighter truncate pr-4" id="detail-header-title">Chi tiết sản phẩm</h3>
+            <button onclick="toggleModal('modal-detail')" class="text-gray-400 text-2xl p-1 active-scale"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="detail-content" class="pb-24 sm:pb-8"></div>
+    </div>
 </div>
 
-<!-- ĐĂNG TIN DESKTOP -->
-<div class="fixed bottom-10 right-10 z-40 hidden md:block">
-    <button onclick="checkAuthAndPost()" class="chotot-orange text-white w-16 h-16 rounded-full font-black shadow-2xl flex items-center justify-center active-scale border-4 border-white">
-        <i class="fa-solid fa-plus text-2xl"></i>
-    </button>
+<!-- MODAL THANH TOÁN SEPAY -->
+<div id="modal-payment" class="hidden fixed inset-0 bg-black/95 z-[300] flex items-center justify-center p-4 backdrop-blur-md">
+    <div class="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl modal-animate-in">
+        <div class="flex justify-between items-center mb-4">
+            <div class="text-left">
+                <h3 class="text-lg font-black text-gray-800 uppercase tracking-tighter">Gia hạn 30 ngày</h3>
+                <p class="text-[10px] text-gray-400 font-bold uppercase">Thanh toán tự động 24/7</p>
+            </div>
+            <button onclick="closePaymentModal()" class="text-gray-400 text-2xl p-1"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="qr-frame bg-white p-3 mb-4 relative">
+            <img id="payment-qr" src="" class="w-full aspect-square object-contain" alt="Payment QR">
+        </div>
+
+        <!-- NÚT MỞ APP NGÂN HÀNG -->
+        <a id="payment-app-link" href="#" target="_blank" class="w-full bg-[#00457C] text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg active-scale mb-6 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-mobile-screen-button"></i> MỞ APP NGÂN HÀNG
+        </a>
+
+        <div class="space-y-2 mb-6">
+            <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
+                <span class="text-[9px] font-bold text-gray-400 uppercase">Số tiền:</span>
+                <span class="text-lg font-black text-red-600">50.000 đ</span>
+            </div>
+            <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex flex-col gap-1">
+                <div class="flex justify-between items-center">
+                    <span class="text-[9px] font-bold text-blue-400 uppercase">Nội dung chuyển khoản:</span>
+                    <button onclick="copyPaymentCode()" class="text-[8px] font-black bg-blue-600 text-white px-1.5 py-0.5 rounded uppercase">Copy</button>
+                </div>
+                <span id="payment-code" class="text-xl font-black text-blue-700 tracking-[0.1em]">---</span>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-center gap-2 text-orange-600 animate-pulse mb-2">
+            <div class="loader !w-3 !h-3"></div>
+            <span class="text-[10px] font-black uppercase tracking-widest">Đang chờ cư dân chuyển khoản...</span>
+        </div>
+    </div>
 </div>
 
 <!-- MODAL ĐĂNG TIN -->
-<div id="modal-post" class="hidden fixed inset-0 bg-black/80 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
+<div id="modal-post" class="hidden fixed inset-0 bg-black/80 z-[210] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar">
         <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10">
-            <h3 class="text-lg font-black text-gray-800">Đăng tin miễn phí</h3>
-            <button onclick="toggleModal('modal-post')" class="text-gray-400 text-2xl p-1"><i class="fa-solid fa-circle-xmark"></i></button>
+            <div><h3 id="post-modal-title" class="text-lg font-black uppercase tracking-tighter text-gray-800">Đăng tin miễn phí</h3></div>
+            <button onclick="toggleModal('modal-post')" class="text-gray-400 text-3xl"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <form id="post-form" class="p-6 space-y-6 pb-12">
+        <form id="post-form" class="p-6 space-y-6 pb-16">
             <div>
-                <label class="block text-[11px] font-black text-gray-400 uppercase mb-3">Hình ảnh (Tối đa 5)</label>
-                <div class="flex flex-wrap gap-3">
-                    <label class="w-20 h-20 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer active-scale">
-                        <i class="fa-solid fa-camera text-gray-300 text-xl"></i>
+                <label class="block text-[11px] font-black text-gray-400 uppercase mb-4 tracking-widest px-1">Hình ảnh mặt hàng *</label>
+                <div class="flex flex-wrap gap-4">
+                    <label class="w-20 h-20 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer active-scale hover:border-orange-500 bg-gray-50 relative group transition-colors">
+                        <i id="upload-icon" class="fa-solid fa-plus text-gray-300 text-xl"></i>
+                        <div id="upload-loading" class="hidden loader"></div>
                         <input type="file" id="image-upload" multiple accept="image/*" class="hidden">
                     </label>
-                    <div id="preview-list" class="flex flex-wrap gap-3"></div>
+                    <div id="preview-list" class="flex flex-wrap gap-4"></div>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <input id="p-title" placeholder="Tiêu đề *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none">
-                <select id="p-category" class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none">
-                    <option>Bất động sản</option><option>Xe cộ</option><option>Đồ điện tử</option>
-                    <option>Gia dụng</option><option>Thời trang</option><option>Thú cưng</option><option>Thực phẩm</option>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input id="p-title" placeholder="Tiêu đề bài đăng *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black">
+                <select id="p-category" class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black">
+                    <option>Gia dụng</option><option>Bất động sản</option><option>Xe cộ</option>
+                    <option>Đồ điện tử</option><option>Thời trang</option><option>Thú cưng</option><option>Thực phẩm</option>
                 </select>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <input id="p-price" placeholder="Giá bán *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none">
-                <input id="p-phone" placeholder="SĐT Zalo *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input id="p-price" type="text" placeholder="Giá bán *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black font-bold">
+                <input id="p-phone" placeholder="Số điện thoại Zalo *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black">
             </div>
-            <textarea id="p-desc" rows="4" placeholder="Mô tả chi tiết sản phẩm..." required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none"></textarea>
-            
-            <div class="bg-orange-50 border border-orange-100 rounded-xl p-4 text-[10px] font-bold text-orange-800">
-                <i class="fa-solid fa-circle-info mr-1"></i> 
-                Tin đăng của bạn sẽ hiển thị trong <span id="post-expiry-hint">...</span> ngày dựa theo hình thức đăng nhập.
-            </div>
-
-            <button id="submit-btn" class="w-full chotot-orange text-white py-4 rounded-2xl font-black shadow-xl active-scale">ĐĂNG TIN NGAY</button>
+            <textarea id="p-desc" rows="4" placeholder="Mô tả chi tiết sản phẩm..." required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black"></textarea>
+            <button id="submit-btn" class="w-full chotot-orange text-white py-4.5 rounded-2xl font-black shadow-xl active-scale text-base uppercase">Đăng tin ngay</button>
         </form>
     </div>
 </div>
 
-<!-- MODAL QUẢN LÝ -->
-<div id="admin-panel" class="hidden fixed inset-0 bg-black/80 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl">
+<!-- KHO TIN -->
+<div id="admin-panel" class="hidden fixed inset-0 bg-black/80 z-[220] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl">
         <div class="px-6 py-5 border-b flex justify-between items-center bg-gray-50">
-            <h2 class="text-lg font-black text-gray-800 uppercase">Tin của bạn</h2>
-            <button onclick="toggleModal('admin-panel')" class="text-red-500 font-bold p-2">Đóng</button>
+            <div><h2 class="text-lg font-black uppercase tracking-tighter">Kho Tin Của Bạn</h2></div>
+            <button onclick="toggleModal('admin-panel')" class="text-red-500 font-black uppercase text-xs">Đóng</button>
         </div>
-        <div class="flex-1 overflow-y-auto p-4 space-y-4" id="admin-posts"></div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 hide-scrollbar" id="admin-posts"></div>
     </div>
 </div>
 
-<!-- LOGIN MODAL (Cập nhật 2 lựa chọn) -->
-<div id="modal-login" class="hidden fixed inset-0 bg-black/90 z-[120] flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl">
-        <div class="w-16 h-16 chotot-orange rounded-2xl flex items-center justify-center text-white text-2xl font-black mx-auto mb-6 transform rotate-3">BQT</div>
-        <h3 class="text-xl font-black text-gray-800 mb-2">Chọn hình thức đăng</h3>
-        <p class="text-gray-400 text-[10px] font-bold mb-8 uppercase tracking-widest">Đăng tin miễn phí cho cư dân</p>
-        
+<!-- LOGIN -->
+<div id="modal-login" class="hidden fixed inset-0 bg-black/90 z-[300] flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl modal-animate-in">
+        <div class="w-16 h-16 chotot-orange rounded-2xl flex items-center justify-center text-white text-2xl font-black mx-auto mb-6 transform rotate-3 shadow-lg">BQT</div>
+        <h3 class="text-xl font-black text-gray-800 mb-2 uppercase tracking-tighter">Tham gia Chợ Ecohome</h3>
+        <p class="text-gray-400 text-[10px] font-bold mb-10 uppercase tracking-widest leading-relaxed text-center">Xác thực để tin đăng được ưu tiên</p>
         <div class="space-y-4">
-            <!-- LỰA CHỌN 1: GOOGLE (30 ngày) -->
-            <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 border-2 border-orange-100 py-4 rounded-2xl font-black active-scale text-sm hover:bg-orange-50 transition">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-5">
-                Google Login (30 Ngày)
+            <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 border-2 border-orange-100 py-4.5 rounded-2xl font-black active-scale text-sm hover:bg-orange-50 transition shadow-sm">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-6"> Dùng Google (30N)
             </button>
-
-            <!-- LỰA CHỌN 2: ẨN DANH (3 ngày) -->
-            <button onclick="loginAnonymously()" class="w-full flex items-center justify-center gap-3 bg-gray-100 py-4 rounded-2xl font-black active-scale text-sm hover:bg-gray-200 transition">
-                <i class="fa-solid fa-user-secret text-lg"></i>
-                Đăng ẩn danh (3 Ngày)
+            <button onclick="loginAnonymously()" class="w-full flex items-center justify-center gap-3 bg-gray-100 py-4.5 rounded-2xl font-black active-scale text-sm text-gray-600">
+                Dùng ẩn danh (3N)
             </button>
         </div>
-        
-        <button onclick="toggleModal('modal-login')" class="mt-8 text-gray-400 font-bold text-xs uppercase underline">Hủy bỏ</button>
+        <button onclick="toggleModal('modal-login')" class="mt-10 text-gray-400 font-bold text-[10px] uppercase underline tracking-widest">Để sau</button>
     </div>
 </div>
 
-<div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 z-[300] transform -translate-y-20 transition-transform bg-black/90 text-white px-6 py-3 rounded-full text-xs font-bold shadow-2xl pointer-events-none"></div>
+<!-- LIGHTBOX -->
+<div id="image-lightbox" class="hidden fixed inset-0 z-[500] bg-black/95 flex flex-col items-center justify-center p-4 backdrop-blur-md">
+    <button onclick="closeLightbox()" class="absolute top-5 right-5 text-white text-4xl z-10 active-scale"><i class="fa-solid fa-xmark"></i></button>
+    <button id="lightbox-prev" onclick="changeLightboxImage(-1)" class="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 text-white text-4xl active-scale p-4"><i class="fa-solid fa-chevron-left"></i></button>
+    <button id="lightbox-next" onclick="changeLightboxImage(1)" class="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 text-white text-4xl active-scale p-4"><i class="fa-solid fa-chevron-right"></i></button>
+    <img id="lightbox-image" class="max-w-full max-h-[80vh] rounded shadow-2xl object-contain animate-[zoomIn_.2s_ease]" src="">
+    <p id="lightbox-counter" class="text-white font-black text-xs uppercase mt-6 tracking-widest"></p>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 z-[1000] transform -translate-y-24 transition-all duration-300 bg-black/90 text-white px-6 py-4 rounded-2xl text-[11px] font-black shadow-2xl flex items-center gap-3 pointer-events-none"></div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-        apiKey: "", 
-        authDomain: "ecohome-marketplace-97aa6.firebaseapp.com",
-        projectId: "ecohome-marketplace-97aa6",
-        storageBucket: "ecohome-marketplace-97aa6.firebasestorage.app",
-        messagingSenderId: "1010934843766",
-        appId: "1:1010934843766:web:c2ad5a5dbf43913bd8d257"
+    // --- CONFIG ---
+    const firebaseConfig = { 
+        apiKey : "AIzaSyDueCwieBqfBHSjdKMZ5O-Y8Z1rPB-sFVM" , 
+        authDomain : "ecohome-marketplace-97aa6.firebaseapp.com" , 
+        projectId : "ecohome-marketplace-97aa6" , 
+        storageBucket : "ecohome-marketplace-97aa6.appspot.com" , 
+        messagingSenderId : "1010934843766" , 
+        appId : "1:1010934843766:web:c2ad5a5dbf43913bd8d257" 
     };
-
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'ecohome-v6-expiry';
+    
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'ecohome-marketplace-97aa6';
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
+    // --- SEPAY CONFIG ---
+    const SEPAY_BANK_ACC = "19036724391011"; 
+    const SEPAY_BANK_NAME = "Techcombank"; 
+    const SEPAY_RENEW_PRICE = 50000; 
+    let paymentInterval = null;
+
+    // --- STATE ---
     let currentUser = null;
     let allPosts = [];
     let uploadedImages = [];
-    let filterCategoryValue = 'Tất cả';
-    let unsubscribePosts = null;
+    let currentFilter = 'Tất cả';
+    let currentAuthFilter = 'all'; 
+    let lightboxList = [];
+    let lightboxIndex = 0;
+    let editingPostId = null;
 
-    // Hạn định thời gian (ms)
-    const TIME_3_DAYS = 3 * 24 * 60 * 60 * 1000;
-    const TIME_30_DAYS = 30 * 24 * 60 * 60 * 1000;
+    const EXP_ANON = 3 * 24 * 60 * 60 * 1000;
+    const EXP_USER = 30 * 24 * 60 * 60 * 1000;
 
-    window.toggleModal = (id) => document.getElementById(id).classList.toggle('hidden');
-    window.showToast = (msg) => {
-        const toast = document.getElementById('toast');
-        toast.innerText = msg;
-        toast.classList.remove('-translate-y-20');
-        setTimeout(() => toast.classList.add('-translate-y-20'), 3000);
+    // --- UTILS ---
+    window.showToast = (msg, icon = 'fa-circle-info') => {
+        const t = document.getElementById('toast');
+        if(!t) return;
+        t.innerHTML = `<i class="fa-solid ${icon} text-lg text-orange-400"></i> <span>${msg}</span>`;
+        t.classList.remove('-translate-y-24');
+        setTimeout(() => t.classList.add('-translate-y-24'), 3000);
     };
 
-    window.checkAuthAndPost = () => {
-        if (!currentUser) {
-            toggleModal('modal-login');
-        } else {
-            document.getElementById('post-expiry-hint').innerText = currentUser.isAnonymous ? '3' : '30';
-            toggleModal('modal-post');
+    window.formatPrice = (v) => v ? v.toString().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "0";
+    const getSortablePrice = (pStr) => pStr ? parseInt(pStr.toString().split('-')[0].replace(/\D/g, '')) || 0 : 0;
+
+    window.toggleModal = (id) => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.classList.toggle('hidden');
+        document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+        if(id === 'modal-post' && el.classList.contains('hidden')) {
+            editingPostId = null; const form = document.getElementById('post-form');
+            if(form) form.reset(); uploadedImages = []; renderPrev();
+            document.getElementById('post-modal-title').innerText = "Đăng tin miễn phí";
+            document.getElementById('submit-btn').innerText = "Đăng tin ngay";
         }
     };
 
-    window.loginWithGoogle = async () => { 
-        try { 
-            await signInWithPopup(auth, provider); 
-            toggleModal('modal-login'); 
-            showToast('Đã đăng nhập Google (Hạn 30 ngày)'); 
-        } catch(e){ showToast('Lỗi: ' + e.message); } 
+    // --- SEPAY PAYMENT FLOW ---
+    window.startPaymentRenew = (postId) => {
+        const post = allPosts.find(p => p.id === postId);
+        if(!post) return;
+
+        const transactionId = Math.random().toString(36).substring(2, 7).toUpperCase();
+        const paymentCode = `GH${transactionId}`;
+        document.getElementById('payment-code').innerText = paymentCode;
+        
+        // QR Image
+        const qrUrl = `https://qr.sepay.vn/img?acc=${SEPAY_BANK_ACC}&bank=${SEPAY_BANK_NAME}&amount=${SEPAY_RENEW_PRICE}&des=${paymentCode}`;
+        document.getElementById('payment-qr').src = qrUrl;
+
+        // Deep Link for Mobile Apps (VietQR Universal Link)
+        // techcombank = techcombank (lowercase for deep link)
+        const deepLink = `https://dl.vietqr.io/pay?bank=techcombank&amount=${SEPAY_RENEW_PRICE}&des=${paymentCode}&acc=${SEPAY_BANK_ACC}`;
+        document.getElementById('payment-app-link').href = deepLink;
+
+        toggleModal('modal-payment');
+
+        if (paymentInterval) clearInterval(paymentInterval);
+        paymentInterval = setInterval(async () => {
+            const success = await checkSePayPayment(paymentCode);
+            if (success) {
+                clearInterval(paymentInterval);
+                await finalizeRenewPost(postId, paymentCode);
+            }
+        }, 3000); 
     };
 
-    window.loginAnonymously = async () => {
+    async function checkSePayPayment(code) {
         try {
-            await signInAnonymously(auth);
-            toggleModal('modal-login');
-            showToast('Đã kết nối ẩn danh (Hạn 3 ngày)');
-        } catch(e) { showToast('Lỗi: ' + e.message); }
+            const res = await fetch(`https://sepay-webhook-1l8y.onrender.com/check-payment?code=${code}`);
+            if (!res.ok) return false;
+            const data = await res.json();
+            return data.status === "paid";
+        } catch (e) { return false; }
+    }
+
+    async function finalizeRenewPost(id, code) {
+        try {
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), {
+                createdAt: serverTimestamp(),
+                isRenewedPaid: true,
+                lastPaymentCode: code
+            });
+            closePaymentModal();
+            showToast("Thanh toán thành công! Tin của bạn đã được gia hạn 30 ngày.", "fa-circle-check");
+        } catch (e) { showToast("Lỗi hệ thống sau thanh toán!"); }
+    }
+
+    window.closePaymentModal = () => {
+        if (paymentInterval) clearInterval(paymentInterval);
+        document.getElementById('modal-payment').classList.add('hidden');
+        document.body.style.overflow = 'auto';
     };
 
-    window.logout = () => {
-        signOut(auth);
-        showToast('Đã thoát tài khoản');
+    window.copyPaymentCode = () => {
+        const code = document.getElementById('payment-code').innerText;
+        const temp = document.createElement("input");
+        temp.value = code; document.body.appendChild(temp);
+        temp.select(); document.execCommand("copy");
+        document.body.removeChild(temp);
+        showToast("Đã copy nội dung!", "fa-copy");
     };
 
-    window.filterCategory = (cat) => { 
-        filterCategoryValue = cat; 
-        renderPosts(); 
-        showToast('Đang xem: ' + cat);
-    };
-    
-    window.deletePost = async (id) => { 
-        if (confirm('Bạn muốn xóa vĩnh viễn tin đăng này?')) {
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id));
-                showToast('Đã xóa thành công');
-            } catch(e) { showToast('Lỗi: ' + e.message); }
-        }
-    };
+    // --- SHOPEE VIEW & LOGIC ---
+    window.viewPostDetail = (id) => {
+        const post = allPosts.find(p => p.id === id);
+        if(!post) return;
+        const content = document.getElementById('detail-content');
+        if(!content) return;
+        document.getElementById('detail-header-title').innerText = post.title;
+        const totalImgs = post.images?.length || 0;
+        const mainImgsHtml = totalImgs > 0 ? post.images.map((img, i) => `<div class="detail-slide-item w-full aspect-square shrink-0"><img src="${img}" class="w-full h-full object-cover cursor-zoom-in" onclick="openLightbox('${img}', '${post.id}')"></div>`).join('') : '';
+        const thumbHtml = totalImgs > 1 ? post.images.map((img, i) => `<div onclick="switchDetailImage(${i})" id="thumb-${i}" class="detail-thumb-item w-16 h-16 rounded-lg overflow-hidden border-2 border-transparent opacity-60 cursor-pointer transition-all ${i === 0 ? 'thumbnail-active' : ''}"><img src="${img}" class="w-full h-full object-cover"></div>`).join('') : '';
 
-    window.renewPost = async (id, isAnon) => { 
-        const days = isAnon ? 3 : 30;
-        if (confirm(`Gia hạn bài viết thêm ${days} ngày?`)) {
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), { 
-                    createdAt: serverTimestamp() 
-                }); 
-                showToast(`Đã gia hạn thêm ${days} ngày!`);
-            } catch(e) { showToast('Lỗi gia hạn'); }
-        }
-    };
-
-    // Upload Ảnh
-    document.getElementById('image-upload').addEventListener('change', function(e) {
-        const files = Array.from(e.target.files);
-        if (uploadedImages.length + files.length > 5) {
-            showToast('Tối đa 5 ảnh');
-            return;
-        }
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (event) => { 
-                uploadedImages.push(event.target.result); 
-                renderPreviews(); 
-            };
-            reader.readAsDataURL(file);
-        });
-    });
-
-    function renderPreviews() {
-        document.getElementById('preview-list').innerHTML = uploadedImages.map((src, index) => `
-            <div class="w-20 h-20 relative rounded-2xl overflow-hidden border shadow-sm">
-                <img src="${src}" class="w-full h-full object-cover">
-                <div onclick="removeImage(${index})" class="absolute top-1 right-1 bg-black/60 text-white w-5 h-5 flex items-center justify-center rounded-full cursor-pointer text-[10px]">
-                    <i class="fa-solid fa-xmark"></i>
+        content.innerHTML = `
+            <div class="flex flex-col sm:flex-row bg-white">
+                <div class="w-full sm:w-1/2">
+                    <div class="relative group bg-white">
+                        <div id="detail-slider" class="flex overflow-x-auto hide-scrollbar aspect-square">${mainImgsHtml}</div>
+                        ${totalImgs > 1 ? `<button onclick="scrollDetailSlider(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/20 text-white flex items-center justify-center active-scale"><i class="fa-solid fa-chevron-left"></i></button><button onclick="scrollDetailSlider(1)" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/20 text-white flex items-center justify-center active-scale"><i class="fa-solid fa-chevron-right"></i></button>` : ''}
+                    </div>
+                    <div class="flex gap-2 p-4 overflow-x-auto hide-scrollbar bg-white">${thumbHtml}</div>
+                </div>
+                <div class="w-full sm:w-1/2 flex flex-col p-4 sm:p-6 bg-white">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2"><span class="bg-red-50 text-[#ee4d2d] text-[10px] font-black px-2 py-0.5 rounded border border-red-100 uppercase tracking-tighter">Yêu thích</span><h2 class="text-lg font-bold text-gray-800 uppercase tracking-tighter line-clamp-2">${post.title}</h2></div>
+                        <div class="bg-[#fafafa] p-4 rounded-lg"><div class="text-3xl font-black text-[#ee4d2d] tracking-tighter">${formatPrice(post.price)} đ</div><div class="flex items-center gap-2 mt-2 text-[10px] text-gray-500 font-bold uppercase tracking-widest"><i class="fa-solid fa-bolt text-yellow-500"></i> Giá cư dân</div></div>
+                        <div class="grid grid-cols-3 gap-2 py-4 border-y border-gray-50 text-center"><div class="px-1"><p class="text-[9px] text-gray-400 font-bold uppercase">Mục</p><p class="text-[11px] font-black mt-1 truncate">${post.category}</p></div><div class="px-1 border-x border-gray-100"><p class="text-[9px] text-gray-400 font-bold uppercase">Khu vực</p><p class="text-[11px] font-black mt-1">Ecohome</p></div><div class="px-1"><p class="text-[9px] text-gray-400 font-bold uppercase">Tình trạng</p><p class="text-[11px] font-black mt-1 text-green-600">Sẵn có</p></div></div>
+                        <div class="pt-2"><h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fa-solid fa-circle-info text-orange-400"></i> Miêu tả sản phẩm</h4><div class="text-sm text-gray-600 leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-xl border border-gray-100 font-medium">${post.desc}</div></div>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 text-xl shadow-inner"><i class="fa-solid fa-shop"></i></div><div><p class="text-xs font-black text-gray-800 uppercase">${post.isAnonymous ? 'Ẩn danh' : 'Cư dân'}</p><p class="text-[9px] text-green-500 font-bold uppercase"><i class="fa-solid fa-circle text-[6px] mr-1"></i>Đang trực tuyến</p></div></div><a href="https://zalo.me/${post.phone}" target="_blank" class="bg-[#ee4d2d] text-white px-6 py-3 rounded-xl text-xs font-black uppercase shadow-lg shadow-red-100 active-scale">Zalo ngay</a></div>
                 </div>
             </div>
-        `).join('');
-    }
-
-    window.removeImage = (index) => { uploadedImages.splice(index, 1); renderPreviews(); };
-
-    // Auth Change
-    onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        const topAuth = document.getElementById('top-auth-section');
-        if (user) {
-            if (user.isAnonymous) {
-                topAuth.innerHTML = `
-                    <button onclick="logout()" class="flex flex-col items-center p-1 active-scale">
-                        <i class="fa-solid fa-user-secret text-gray-500 text-xl"></i>
-                        <span class="text-[8px] font-black text-gray-400">ẨN DANH</span>
-                    </button>`;
-            } else {
-                topAuth.innerHTML = `
-                    <button onclick="toggleModal('admin-panel')" class="active-scale border-2 border-white rounded-full overflow-hidden shadow-sm">
-                        <img src="${user.photoURL}" class="w-8 h-8 object-cover">
-                    </button>`;
-            }
-            startListening();
-        } else {
-            topAuth.innerHTML = `
-                <button onclick="toggleModal('modal-login')" class="text-[10px] font-black text-[#222] bg-white/40 px-2 py-1.5 rounded-lg active-scale border border-black/5">
-                    ĐĂNG NHẬP
-                </button>`;
-        }
-    });
-
-    const initAuth = async () => {
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-            // Không tự động đăng nhập ẩn danh để người dùng tự chọn loại hình ở modal
-        }
+            <div class="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-white/90 backdrop-blur-md border-t flex gap-3 z-50"><a href="https://zalo.me/${post.phone}" target="_blank" class="flex-1 bg-[#ee4d2d] text-white py-4 rounded-2xl font-black text-xs uppercase text-center active-scale shadow-xl">Liên hệ qua Zalo ngay</a></div>
+        `;
+        toggleModal('modal-detail');
+        const sl = document.getElementById('detail-slider');
+        if(sl) sl.addEventListener('scroll', () => updateActiveThumbnail(Math.round(sl.scrollLeft / sl.clientWidth)));
     };
-    initAuth();
 
-    function startListening() {
-        if (unsubscribePosts) unsubscribePosts();
-        const postsRef = collection(db, 'artifacts', appId, 'public', 'data', 'posts');
-        unsubscribePosts = onSnapshot(postsRef, (snapshot) => {
-            allPosts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-            allPosts.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-            renderPosts();
-            renderAdminPosts();
-        });
+    window.switchDetailImage = (idx) => { const sl = document.getElementById('detail-slider'); if(sl) sl.scrollTo({ left: idx * sl.clientWidth, behavior: 'smooth' }); updateActiveThumbnail(idx); };
+    function updateActiveThumbnail(idx) { document.querySelectorAll('.detail-thumb-item').forEach(el => el.classList.remove('thumbnail-active')); document.getElementById(`thumb-${idx}`)?.classList.add('thumbnail-active'); }
+    window.scrollDetailSlider = (dir) => { const sl = document.getElementById('detail-slider'); if(sl) switchDetailImage(Math.round(sl.scrollLeft / sl.clientWidth) + dir); };
+
+    // --- AUTH & SYNC ---
+    const initAuth = async () => { try { await signInAnonymously(auth); } catch (e) {} };
+    onAuthStateChanged(auth, user => { currentUser = user; updateAuthUI(); if (user) startSync(); });
+
+    function updateAuthUI() {
+        const top = document.getElementById('top-auth-section');
+        const bar = document.getElementById('auth-status-bar');
+        if (!currentUser || !top || !bar) return;
+        if (!currentUser.uid) { bar.classList.add('hidden'); top.innerHTML = `<button onclick="toggleModal('modal-login')" class="text-[10px] font-black bg-white/40 px-3 py-2 rounded-xl border border-black/5 uppercase shadow-sm">Đăng nhập</button>`; return; }
+        bar.classList.remove('hidden');
+        const dn = currentUser.isAnonymous ? "Cư dân Ẩn danh" : (currentUser.displayName || "Cư dân");
+        const nameEl = document.getElementById('auth-user-name');
+        const expEl = document.getElementById('auth-expiry-info');
+        if(nameEl) nameEl.innerText = dn;
+        if(expEl) expEl.innerText = `Loại: ${currentUser.isAnonymous ? 'Ẩn danh' : 'Xác thực'}`;
+        const pic = currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(dn)}&background=random&color=fff`;
+        const icon = document.getElementById('auth-type-icon');
+        if(icon) icon.innerHTML = `<img src="${pic}" class="w-full h-full object-cover rounded-full" onerror="this.src='https://ui-avatars.com/api/?name=User&background=orange&color=fff'">`;
+        top.innerHTML = `<img onclick="openUserAdmin()" src="${pic}" class="w-10 h-10 rounded-xl border-2 border-white object-cover cursor-pointer shadow-sm active-scale" onerror="this.src='https://ui-avatars.com/api/?name=User&background=orange&color=fff'">`;
+        if(currentUser?.email === 'phamvanconcn@gmail.com') document.getElementById('admin-bqt-nav-btn')?.classList.add('bg-red-600', 'text-white', 'px-3', 'animate-pulse');
     }
 
-    document.getElementById('post-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!currentUser) return toggleModal('modal-login');
-        if (uploadedImages.length === 0) { showToast('Cần ít nhất 1 ảnh'); return; }
-        
-        const btn = document.getElementById('submit-btn');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> ĐANG TẢI...';
-        
-        try {
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), {
-                title: document.getElementById('p-title').value,
-                price: document.getElementById('p-price').value,
-                category: document.getElementById('p-category').value,
-                phone: document.getElementById('p-phone').value,
-                desc: document.getElementById('p-desc').value,
-                images: uploadedImages,
-                userId: currentUser.uid,
-                userName: currentUser.isAnonymous ? 'Người dùng ẩn danh' : (currentUser.displayName || 'Cư dân'),
-                isAnonymous: currentUser.isAnonymous,
-                createdAt: serverTimestamp()
-            });
-            uploadedImages = [];
-            document.getElementById('post-form').reset();
-            renderPreviews();
-            toggleModal('modal-post');
-            showToast('Tin đăng đã được xuất bản! 🎉');
-        } catch (err) { 
-            showToast('Lỗi: ' + (err.message.includes('large') ? 'Dung lượng ảnh vượt giới hạn' : err.message)); 
-        }
-        btn.disabled = false;
-        btn.innerText = 'ĐĂNG TIN NGAY';
-    });
+    function startSync() { onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), snap => { allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderPosts(); renderAdmin(); renderBqtAdmin(); }); }
+    window.filterCategory = (c) => { currentFilter = c; renderPosts(); showToast(c, 'fa-filter'); };
+    window.toggleAuthFilter = (t) => { currentAuthFilter = t; document.getElementById('filter-auth-all')?.classList.toggle('filter-active', t === 'all'); document.getElementById('filter-auth-verified')?.classList.toggle('filter-active', t === 'verified'); renderPosts(); };
 
     function renderPosts() {
         const wrap = document.getElementById('posts-container');
-        const search = document.getElementById('searchInput').value.toLowerCase();
+        if(!wrap) return;
         const now = Date.now();
-        
-        // Logic lọc tin hết hạn dựa trên isAnonymous
-        let filtered = allPosts.filter(post => {
-            if (!post.createdAt) return true;
-            const timeLimit = post.isAnonymous ? TIME_3_DAYS : TIME_30_DAYS;
-            return (now - (post.createdAt.seconds * 1000)) < timeLimit;
+        const search = document.getElementById('searchInput')?.value.toLowerCase() || "";
+        const sort = document.getElementById('sortOrder')?.value || "newest";
+        let list = allPosts.filter(p => {
+            const limit = (p.isAnonymous && !p.isRenewedPaid) ? EXP_ANON : EXP_USER;
+            return p.createdAt && (now - p.createdAt.seconds * 1000) < limit;
         });
+        if (currentFilter !== 'Tất cả') list = list.filter(p => p.category === currentFilter);
+        if (currentAuthFilter === 'verified') list = list.filter(p => !p.isAnonymous);
+        if (search) list = list.filter(p => p.title.toLowerCase().includes(search) || (p.price && p.price.toString().includes(search)));
+        if (sort === 'newest') list.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        else if (sort === 'price-low') list.sort((a,b) => getSortablePrice(a.price) - getSortablePrice(b.price));
+        else if (sort === 'price-high') list.sort((a,b) => getSortablePrice(b.price) - getSortablePrice(a.price));
 
-        if (filterCategoryValue !== 'Tất cả') filtered = filtered.filter(p => p.category === filterCategoryValue);
-        if (search) filtered = filtered.filter(p => p.title.toLowerCase().includes(search));
+        const spSec = document.getElementById('sponsored-section');
+        const sponsored = list.filter(p => p.isPromoted);
+        if (sponsored.length > 0 && spSec) { spSec.classList.remove('hidden'); document.getElementById('sponsored-container').innerHTML = sponsored.map(p => renderPostCard(p, true)).join(''); }
+        else if(spSec) spSec.classList.add('hidden');
 
-        if (filtered.length === 0) { wrap.innerHTML = '<div class="col-span-full py-20 text-center text-gray-400 font-bold">Chưa có bài đăng nào</div>'; return; }
-        
-        wrap.innerHTML = filtered.map(post => {
-            const timeDiff = post.createdAt ? now - (post.createdAt.seconds * 1000) : 0;
-            const timeLimit = post.isAnonymous ? TIME_3_DAYS : TIME_30_DAYS;
-            const daysLeft = Math.max(0, Math.ceil((timeLimit - timeDiff) / (1000 * 60 * 60 * 24)));
-            
-            return `
-            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col h-full active-scale">
-                <div class="relative pt-[100%] bg-gray-50">
-                    <img src="${post.images?.[0] || ''}" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute top-2 right-2 flex flex-col gap-1 items-end">
-                        <div class="bg-black/60 text-white text-[8px] font-black px-2 py-0.5 rounded-lg backdrop-blur-sm">CÒN ${daysLeft} NGÀY</div>
-                        <div class="text-[7px] font-black px-1.5 py-0.5 rounded shadow ${post.isAnonymous ? 'tag-anon' : 'tag-google'}">
-                            ${post.isAnonymous ? 'ẨN DANH' : 'XÁC THỰC'}
-                        </div>
-                    </div>
-                </div>
-                <div class="p-3 flex flex-col flex-1">
-                    <h3 class="text-xs font-bold line-clamp-2 h-9 mb-1 text-gray-800 leading-tight">${post.title}</h3>
-                    <div class="text-red-600 font-black text-sm mb-2">${post.price} đ</div>
-                    <a href="https://zalo.me/${post.phone}" target="_blank" class="mt-auto bg-blue-50 text-blue-600 text-center py-2 rounded-xl text-[10px] font-black uppercase hover:bg-blue-100 transition">Zalo liên hệ</a>
-                </div>
-            </div>`;
-        }).join('');
+        const regular = list.filter(p => !p.isPromoted);
+        const countLabel = document.getElementById('post-count-label');
+        if(countLabel) countLabel.innerText = `${list.length} tin`;
+        if (!list.length) { wrap.innerHTML = `<p class="col-span-full py-20 text-center text-gray-400 font-bold border-2 border-dashed rounded-xl uppercase text-xs">Trống</p>`; return; }
+        wrap.innerHTML = regular.map(p => renderPostCard(p, false)).join('');
     }
 
-    function renderAdminPosts() {
+    function renderPostCard(p, isSp) {
+        const limit = (p.isAnonymous && !p.isRenewedPaid) ? EXP_ANON : EXP_USER;
+        const days = p.createdAt ? Math.max(0, Math.ceil((limit - (Date.now() - p.createdAt.seconds * 1000)) / (1000*60*60*24))) : '?';
+        return `<div class="post-card rounded-lg overflow-hidden shadow-sm flex flex-col h-full active-scale"><div class="relative pt-[100%] bg-gray-50 cursor-pointer" onclick="viewPostDetail('${p.id}')"><img src="${p.images?.[0]}" class="absolute inset-0 w-full h-full object-cover" loading="lazy"><div class="absolute top-1 right-1 flex flex-col gap-1 items-end pointer-events-none">${isSp ? '<div class="chotot-orange text-white text-[7px] font-black px-1.5 py-0.5 rounded shadow-sm uppercase tracking-tighter">Tài trợ</div>' : ''}<div class="bg-black/70 text-white text-[7px] font-black px-1.5 py-0.5 rounded backdrop-blur-md uppercase tracking-tighter">HẠN: ${days}N</div></div>${p.images?.length > 1 ? `<div class="absolute bottom-1 right-1 bg-black/60 text-white text-[8px] px-1.5 py-0.5 rounded"><i class="fa-solid fa-image mr-1"></i>${p.images.length}</div>` : ''}</div><div class="p-2 flex flex-col flex-1"><h3 class="text-[11px] font-bold line-clamp-2 h-8 mb-1 text-gray-800 uppercase tracking-tighter cursor-pointer hover:text-[#ee4d2d]" onclick="viewPostDetail('${p.id}')">${p.title}</h3><div class="text-[#ee4d2d] font-black text-sm mb-1 tracking-tighter">${formatPrice(p.price)}đ</div><div class="mt-auto flex items-center justify-between text-[8px] text-gray-400 font-bold uppercase tracking-widest"><span>${p.category}</span><span class="text-blue-500">Chi tiết <i class="fa-solid fa-chevron-right text-[6px] ml-0.5"></i></span></div></div></div>`;
+    }
+
+    function renderAdmin() {
         const wrap = document.getElementById('admin-posts');
-        if (!wrap || !currentUser) return;
-        const myPosts = allPosts.filter(p => p.userId === currentUser.uid);
-        
-        if (myPosts.length === 0) { wrap.innerHTML = '<div class="text-center py-20 text-gray-400 font-black">Bạn chưa có bài đăng nào</div>'; return; }
-        
-        wrap.innerHTML = myPosts.map(post => {
-            const now = Date.now();
-            const postDate = post.createdAt ? post.createdAt.seconds * 1000 : now;
-            const timeLimit = post.isAnonymous ? TIME_3_DAYS : TIME_30_DAYS;
-            const daysLeft = Math.max(0, Math.ceil((timeLimit - (now - postDate)) / (1000 * 60 * 60 * 24)));
-
-            return `
-            <div class="bg-white rounded-2xl p-3 flex items-center border shadow-sm gap-3 active:bg-gray-50">
-                <img src="${post.images?.[0] || ''}" class="w-14 h-14 rounded-xl object-cover shrink-0">
-                <div class="flex-1 min-w-0">
-                    <div class="text-xs font-black truncate">${post.title}</div>
-                    <div class="text-red-500 font-bold text-[10px]">${post.price} đ</div>
-                    <div class="text-[8px] font-bold text-gray-400">Còn ${daysLeft} ngày (${post.isAnonymous ? 'Ẩn danh' : 'Google'})</div>
-                </div>
-                <div class="flex gap-1 shrink-0">
-                    <button onclick="renewPost('${post.id}', ${post.isAnonymous})" class="bg-green-50 text-green-600 px-2 py-2 rounded-lg text-[9px] font-black">GIA HẠN</button>
-                    <button onclick="deletePost('${post.id}')" class="bg-red-50 text-red-600 px-2 py-2 rounded-lg text-[9px] font-black">XÓA</button>
-                </div>
-            </div>`;
+        if(!wrap || !currentUser) return;
+        const my = allPosts.filter(p => p.userId === currentUser.uid);
+        if (!my.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400 font-bold uppercase text-[10px]">Trống</p>'; return; }
+        wrap.innerHTML = my.map(p => {
+            const limit = (p.isAnonymous && !p.isRenewedPaid) ? EXP_ANON : EXP_USER;
+            const daysLeft = Math.ceil((limit - (Date.now() - p.createdAt.seconds * 1000)) / (1000*60*60*24));
+            return `<div class="bg-white rounded-xl p-4 flex items-center border shadow-sm gap-4 transition-all"><img src="${p.images?.[0]}" class="w-16 h-16 rounded-lg object-cover cursor-pointer" onclick="viewPostDetail('${p.id}')"><div class="flex-1 min-w-0"><div class="text-[11px] font-black truncate uppercase text-gray-800 tracking-tighter">${p.title}</div><div class="text-orange-600 font-black text-xs tracking-tighter">${formatPrice(p.price)} đ</div><p class="text-[9px] text-gray-400 mt-1 uppercase font-bold italic">Hạn: ${daysLeft > 0 ? daysLeft : 0} ngày</p></div><div class="flex flex-col gap-1.5"><div class="flex gap-1.5"><button onclick="openEditModal('${p.id}')" class="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-[8px] font-black border border-blue-100 uppercase active-scale">Sửa</button><button onclick="startPaymentRenew('${p.id}')" class="bg-green-50 text-green-600 px-3 py-2 rounded-lg text-[8px] font-black border border-green-100 uppercase active-scale">Gia hạn</button></div><button onclick="confirmDeletePost('${p.id}')" class="bg-red-50 text-red-600 px-3 py-2 rounded-lg text-[8px] font-black border border-red-100 uppercase active-scale w-full">Gỡ tin</button></div></div>`;
         }).join('');
     }
-    
-    document.getElementById('searchInput').addEventListener('input', renderPosts);
+
+    // --- OTHER ACTIONS ---
+    window.accessAdminBQT = () => { if (currentUser?.email === 'phamvanconcn@gmail.com' || prompt("MẬT MÃ BQT:") === '215151365') { toggleModal('modal-bqt-admin'); renderBqtAdmin(); } else if (currentUser) showToast("Sai mật mã!", "fa-circle-xmark"); };
+    function renderBqtAdmin() { const wrap = document.getElementById('bqt-admin-posts'); if (!wrap) return; wrap.innerHTML = allPosts.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).map(p => `<div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4"><img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover cursor-pointer" onclick="viewPostDetail('${p.id}')"><div class="flex-1 min-w-0"><div class="text-[10px] font-black truncate uppercase">${p.title}</div><div class="text-orange-600 font-black text-[10px] tracking-tighter">${formatPrice(p.price)} đ</div></div><div class="flex gap-1 shrink-0"><button onclick="pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase">Đẩy</button><button onclick="togglePromote('${p.id}', ${p.isPromoted || false})" class="${p.isPromoted ? 'bg-orange-600' : 'bg-gray-200'} text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase">Ads</button><button onclick="confirmDeletePost('${p.id}')" class="bg-red-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase">Xóa</button></div></div>`).join(''); }
+    window.pushToTop = async (id) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {createdAt:serverTimestamp()}); showToast("Đã đẩy tin!"); } catch { showToast("Lỗi!"); } };
+    window.togglePromote = async (id, cur) => { try { await updateDoc(doc(db,'artifacts',appId,'public','data','posts',id), {isPromoted:!cur}); showToast("Cập nhật!"); } catch { showToast("Lỗi!"); } };
+    window.openEditModal = (id) => { const p = allPosts.find(x => x.id === id); if(!p) return; editingPostId = id; document.getElementById('p-title').value = p.title; document.getElementById('p-price').value = formatPrice(p.price); document.getElementById('p-category').value = p.category; document.getElementById('p-phone').value = p.phone; document.getElementById('p-desc').value = p.desc; uploadedImages = [...(p.images || [])]; renderPrev(); document.getElementById('post-modal-title').innerText = "Sửa bài đăng"; document.getElementById('submit-btn').innerText = "Cập nhật"; toggleModal('modal-post'); };
+    window.confirmDeletePost = (id) => { if(confirm("Gỡ tin này?")) deleteDoc(doc(db,'artifacts',appId,'public','data','posts',id)); };
+    window.openUserAdmin = () => { renderAdmin(); toggleModal('admin-panel'); };
+    window.openLightbox = (src, pid = null) => { lightboxList = pid ? (allPosts.find(x => x.id === pid)?.images || [src]) : [src]; lightboxIndex = Math.max(0, lightboxList.indexOf(src)); updateLB(); document.getElementById('image-lightbox').classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
+    function updateLB() { document.getElementById('lightbox-image').src = lightboxList[lightboxIndex]; const ctr = document.getElementById('lightbox-counter'); if (ctr) ctr.innerText = lightboxList.length > 1 ? `ẢNH ${lightboxIndex + 1} / ${lightboxList.length}` : ""; }
+    window.changeLightboxImage = (d) => { if (lightboxList.length <= 1) return; lightboxIndex = (lightboxIndex + d + lightboxList.length) % lightboxList.length; updateLB(); };
+    window.closeLightbox = () => { document.getElementById('image-lightbox').classList.add('hidden'); if(document.getElementById('modal-detail').classList.contains('hidden')) document.body.style.overflow = 'auto'; };
+    async function compress(file) { return new Promise(res => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = img.width > 600 ? 600 / img.width : 1; canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0,0, canvas.width, canvas.height); res(canvas.toDataURL('image/jpeg', 0.6)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
+    document.getElementById('image-upload').addEventListener('change', async e => { const files = Array.from(e.target.files); if (uploadedImages.length + files.length > 5) return showToast("Tối đa 5 ảnh", "fa-image"); for (let f of files) { uploadedImages.push(await compress(f)); } renderPrev(); });
+    const renderPrev = () => { const list = document.getElementById('preview-list'); if(!list) return; list.innerHTML = uploadedImages.map((s,i) => `<div class="w-20 h-20 relative rounded-xl overflow-hidden border"><img src="${s}" class="w-full h-full object-cover"><div onclick="removeImg(${i})" class="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 flex items-center justify-center rounded-full text-[10px] cursor-pointer shadow-lg transition-transform hover:scale-110"><i class="fa-solid fa-xmark"></i></div></div>`).join(''); };
+    window.removeImg = i => { uploadedImages.splice(i,1); renderPrev(); };
+    document.getElementById('post-form').addEventListener('submit', async e => { e.preventDefault(); if (!currentUser) return toggleModal('modal-login'); if (!uploadedImages.length) return showToast("Thêm ảnh!"); const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.innerHTML = `<div class="loader mr-2"></div> Đang xử lý...`; const postData = { title: document.getElementById('p-title').value, price: document.getElementById('p-price').value, category: document.getElementById('p-category').value, phone: document.getElementById('p-phone').value, desc: document.getElementById('p-desc').value, images: uploadedImages, userId: currentUser.uid, isAnonymous: currentUser.isAnonymous }; try { if (editingPostId) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', editingPostId), postData); else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), { ...postData, isPromoted: false, createdAt: serverTimestamp(), isRenewedPaid: false }); showToast("Thành công!"); toggleModal('modal-post'); } catch { showToast("Lỗi hệ thống!"); } finally { btn.disabled = false; btn.innerText = editingPostId ? "Cập nhật" : "Đăng tin ngay"; } });
+    window.checkAuthAndPost = () => { if(!currentUser) toggleModal('modal-login'); else { editingPostId = null; toggleModal('modal-post'); } };
+    document.getElementById('searchInput')?.addEventListener('input', renderPosts);
+
+    // Lightbox swipe logic
+    let startX = 0;
+    const lbContainer = document.getElementById('image-lightbox');
+    if(lbContainer) {
+        lbContainer.addEventListener('touchstart', e => { startX = e.changedTouches[0].screenX; }, {passive: true});
+        lbContainer.addEventListener('touchend', e => {
+            if (lightboxList.length <= 1) return;
+            const dx = e.changedTouches[0].screenX - startX;
+            if (Math.abs(dx) > 50) { if (dx > 0) changeLightboxImage(-1); else changeLightboxImage(1); }
+        }, {passive: true});
+    }
+
+    initAuth();
 </script>
 </body>
 </html>
