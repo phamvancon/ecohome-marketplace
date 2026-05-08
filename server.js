@@ -4,66 +4,55 @@ const app = express();
 
 app.use(express.json());
 
-// --- KHỞI TẠO FIREBASE ADMIN ---
-// Bạn cần tải file serviceAccountKey.json từ Firebase Console -> Project Settings -> Service Accounts
-// const serviceAccount = require("./path/to/serviceAccountKey.json");
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount)
-// });
-// const db = admin.firestore();
-// const appId = "ecohome-marketplace-97aa6";
+// --- KHỞI TẠO FIREBASE ADMIN (Cần thiết để tự động hóa) ---
+// Tải file serviceAccountKey.json từ Firebase Console và bỏ comment để sử dụng
+/*
+const serviceAccount = require("./serviceAccountKey.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+const db = admin.firestore();
+const appId = "ecohome-marketplace-97aa6";
+*/
 
 app.get("/", (req, res) => {
-    res.send("Webhook SePay Chợ Ecohome đang chạy ổn định...");
+    res.send("Webhook SePay đang chạy");
 });
 
 // --- XỬ LÝ WEBHOOK SEPAY ---
 app.post("/webhook-sepay", async (req, res) => {
-    console.log("SEPAY DATA RECEIVED:", req.body);
+    console.log("SEPAY DATA:", req.body);
     const data = req.body;
 
-    // Chỉ xử lý nếu là giao dịch tiền vào (in)
+    // Kiểm tra nếu là giao dịch tiền vào thành công
     if (data.transferType === "in") {
-        const amount = parseFloat(data.transferAmount);
-        const content = data.content || ""; // Ví dụ: "VIP_SS ABC123" hoặc "PUSH XYZ789"
-        
-        console.log(`Phát hiện tiền vào: ${amount}đ - Nội dung: ${content}`);
+        console.log("Có tiền vào:", data.transferAmount);
+        console.log("Nội dung:", data.content);
 
         try {
-            // Tách mã nội dung (Ví dụ: "VIP_SS" và "ABC123")
-            const parts = content.split(" ");
+            // Logic xử lý tự động khi có tiền về
+            // 1. Phân tích data.content để lấy mã dịch vụ và ID (Ví dụ: "VIP_SS ABC123")
+            // 2. Truy vấn Firestore và cập nhật vipTier hoặc trạng thái bài đăng
+            
+            /* Ví dụ:
+            const parts = data.content.split(" ");
             if (parts.length >= 2) {
-                const type = parts[0].toUpperCase();
-                const shortId = parts[1].toUpperCase();
-
-                // 1. Xử lý Nâng cấp VIP cho User
-                if (type.startsWith("VIP")) {
-                    // Tìm user có UID chứa 6 ký tự cuối là shortId
-                    // Lưu ý: Trong thực tế nên query collection 'users'
-                    console.log(`Đang kích hoạt gói ${type} cho User ID: ${shortId}`);
-                    // await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('users')
-                    //    .where('shortUid', '==', shortId).limit(1).get()...
-                }
-
-                // 2. Xử lý Dịch vụ cho Bài đăng (ADS, PUSH, RENEW)
-                if (type === "PUSH" || type === "ADS" || type === "RENEW") {
-                    console.log(`Đang kích hoạt dịch vụ ${type} cho Bài đăng: ${shortId}`);
-                    // Logic cập nhật Firestore tương ứng cho bài đăng
-                }
+                const type = parts[0];
+                const shortId = parts[1];
+                // Thực hiện update Firebase tại đây...
             }
-        } catch (err) {
-            console.error("Lỗi xử lý dữ liệu Firebase:", err);
+            */
+        } catch (error) {
+            console.error("Lỗi cập nhật dữ liệu:", error);
         }
     }
 
-    // Luôn phản hồi 200 để SePay biết đã nhận dữ liệu thành công
     res.status(200).json({
-        success: true,
-        message: "Webhook processed"
+        success: true
     });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log("Server SePay Webhook đang chạy tại cổng: " + PORT);
+    console.log("Server running on port " + PORT);
 });
