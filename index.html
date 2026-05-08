@@ -108,7 +108,7 @@
                 </div>
                 <div class="hidden xs:block leading-tight border-l border-black/10 pl-2 text-black text-left text-left">
                     <h1 class="font-black text-xs md:text-base">Chợ Ecohome</h1>
-                    <p class="text-[8px] font-bold uppercase opacity-60">Nhơn Bình</p>
+                    <p class="text-[8px] font-bold uppercase opacity-60 text-left">Nhơn Bình</p>
                 </div>
             </div>
 
@@ -138,22 +138,22 @@
     <div id="auth-status-bar" class="hidden mb-5 p-4 bg-white rounded-xl shadow-sm border border-orange-100 flex items-center justify-between mx-auto max-w-6xl text-left">
         <div class="flex items-center gap-3.5 text-left">
             <div id="auth-type-icon" class="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-inner bg-gray-200 overflow-hidden"></div>
-            <div class="text-left">
+            <div class="text-left text-black">
                 <p id="auth-user-name" class="text-sm font-black text-gray-800 uppercase tracking-tighter flex items-center text-left"></p>
                 <p id="auth-user-rank" class="text-[9px] text-gray-400 font-bold uppercase tracking-tight text-left">Thành viên Ecohome</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
             <button id="upgrade-vip-btn" onclick="startPayment('VIP')" class="hidden text-[10px] font-black text-yellow-700 bg-yellow-400 hover:bg-yellow-500 px-3 py-2 rounded-xl transition active-scale uppercase">Nâng cấp VIP</button>
-            <button onclick="logout()" class="text-[10px] font-black text-red-600 bg-red-50 hover:bg-red-100 px-3 py-2 rounded-xl transition active-scale uppercase">Thoát</button>
+            <button onclick="logout()" class="text-[10px] font-black text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition active-scale uppercase">Thoát</button>
         </div>
     </div>
 
     <!-- TIN TÀI TRỢ / QUẢNG CÁO -->
     <div id="sponsored-section" class="hidden mb-8 text-left">
-        <div class="flex items-center justify-between mb-3 px-1 text-left">
+        <div class="flex items-center justify-between mb-3 px-1">
             <h3 class="text-[11px] font-black text-orange-600 uppercase tracking-widest flex items-center gap-2 text-black text-left">
-                <i class="fa-solid fa-award text-sm"></i> Tin tài trợ nổi bật
+                <i class="fa-solid fa-award text-sm text-orange-500"></i> Tin tài trợ nổi bật
             </h3>
         </div>
         <div id="sponsored-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 text-left"></div>
@@ -161,7 +161,7 @@
 
     <!-- FEED -->
     <div class="mb-5 px-1 flex items-center justify-between">
-        <h2 class="text-base font-black text-gray-800 uppercase tracking-tighter text-left">Tin rao vặt mới nhất</h2>
+        <h2 class="text-base font-black text-gray-800 uppercase tracking-tighter text-left font-black">Tin rao vặt mới nhất</h2>
         <p id="post-count-label" class="text-[10px] text-gray-400 font-bold uppercase italic"></p>
     </div>
     <div id="posts-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 text-left"></div>
@@ -174,145 +174,170 @@
         <h3 class="text-2xl font-black text-gray-800 mb-2 uppercase tracking-tighter">Chào cư dân!</h3>
         <p class="text-gray-400 text-[11px] font-bold mb-10 uppercase tracking-widest leading-relaxed">Chọn hình thức truy cập <br>để bắt đầu giao dịch</p>
         
-        <div class="space-y-4">
+        <div class="space-y-4 text-center">
             <button onclick="loginGoogle()" class="w-full flex items-center justify-center gap-3 border-2 border-orange-100 py-4.5 rounded-2xl font-black active-scale text-sm hover:bg-orange-50 transition shadow-sm group text-black">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-6">
                 <span>TIẾP TỤC VỚI GOOGLE</span>
             </button>
             <div class="flex items-center gap-3 py-2"><div class="flex-1 h-px bg-gray-100"></div><span class="text-[9px] font-bold text-gray-300 uppercase">Hoặc</span><div class="flex-1 h-px bg-gray-100"></div></div>
             <button onclick="loginAnonymously()" class="w-full flex items-center justify-center gap-3 bg-gray-100 py-4.5 rounded-2xl font-black active-scale text-sm text-gray-600 uppercase hover:bg-gray-200 transition">
-                <i class="fa-solid fa-user-secret text-lg"></i>
+                <i class="fa-solid fa-user-secret text-lg text-center"></i>
                 <span>TRẢI NGHIỆM ẨN DANH</span>
             </button>
         </div>
-        <p class="mt-8 text-[9px] text-gray-400 font-bold uppercase italic">Chợ cư dân Ecohome Nhơn Bình</p>
+        <p class="mt-8 text-[9px] text-gray-400 font-bold uppercase italic text-center">Chợ cư dân Ecohome Nhơn Bình</p>
     </div>
 </div>
 
-<!-- MODAL CHI TIẾT SẢN PHẨM -->
+<!-- MODAL THANH TOÁN SEPAY -->
+<div id="modal-payment" class="hidden fixed inset-0 bg-black/95 z-[1500] flex items-center justify-center p-4 backdrop-blur-md text-black">
+    <div class="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl modal-animate-in overflow-y-auto max-h-[95vh] hide-scrollbar text-black text-left text-left text-left">
+        <div class="flex justify-between items-center mb-4 text-left">
+            <div class="text-left text-black text-left text-left">
+                <h3 class="text-lg font-black uppercase tracking-tighter text-left text-left" id="payment-title">Thanh toán</h3>
+                <p class="text-[10px] text-gray-400 font-bold uppercase text-left text-left" id="payment-subtitle">Giao dịch an toàn qua SePay</p>
+            </div>
+            <button onclick="closePaymentModal()" class="text-gray-400 text-2xl p-1"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="qr-frame bg-white p-3 mb-4"><img id="payment-qr" src="" class="w-full aspect-square object-contain mx-auto text-center"></div>
+        
+        <a id="payment-app-link" href="#" target="_blank" class="w-full bg-[#00457C] text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg active-scale mb-4 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-mobile-screen-button"></i> MỞ APP NGÂN HÀNG
+        </a>
+
+        <div class="bg-gray-50 rounded-2xl p-4 text-left border border-gray-100 mb-4 text-black text-left text-left text-left text-left text-left">
+            <div class="text-[10px] text-gray-400 font-bold uppercase text-left text-left text-left">Ngân hàng</div>
+            <div class="font-black text-lg text-black text-left text-left text-left">MB BANK</div>
+            <div class="text-[10px] text-gray-400 font-bold mt-2 uppercase text-left text-left text-left">Số tài khoản</div>
+            <div class="font-black text-xl text-blue-700 text-left text-left text-left">5555553659999</div>
+            <div class="text-[10px] text-gray-400 font-bold mt-2 uppercase text-left text-left text-left text-left text-left">Chủ tài khoản</div>
+            <div class="font-black uppercase text-black text-left text-left text-left text-left text-left">PHAM VAN CON</div>
+        </div>
+
+        <div class="space-y-2 mb-4 text-left text-black text-left text-left text-left">
+            <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100 font-black uppercase text-left text-left text-left">
+                <span class="text-[9px] text-gray-400 text-left text-left">Số tiền:</span>
+                <span class="text-lg text-red-600 text-right" id="payment-amount-display">---</span>
+            </div>
+            <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex flex-col gap-1 text-left text-left text-left">
+                <div class="flex justify-between items-center text-left text-left text-left text-left text-left">
+                    <span class="text-[9px] font-bold text-blue-400 uppercase font-black text-left text-left text-left text-left text-left">Nội dung CK:</span>
+                    <button onclick="copyPaymentCode()" class="text-[8px] font-black bg-blue-600 text-white px-1.5 py-0.5 rounded uppercase font-black text-center text-center">Copy</button>
+                </div>
+                <span id="payment-code" class="text-xl font-black text-blue-700 tracking-[0.1em] text-center uppercase text-center text-center text-center">---</span>
+            </div>
+        </div>
+
+        <div class="border-t border-dashed border-gray-200 pt-4 text-black text-left text-left text-left text-left text-left">
+            <p class="text-[10px] font-black text-gray-400 uppercase mb-3 text-left text-left">Gửi ảnh minh chứng giao dịch</p>
+            <label class="w-full bg-orange-50 border-2 border-dashed border-orange-200 rounded-xl py-3 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-orange-100 active-scale text-orange-600 text-center text-center text-center text-center">
+                <i class="fa-solid fa-cloud-arrow-up text-lg text-center text-center text-center text-center"></i>
+                <span id="receipt-status" class="text-[9px] font-black uppercase text-black text-center text-center text-center text-center">Tải bill lên</span>
+                <input type="file" id="receipt-upload" accept="image/*" class="hidden">
+            </label>
+        </div>
+        
+        <div class="flex items-center justify-center gap-2 text-orange-600 animate-pulse mt-4 text-center text-center">
+            <div class="loader !w-3 !h-3 text-center text-center"></div>
+            <span class="text-[10px] font-black uppercase text-center text-center">Đang quét thanh toán...</span>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL BQT ADMIN -->
+<div id="modal-bqt-admin" class="hidden fixed inset-0 bg-black/95 z-[400] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-md text-left">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl text-black">
+        <div class="px-6 py-4 bg-red-700 text-white shadow-lg text-left">
+            <div class="flex justify-between items-center mb-3 text-left">
+                <h2 class="text-xl font-black uppercase tracking-tighter text-left">BQT - QUẢN TRỊ HỆ THỐNG</h2>
+                <button onclick="toggleModal('modal-bqt-admin')" class="bg-white/20 hover:bg-white/40 px-5 py-2 rounded-xl font-black text-sm active-scale uppercase text-white">Đóng</button>
+            </div>
+            <div class="flex gap-6 overflow-x-auto hide-scrollbar text-left text-left">
+                <button onclick="switchBqtTab('posts')" id="tab-btn-posts" class="text-[10px] font-black uppercase pb-1 opacity-60 tab-active">Bài đăng</button>
+                <button onclick="switchBqtTab('users')" id="tab-btn-users" class="text-[10px] font-black uppercase pb-1 opacity-60">Tài khoản</button>
+                <button onclick="switchBqtTab('messages')" id="tab-btn-messages" class="text-[10px] font-black uppercase pb-1 opacity-60">Tin nhắn</button>
+            </div>
+        </div>
+        <div id="bqt-tab-content-posts" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-100 text-black text-left">
+            <div id="bqt-admin-posts"></div>
+        </div>
+        <div id="bqt-tab-content-users" class="hidden flex-1 overflow-y-auto p-4 space-y-3 bg-gray-100 text-black text-left">
+            <div id="bqt-admin-users"></div>
+        </div>
+        <div id="bqt-tab-content-messages" class="hidden flex-1 overflow-y-auto p-4 space-y-3 bg-gray-100 text-black text-left">
+            <div id="bqt-admin-messages"></div>
+        </div>
+    </div>
+</div>
+
+<!-- CÁC MODAL KHÁC -->
 <div id="modal-detail" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
-    <div class="bg-[#f5f5f5] rounded-t-3xl sm:rounded-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar text-black text-left">
+    <div class="bg-[#f5f5f5] rounded-t-3xl sm:rounded-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar text-black text-left text-left">
         <div class="sm:hidden w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-1" onclick="toggleModal('modal-detail')"></div>
         <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-40 shadow-sm text-black">
-            <h3 class="text-sm font-black text-gray-800 uppercase tracking-tighter truncate pr-4 text-left text-left" id="detail-header-title">Chi tiết sản phẩm</h3>
+            <h3 class="text-sm font-black text-gray-800 uppercase tracking-tighter truncate pr-4 text-left text-left" id="detail-header-title">Chi tiết</h3>
             <button onclick="toggleModal('modal-detail')" class="text-gray-400 text-2xl p-1 active-scale"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div id="detail-content" class="pb-24 sm:pb-8 bg-white text-left text-left"></div>
     </div>
 </div>
 
-<!-- MODAL THANH TOÁN SEPAY -->
-<div id="modal-payment" class="hidden fixed inset-0 bg-black/95 z-[1500] flex items-center justify-center p-4 backdrop-blur-md text-black">
-    <div class="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl modal-animate-in overflow-y-auto max-h-[95vh] hide-scrollbar text-black text-left">
-        <div class="flex justify-between items-center mb-4 text-left">
-            <div class="text-left text-black text-left">
-                <h3 class="text-lg font-black uppercase tracking-tighter text-left" id="payment-title">Thanh toán</h3>
-                <p class="text-[10px] text-gray-400 font-bold uppercase text-left" id="payment-subtitle">Giao dịch an toàn qua SePay</p>
-            </div>
-            <button onclick="closePaymentModal()" class="text-gray-400 text-2xl p-1"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        
-        <div class="qr-frame bg-white p-3 mb-4"><img id="payment-qr" src="" class="w-full aspect-square object-contain mx-auto"></div>
-        
-        <a id="payment-app-link" href="#" target="_blank" class="w-full bg-[#00457C] text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg active-scale mb-4 flex items-center justify-center gap-2">
-            <i class="fa-solid fa-mobile-screen-button"></i> MỞ APP NGÂN HÀNG
-        </a>
-
-        <div class="bg-gray-50 rounded-2xl p-4 text-left border border-gray-100 mb-4 text-black text-left">
-            <div class="text-[10px] text-gray-400 font-bold uppercase text-left">Ngân hàng</div>
-            <div class="font-black text-lg text-black text-left">MB BANK</div>
-            <div class="text-[10px] text-gray-400 font-bold mt-2 uppercase text-left">Số tài khoản</div>
-            <div class="font-black text-xl text-blue-700 text-left">5555553659999</div>
-            <div class="text-[10px] text-gray-400 font-bold mt-2 uppercase text-left text-left">Chủ tài khoản</div>
-            <div class="font-black uppercase text-black text-left text-left">PHAM VAN CON</div>
-        </div>
-
-        <div class="space-y-2 mb-4 text-left text-black">
-            <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100 font-black uppercase text-left">
-                <span class="text-[9px] text-gray-400">Số tiền:</span>
-                <span class="text-lg text-red-600" id="payment-amount-display">---</span>
-            </div>
-            <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex flex-col gap-1 text-left text-left">
-                <div class="flex justify-between items-center text-left text-left text-left">
-                    <span class="text-[9px] font-bold text-blue-400 uppercase font-black text-left">Nội dung CK:</span>
-                    <button onclick="copyPaymentCode()" class="text-[8px] font-black bg-blue-600 text-white px-1.5 py-0.5 rounded uppercase font-black">Copy</button>
-                </div>
-                <span id="payment-code" class="text-xl font-black text-blue-700 tracking-[0.1em] text-center uppercase text-center">---</span>
-            </div>
-        </div>
-
-        <div class="border-t border-dashed border-gray-200 pt-4 text-black text-left">
-            <p class="text-[10px] font-black text-gray-400 uppercase mb-3 text-left">Gửi ảnh minh chứng giao dịch</p>
-            <label class="w-full bg-orange-50 border-2 border-dashed border-orange-200 rounded-xl py-3 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-orange-100 active-scale text-orange-600">
-                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
-                <span id="receipt-status" class="text-[9px] font-black uppercase text-black">Tải bill lên</span>
-                <input type="file" id="receipt-upload" accept="image/*" class="hidden">
-            </label>
-        </div>
-        
-        <div class="flex items-center justify-center gap-2 text-orange-600 animate-pulse mt-4">
-            <div class="loader !w-3 !h-3"></div>
-            <span class="text-[10px] font-black uppercase">Đang chờ thanh toán...</span>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL BQT ADMIN, ĐĂNG TIN... (Giữ nguyên cấu trúc) -->
-<div id="modal-post" class="hidden fixed inset-0 bg-black/80 z-[210] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-left">
-    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar text-black text-left">
-        <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10 text-black text-left">
-            <h3 id="post-modal-title" class="text-lg font-black uppercase tracking-tighter">Đăng tin rao vặt</h3>
+<div id="modal-post" class="hidden fixed inset-0 bg-black/80 z-[210] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-left text-left">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar text-black text-left text-left text-left">
+        <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10 text-black text-left text-left text-left">
+            <h3 id="post-modal-title" class="text-lg font-black uppercase tracking-tighter text-left text-left text-left">Đăng tin rao vặt</h3>
             <button onclick="toggleModal('modal-post')" class="text-gray-400 text-3xl"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <form id="post-form" class="p-6 space-y-6 pb-16 text-left text-black">
-            <div class="text-left">
-                <label class="block text-[11px] font-black text-gray-400 uppercase mb-4 tracking-widest px-1 text-black text-left">Hình ảnh mặt hàng *</label>
-                <div class="flex flex-wrap gap-4 text-left text-left">
-                    <label class="w-20 h-20 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer active-scale hover:border-orange-500 bg-gray-50 relative group transition-colors text-gray-400">
-                        <i class="fa-solid fa-plus text-xl text-black"></i>
+        <form id="post-form" class="p-6 space-y-6 pb-16 text-left text-black text-left text-left text-left text-left">
+            <div class="text-left text-left text-left text-left">
+                <label class="block text-[11px] font-black text-gray-400 uppercase mb-4 tracking-widest px-1 text-black text-left text-left text-left text-left">Hình ảnh mặt hàng *</label>
+                <div class="flex flex-wrap gap-4 text-left text-left text-left text-left text-left">
+                    <label class="w-20 h-20 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer active-scale hover:border-orange-500 bg-gray-50 relative group transition-colors text-gray-400 text-center text-center">
+                        <i class="fa-solid fa-plus text-xl text-black text-center text-center text-center"></i>
                         <input type="file" id="image-upload" multiple accept="image/*" class="hidden">
                     </label>
-                    <div id="preview-list" class="flex flex-wrap gap-4 text-left"></div>
+                    <div id="preview-list" class="flex flex-wrap gap-4 text-left text-left text-left text-left text-left text-left"></div>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-black text-left">
-                <input id="p-title" placeholder="Tiêu đề bài đăng *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black text-left">
-                <select id="p-category" class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black font-bold">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-black text-left text-left text-left text-left">
+                <input id="p-title" placeholder="Tiêu đề bài đăng *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black text-left text-left text-left">
+                <select id="p-category" class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black font-bold text-left text-left text-left text-left">
                     <option>Gia dụng</option><option>Xe cộ</option><option>Đồ điện tử</option><option>Thời trang</option><option>Thú cưng</option><option>Thực phẩm</option><option>Bất động sản</option>
                 </select>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-black text-left">
-                <input id="p-price" type="text" placeholder="Giá tiền (Vd: 100.000đ) *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black font-bold">
-                <input id="p-phone" placeholder="Số Zalo liên hệ *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black font-bold">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-black text-left text-left text-left text-left text-left">
+                <input id="p-price" type="text" placeholder="Giá tiền (Vd: 100.000đ) *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black font-bold text-left text-left text-left text-left">
+                <input id="p-phone" placeholder="Số Zalo liên hệ *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-black font-bold text-left text-left text-left text-left text-left">
             </div>
-            <textarea id="p-desc" rows="4" placeholder="Mô tả chi tiết sản phẩm..." required class="w-full bg-gray-50 rounded-xl p-4 text-sm outline-none border border-transparent focus:border-orange-500 text-black text-left"></textarea>
-            <button id="submit-btn" class="w-full chotot-orange text-white py-4 rounded-2xl font-black shadow-xl active-scale text-base uppercase text-center">XÁC NHẬN BÀI ĐĂNG</button>
+            <textarea id="p-desc" rows="4" placeholder="Mô tả chi tiết sản phẩm..." required class="w-full bg-gray-50 rounded-xl p-4 text-sm outline-none border border-transparent focus:border-orange-500 text-black text-left text-left text-left text-left"></textarea>
+            <button id="submit-btn" class="w-full chotot-orange text-white py-4 rounded-2xl font-black shadow-xl active-scale text-base uppercase text-center text-center text-center text-center">XÁC NHẬN BÀI ĐĂNG</button>
         </form>
     </div>
 </div>
 
 <!-- Modal Kho Tin Của Bạn -->
-<div id="admin-panel" class="hidden fixed inset-0 bg-black/80 z-[220] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-black">
-    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl text-black text-left">
-        <div class="px-6 py-5 border-b flex justify-between items-center bg-gray-50 text-left">
-            <div><h2 class="text-lg font-black uppercase tracking-tighter text-black text-left">Kho Tin Của Bạn</h2></div>
+<div id="admin-panel" class="hidden fixed inset-0 bg-black/80 z-[220] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-black text-left">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl text-black text-left text-left text-left text-left">
+        <div class="px-6 py-5 border-b flex justify-between items-center bg-gray-50 text-left text-left text-left text-left text-left">
+            <div><h2 class="text-lg font-black uppercase tracking-tighter text-black text-left text-left text-left">Kho Tin Của Bạn</h2></div>
             <button onclick="toggleModal('admin-panel')" class="text-red-500 font-black uppercase text-xs">Đóng</button>
         </div>
-        <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 hide-scrollbar text-left text-black" id="admin-posts"></div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 hide-scrollbar text-left text-black text-left text-left text-left text-left" id="admin-posts"></div>
     </div>
 </div>
 
-<!-- Image Lightbox -->
-<div id="image-lightbox" class="hidden fixed inset-0 z-[2000] bg-black/95 flex flex-col items-center justify-center p-4 backdrop-blur-md text-white">
-    <button onclick="closeLightbox()" class="absolute top-5 right-5 text-white text-4xl z-10 active-scale"><i class="fa-solid fa-xmark"></i></button>
-    <button id="lb-prev" onclick="changeLightboxImage(-1)" class="absolute left-8 top-1/2 -translate-y-1/2 text-white text-4xl p-4 active-scale"><i class="fa-solid fa-chevron-left"></i></button>
-    <button id="lb-next" onclick="changeLightboxImage(1)" class="absolute right-8 top-1/2 -translate-y-1/2 text-white text-4xl p-4 active-scale"><i class="fa-solid fa-chevron-right"></i></button>
-    <img id="lightbox-image" class="max-w-full max-h-[80vh] rounded shadow-2xl object-contain mx-auto">
-    <p id="lightbox-counter" class="text-white font-black text-xs uppercase mt-6 tracking-widest text-center"></p>
+<!-- Lightbox -->
+<div id="image-lightbox" class="hidden fixed inset-0 z-[2000] bg-black/95 flex flex-col items-center justify-center p-4 backdrop-blur-md text-white text-center text-center text-center">
+    <button onclick="closeLightbox()" class="absolute top-5 right-5 text-white text-4xl z-10 active-scale"><i class="fa-solid fa-xmark text-center"></i></button>
+    <button id="lb-prev" onclick="changeLightboxImage(-1)" class="absolute left-8 top-1/2 -translate-y-1/2 text-white text-4xl p-4 active-scale"><i class="fa-solid fa-chevron-left text-center text-center"></i></button>
+    <button id="lb-next" onclick="changeLightboxImage(1)" class="absolute right-8 top-1/2 -translate-y-1/2 text-white text-4xl p-4 active-scale"><i class="fa-solid fa-chevron-right text-center text-center"></i></button>
+    <img id="lightbox-image" class="max-w-full max-h-[80vh] rounded shadow-2xl object-contain mx-auto text-center text-center">
+    <p id="lightbox-counter" class="text-white font-black text-xs uppercase mt-6 tracking-widest text-center text-center text-center text-center"></p>
 </div>
 
 <!-- TOAST -->
-<div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 z-[3000] transform -translate-y-24 transition-all duration-300 bg-black/90 text-white px-6 py-4 rounded-2xl text-[11px] font-black shadow-2xl flex items-center gap-3 pointer-events-none text-center"></div>
+<div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 z-[3000] transform -translate-y-24 transition-all duration-300 bg-black/90 text-white px-6 py-4 rounded-2xl text-[11px] font-black shadow-2xl flex items-center gap-3 pointer-events-none text-center text-center text-center text-center text-center"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
@@ -335,7 +360,7 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    const bank = 'mbb'; 
+    const bank = 'MB'; 
     const stk = '5555553659999';
     const RENEW_PRICE = 50000;
     const VIP_PRICE = 100000;
@@ -344,6 +369,7 @@
     let currentUser = null;
     let allPosts = [];
     let allUserData = {}; 
+    let allMessages = [];
     let uploadedImages = [];
     let lightboxList = [];
     let lightboxIndex = 0;
@@ -354,12 +380,12 @@
     let paymentInterval = null;
     let currentPayingPostId = null;
     let currentAuthFile = null;
-    let paymentType = 'RENEW'; // 'RENEW' or 'VIP'
+    let paymentType = 'RENEW';
 
     const EXP_ANON = 3 * 24 * 60 * 60 * 1000;
     const EXP_USER = 30 * 24 * 60 * 60 * 1000;
 
-    // --- GLOBAL FUNCTIONS ---
+    // --- GLOBAL FUNCTIONS EXPOSURE ---
     window.showToast = (text, icon = 'fa-circle-info') => {
         const toast = document.getElementById('toast');
         if (!toast) return;
@@ -402,7 +428,10 @@
         el.classList.toggle('hidden');
         document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
         if(id === 'modal-post' && el.classList.contains('hidden')) {
-            editingPostId = null; document.getElementById('post-form')?.reset(); uploadedImages = []; renderPrev();
+            editingPostId = null; 
+            document.getElementById('post-form')?.reset(); 
+            uploadedImages = []; 
+            renderPrev();
             document.getElementById('post-modal-title').innerText = "Đăng tin rao vặt";
             document.getElementById('submit-btn').innerText = "XÁC NHẬN BÀI ĐĂNG";
         }
@@ -441,37 +470,37 @@
         if(!content) return;
         document.getElementById('detail-header-title').innerText = p.title;
         content.innerHTML = `
-            <div class="flex flex-col sm:flex-row bg-white text-left">
+            <div class="flex flex-col sm:flex-row bg-white text-left text-left text-left">
                 <div class="w-full sm:w-1/2">
-                    <div id="detail-slider" class="flex overflow-x-auto hide-scrollbar aspect-square text-black text-left">${p.images.map(img => `<div class="detail-slide-item w-full shrink-0"><img src="${img}" class="w-full h-full object-cover cursor-zoom-in" onclick="window.openLightbox('${img}', '${p.id}')"></div>`).join('')}</div>
-                    <div class="flex gap-2 p-4 overflow-x-auto hide-scrollbar bg-white">${p.images.map((img, i) => `<img src="${img}" onclick="document.getElementById('detail-slider').scrollTo({left: ${i}*document.getElementById('detail-slider').clientWidth, behavior:'smooth'})" class="w-12 h-12 rounded-lg object-cover cursor-pointer opacity-70 hover:opacity-100 text-center text-center">`).join('')}</div>
+                    <div id="detail-slider" class="flex overflow-x-auto hide-scrollbar aspect-square text-black text-left text-left text-left text-left text-left text-left">${p.images.map(img => `<div class="detail-slide-item w-full shrink-0"><img src="${img}" class="w-full h-full object-cover cursor-zoom-in" onclick="window.openLightbox('${img}', '${p.id}')"></div>`).join('')}</div>
+                    <div class="flex gap-2 p-4 overflow-x-auto hide-scrollbar bg-white text-center text-center text-center text-center text-center text-center text-center">${p.images.map((img, i) => `<img src="${img}" onclick="document.getElementById('detail-slider').scrollTo({left: ${i}*document.getElementById('detail-slider').clientWidth, behavior:'smooth'})" class="w-12 h-12 rounded-lg object-cover cursor-pointer opacity-70 hover:opacity-100 text-center text-center text-center">`).join('')}</div>
                 </div>
-                <div class="w-full sm:w-1/2 p-6 text-left space-y-4 bg-white text-black text-left text-left">
-                    <h2 class="text-xl font-black uppercase text-gray-800 leading-tight flex items-center gap-2 text-left">
-                        ${isVip ? '<i class="fa-solid fa-crown vip-badge text-sm text-center"></i>' : ''}
+                <div class="w-full sm:w-1/2 p-6 text-left space-y-4 bg-white text-black text-left text-left text-left text-left text-left">
+                    <h2 class="text-xl font-black uppercase text-gray-800 leading-tight flex items-center gap-2 text-left text-left text-left text-left text-left text-left">
+                        ${isVip ? '<i class="fa-solid fa-crown vip-badge text-sm text-center text-center"></i>' : ''}
                         ${p.title}
                     </h2>
-                    <div class="text-3xl font-black text-[#ee4d2d] bg-[#fff5f5] p-4 rounded-xl border border-red-100 shadow-sm text-left">${formatPrice(p.price)}</div>
-                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 text-sm text-gray-600 font-medium whitespace-pre-line text-left text-left">${p.desc}</div>
+                    <div class="text-3xl font-black text-[#ee4d2d] bg-[#fff5f5] p-4 rounded-xl border border-red-100 shadow-sm text-left text-left text-left text-left text-left text-left text-left text-left">${formatPrice(p.price)}</div>
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 text-sm text-gray-600 font-medium whitespace-pre-line text-left text-left text-left text-left text-left text-left text-left text-left">${p.desc}</div>
                     
-                    <div class="border-t border-gray-100 pt-4 text-left text-left">
-                        <div class="flex items-center gap-3 mb-4 text-left text-left">
-                            <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 shadow-inner"><i class="fa-solid fa-house-user text-xl text-center"></i></div>
-                            <div class="text-left text-left">
-                                <p class="text-xs font-black text-gray-800 uppercase tracking-tighter flex items-center gap-1 text-left text-left">
+                    <div class="border-t border-gray-100 pt-4 text-left text-left text-left text-left text-left text-left text-left text-left">
+                        <div class="flex items-center gap-3 mb-4 text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left">
+                            <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 shadow-inner"><i class="fa-solid fa-house-user text-xl text-center text-center text-center"></i></div>
+                            <div class="text-left text-left text-left text-left text-left text-left text-left">
+                                <p class="text-xs font-black text-gray-800 uppercase tracking-tighter flex items-center gap-1 text-left text-left text-left text-left text-left text-left text-left text-left text-left">
                                     Cư dân Ecohome
-                                    ${isVip ? '<i class="fa-solid fa-circle-check text-blue-500 text-[10px] text-center" title="Xác thực VIP"></i>' : ''}
+                                    ${isVip ? '<i class="fa-solid fa-circle-check text-blue-500 text-[10px] text-center text-center text-center" title="Xác thực VIP"></i>' : ''}
                                 </p>
-                                <p class="text-[9px] text-green-500 font-bold uppercase tracking-widest italic text-left text-left"><i class="fa-solid fa-circle text-[6px] text-center"></i> Online</p>
+                                <p class="text-[9px] text-green-500 font-bold uppercase tracking-widest italic text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><i class="fa-solid fa-circle text-[6px] text-center text-center text-center"></i> Online</p>
                             </div>
                         </div>
                         
-                        <div class="flex flex-col gap-2 text-left text-left">
-                            <a href="tel:${p.phone}" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-2 active-scale shadow-lg text-center text-center">
-                                <i class="fa-solid fa-phone-volume text-white"></i> GỌI ĐIỆN: ${p.phone}
+                        <div class="flex flex-col gap-2 text-left text-left text-left text-left text-left text-left text-left text-left">
+                            <a href="tel:${p.phone}" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-2 active-scale shadow-lg text-center text-center text-center text-center text-center text-center text-center">
+                                <i class="fa-solid fa-phone-volume text-white text-center text-center text-center text-center text-center text-center text-center"></i> GỌI ĐIỆN: ${p.phone}
                             </a>
-                            <a href="https://zalo.me/${p.phone}" target="_blank" class="w-full bg-[#0068ff] text-white py-4 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-2 active-scale shadow-lg text-center text-center">
-                                <i class="fa-solid fa-comment-dots text-white"></i> NHẮN TIN ZALO
+                            <a href="https://zalo.me/${p.phone}" target="_blank" class="w-full bg-[#0068ff] text-white py-4 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-2 active-scale shadow-lg text-center text-center text-center text-center text-center text-center text-center">
+                                <i class="fa-solid fa-comment-dots text-white text-center text-center text-center text-center text-center text-center text-center"></i> NHẮN TIN ZALO
                             </a>
                         </div>
                     </div>
@@ -503,78 +532,7 @@
 
         if(tab === 'posts') { pTab.classList.remove('hidden'); pBtn.classList.add('tab-active'); renderBqtAdmin(); }
         else if(tab === 'users') { uTab.classList.remove('hidden'); uBtn.classList.add('tab-active'); renderBqtUsers(); }
-        else { mTab.classList.remove('hidden'); mBtn.classList.add('tab-active'); renderBqtMessages(); }
-    };
-
-    // --- PAYMENTS & BILL ---
-    window.startPayment = (type, targetId = null) => {
-        if(!currentUser) return window.toggleModal('modal-login');
-        
-        paymentType = type;
-        currentPayingPostId = targetId;
-        const amount = (type === 'VIP') ? VIP_PRICE : RENEW_PRICE;
-        const transId = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const code = (type === 'VIP') ? `VIP${transId}` : `GH${transId}`;
-        
-        const codeEl = document.getElementById('payment-code');
-        const qrEl = document.getElementById('payment-qr');
-        const linkEl = document.getElementById('payment-app-link');
-        const titleEl = document.getElementById('payment-title');
-        const amountEl = document.getElementById('payment-amount-display');
-
-        if(titleEl) titleEl.innerText = (type === 'VIP') ? "Đăng ký VIP tài khoản" : "Gia hạn bài đăng";
-        if(amountEl) amountEl.innerText = amount.toLocaleString('vi-VN') + " đ";
-        if(codeEl) codeEl.innerText = code;
-        if(qrEl) qrEl.src = `https://qr.sepay.vn/img?acc=${stk}&bank=${bank}&amount=${amount}&des=${code}`;
-        if(linkEl) linkEl.href = `https://sepay.vn/pay?bank=${bank}&acc=${stk}&amount=${amount}&des=${code}`;
-        
-        window.toggleModal('modal-payment');
-
-        if (paymentInterval) clearInterval(paymentInterval);
-        paymentInterval = setInterval(async () => {
-            try {
-                const res = await fetch(`https://sepay-webhook-1l8y.onrender.com/check-payment?code=${code}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.paid === true) { 
-                        clearInterval(paymentInterval); 
-                        if(type === 'VIP') finalizeVipUpgrade();
-                        else finalizeRenewPost(targetId);
-                    }
-                }
-            } catch(e) {}
-        }, 3000); 
-    };
-
-    async function finalizeRenewPost(postId) {
-        try {
-            const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
-            const postSnap = await getDoc(postRef);
-            if(!postSnap.exists()) return;
-            const postData = postSnap.data();
-            const now = Date.now();
-            const limit = (postData.isAnonymous && !postData.isRenewedPaid) ? EXP_ANON : EXP_USER;
-            const currentExpiry = (postData.createdAt?.seconds * 1000 || now) + limit;
-            let newBase = Math.max(currentExpiry, now);
-            await updateDoc(postRef, { createdAt: Timestamp.fromDate(new Date(newBase)), isRenewedPaid: true });
-            closePaymentModal(); window.showToast("Gia hạn 30 ngày thành công!", "fa-circle-check");
-        } catch (e) { window.showToast("Lỗi cập nhật!"); }
-    }
-
-    async function finalizeVipUpgrade() {
-        try {
-            const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
-            await updateDoc(userRef, { isVip: true });
-            closePaymentModal(); window.showToast("Bạn đã trở thành thành viên VIP!", "fa-crown");
-        } catch (e) { window.showToast("Lỗi cấp quyền VIP!"); }
-    }
-
-    window.adminToggleUserVip = async (uid, currentStatus) => {
-        try {
-            const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', uid);
-            await updateDoc(userRef, { isVip: !currentStatus });
-            window.showToast("Cập nhật VIP thành công!", "fa-crown");
-        } catch (e) { window.showToast("Lỗi cập nhật!"); }
+        else { mTab.classList.remove('hidden'); mBtn.classList.add('tab-active'); renderBqtMessages(allMessages); }
     };
 
     window.adminExtendPost = async (id) => {
@@ -592,6 +550,14 @@
             let newExpiry = Math.max(currentExpiry, now) + (days * 24 * 60 * 60 * 1000);
             await updateDoc(postRef, { createdAt: Timestamp.fromDate(new Date(newExpiry - limitDefault)), isRenewedPaid: true });
             window.showToast(`Cấp thêm ${days} ngày!`, 'fa-circle-check');
+        } catch (e) { window.showToast("Lỗi cập nhật!"); }
+    };
+
+    window.adminToggleUserVip = async (uid, currentStatus) => {
+        try {
+            const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', uid);
+            await updateDoc(userRef, { isVip: !currentStatus });
+            window.showToast("Cập nhật VIP thành công!", "fa-crown");
         } catch (e) { window.showToast("Lỗi cập nhật!"); }
     };
 
@@ -678,12 +644,13 @@
         unsubscribeUsers = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'users'), snap => {
             allUserData = {};
             snap.docs.forEach(d => { allUserData[d.id] = d.data(); });
-            updateAuthUI(); renderPosts(); renderBqtUsers();
+            renderPosts(); renderBqtUsers(); updateAuthUI();
         }, (err) => console.warn("Sync error:", err));
 
         if(unsubscribeMessages) unsubscribeMessages();
         unsubscribeMessages = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), snap => {
-            renderBqtMessages(snap.docs.map(d => ({id: d.id, ...d.data()})));
+            allMessages = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            renderBqtMessages(allMessages);
         }, (err) => console.warn("Sync error:", err));
     }
 
@@ -714,24 +681,24 @@
         const daysLeft = Math.max(0, Math.ceil((limit - (Date.now() - (p.createdAt?.seconds*1000 || Date.now()))) / (1000*60*60*24)));
 
         return `
-            <div class="post-card shadow-sm flex flex-col h-full active-scale text-black text-left">
-                <div class="relative pt-[100%] bg-gray-50 cursor-pointer text-left text-left text-left" onclick="window.viewPostDetail('${p.id}')">
+            <div class="post-card shadow-sm flex flex-col h-full active-scale text-black text-left text-left">
+                <div class="relative pt-[100%] bg-gray-50 cursor-pointer text-left text-left text-left text-left" onclick="window.viewPostDetail('${p.id}')">
                     <img src="${p.images?.[0]}" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
-                    <div class="absolute top-1 right-1 bg-black/70 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter z-10 text-center">
+                    <div class="absolute top-1 right-1 bg-black/70 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter z-10 text-center text-center text-center text-center">
                         Còn: ${daysLeft}N
                     </div>
-                    <div class="absolute top-1 left-1 flex flex-col gap-1 items-start text-left text-left text-left">
-                        ${isSp ? '<div class="bg-red-600 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase shadow-sm">Tài trợ</div>' : ''}
-                        ${isVip ? '<div class="bg-yellow-400 text-black text-[7px] font-black px-1.5 py-0.5 rounded uppercase flex items-center gap-0.5 shadow-sm"><i class="fa-solid fa-crown text-[6px]"></i> VIP</div>' : ''}
+                    <div class="absolute top-1 left-1 flex flex-col gap-1 items-start text-left text-left text-left text-left text-left">
+                        ${isSp ? '<div class="bg-red-600 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase shadow-sm text-center text-center">Tài trợ</div>' : ''}
+                        ${isVip ? '<div class="bg-yellow-400 text-black text-[7px] font-black px-1.5 py-0.5 rounded uppercase flex items-center gap-0.5 shadow-sm text-center text-center text-center"><i class="fa-solid fa-crown text-[6px] text-center text-center"></i> VIP</div>' : ''}
                     </div>
                 </div>
-                <div class="p-2 flex flex-col flex-1 text-left text-left text-left text-left">
-                    <h3 class="text-[11px] font-bold line-clamp-2 h-8 mb-1 text-gray-800 uppercase text-left" onclick="window.viewPostDetail('${p.id}')">${p.title}</h3>
-                    <div class="text-[#ee4d2d] font-black text-sm mb-0.5 text-left text-left text-left">${formatPrice(p.price)}</div>
-                    <div class="text-[9px] text-gray-500 font-bold mb-1.5 flex items-center gap-1 text-left">
-                        <i class="fa-solid fa-phone text-[8px] text-center"></i> ${p.phone}
+                <div class="p-2 flex flex-col flex-1 text-left text-left text-left text-left text-left">
+                    <h3 class="text-[11px] font-bold line-clamp-2 h-8 mb-1 text-gray-800 uppercase text-left text-left text-left text-left" onclick="window.viewPostDetail('${p.id}')">${p.title}</h3>
+                    <div class="text-[#ee4d2d] font-black text-sm mb-0.5 text-left text-left text-left text-left text-left">${formatPrice(p.price)}</div>
+                    <div class="text-[9px] text-gray-500 font-bold mb-1.5 flex items-center gap-1 text-left text-left text-left">
+                        <i class="fa-solid fa-phone text-[8px] text-center text-center text-center text-center"></i> ${p.phone}
                     </div>
-                    <div class="mt-auto flex justify-between text-[8px] text-gray-400 font-bold uppercase text-left text-left text-left text-left text-left"><span>${p.category}</span><span class="text-blue-500 font-black text-center text-center">Xem ngay ></span></div>
+                    <div class="mt-auto flex justify-between text-[8px] text-gray-400 font-bold uppercase text-left text-left text-left text-left text-left text-left"><span>${p.category}</span><span class="text-blue-500 font-black text-center text-center text-center">Xem ngay ></span></div>
                 </div>
             </div>`;
     }
@@ -740,17 +707,16 @@
         const wrap = document.getElementById('admin-posts');
         if(!wrap || !currentUser) return;
         const my = allPosts.filter(p => p.userId === currentUser.uid);
-        if(!my.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400 font-black uppercase text-[10px] text-center text-center text-center">Bạn chưa có tin nào</p>'; return; }
+        if(!my.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400 font-black uppercase text-[10px] text-center text-center text-center text-center">Bạn chưa có tin nào</p>'; return; }
         wrap.innerHTML = my.map(p => `
-            <div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4 text-black text-left text-left text-left">
-                <img src="${p.images?.[0]}" class="w-14 h-14 rounded-lg object-cover shadow-inner text-center text-center">
-                <div class="flex-1 min-w-0 text-left text-left text-left">
+            <div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4 text-black text-left text-left text-left text-left text-left text-left">
+                <img src="${p.images?.[0]}" class="w-14 h-14 rounded-lg object-cover shadow-inner text-center text-center text-center text-center text-center">
+                <div class="flex-1 min-w-0 text-left text-left text-left text-left text-left">
                     <div class="text-[11px] font-black truncate uppercase text-gray-800 text-left text-left text-left">${p.title}</div>
-                    <div class="text-orange-600 font-black text-xs text-left text-left text-left text-left">${formatPrice(p.price)}</div>
+                    <div class="text-orange-600 font-black text-xs text-left text-left text-left text-left text-left">${formatPrice(p.price)}</div>
                 </div>
-                <div class="flex gap-2 text-left text-left text-left">
-                    <button onclick="window.openEditModal('${p.id}')" class="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center">Sửa</button>
-                    <button onclick="window.startPayment('RENEW', '${p.id}')" class="bg-green-50 text-green-600 px-3 py-2 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center">Gia hạn</button>
+                <div class="flex gap-2 text-left text-left text-left text-left">
+                    <button onclick="window.openEditModal('${p.id}')" class="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center">Sửa</button>
                     <button onclick="window.confirmDeletePost('${p.id}')" class="bg-red-50 text-red-600 px-3 py-2 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center text-center">Xóa</button>
                 </div>
             </div>`).join('');
@@ -763,24 +729,24 @@
             const limit = (p.isAnonymous && !p.isRenewedPaid) ? EXP_ANON : EXP_USER;
             const daysLeft = Math.max(0, Math.ceil((limit - (now - (p.createdAt?.seconds*1000 || now))) / (1000*60*60*24)));
             return `
-                <div class="bg-white rounded-xl p-4 border shadow-sm flex flex-col gap-4 text-left text-black text-left text-left text-left text-left">
-                    <div class="flex items-center gap-4 text-left text-left text-left text-left text-left text-left">
-                        <img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover cursor-pointer text-center text-center text-center text-center" onclick="window.viewPostDetail('${p.id}')">
-                        <div class="flex-1 min-w-0 text-left text-left text-left text-left text-left text-left">
-                            <div class="text-[10px] font-black truncate uppercase text-gray-800 text-left text-left text-left text-left text-left text-left">${p.title}</div>
+                <div class="bg-white rounded-xl p-4 border shadow-sm flex flex-col gap-4 text-left text-black text-left text-left text-left text-left text-left text-left text-left">
+                    <div class="flex items-center gap-4 text-left text-left text-left text-left text-left text-left text-left">
+                        <img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover cursor-pointer text-center text-center text-center text-center text-center text-center text-center" onclick="window.viewPostDetail('${p.id}')">
+                        <div class="flex-1 min-w-0 text-left text-left text-left text-left text-left text-left text-left">
+                            <div class="text-[10px] font-black truncate uppercase text-gray-800 text-left text-left text-left text-left text-left">${p.title}</div>
                             <div class="text-orange-600 font-black text-[10px] text-left text-left text-left text-left text-left text-left">${formatPrice(p.price)}</div>
-                            <div class="text-[9px] text-gray-400 font-bold uppercase mt-1 text-left text-left text-left text-left text-left text-left">Còn: <span class="text-red-600 text-center text-center text-center text-center">${daysLeft} ngày</span></div>
+                            <div class="text-[9px] text-gray-400 font-bold uppercase mt-1 text-left text-left text-left text-left text-left text-left text-left">Còn: <span class="text-red-600 text-center text-center text-center text-center text-center">${daysLeft} ngày</span></div>
                         </div>
-                        <div class="flex flex-wrap gap-1 shrink-0 justify-end text-left text-left text-left text-left">
-                            <button onclick="window.pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center">Đẩy</button>
-                            <button onclick="window.togglePromote('${p.id}', ${p.isPromoted || false})" class="${p.isPromoted ? 'bg-orange-600' : 'bg-gray-200'} text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center">Ads</button>
-                            <button onclick="window.confirmDeletePost('${p.id}')" class="bg-red-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center text-center text-center">Xóa</button>
+                        <div class="flex flex-wrap gap-1 shrink-0 justify-end text-left text-left text-left text-left text-left">
+                            <button onclick="window.pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center text-center">Đẩy</button>
+                            <button onclick="window.togglePromote('${p.id}', ${p.isPromoted || false})" class="${p.isPromoted ? 'bg-orange-600' : 'bg-gray-200'} text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center text-center text-center">Ads</button>
+                            <button onclick="window.confirmDeletePost('${p.id}')" class="bg-red-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center text-center text-center text-center text-center">Xóa</button>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between border-t border-gray-100 pt-3 gap-2 text-left text-left text-left text-left text-left text-left">
+                    <div class="flex items-center justify-between border-t border-gray-100 pt-3 gap-2 text-left text-left text-left text-left text-left text-left text-left">
                         <input type="number" id="extend-days-${p.id}" placeholder="Ngày cộng..." class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-[10px] font-black text-black text-left text-left text-left text-left text-left">
-                        <button onclick="window.adminExtendPost('${p.id}')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-[8px] font-black active-scale uppercase text-center text-center text-center text-center">Gia hạn</button>
-                        ${p.receiptProof ? `<button onclick="window.openLightbox('${p.receiptProof}')" class="bg-black text-white px-3 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center">Xem bill</button>` : ''}
+                        <button onclick="window.adminExtendPost('${p.id}')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-[8px] font-black active-scale uppercase text-center text-center text-center text-center text-center text-center">Gia hạn</button>
+                        ${p.receiptProof ? `<button onclick="window.openLightbox('${p.receiptProof}')" class="bg-black text-white px-3 py-1.5 rounded-lg text-[8px] font-black uppercase active-scale text-center text-center text-center text-center text-center text-center">Xem bill</button>` : ''}
                     </div>
                 </div>`;
         }).join('');
@@ -789,7 +755,7 @@
     function renderBqtUsers() {
         const wrap = document.getElementById('bqt-admin-users'); if(!wrap) return;
         const uids = [...new Set(allPosts.map(p => p.userId))];
-        if(!uids.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400 font-black text-xs text-black text-center text-center text-center text-center text-center">TRỐNG</p>'; return; }
+        if(!uids.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400 font-black text-xs text-black text-center text-center text-center text-center text-center text-center text-center text-center text-center">TRỐNG</p>'; return; }
         wrap.innerHTML = uids.map(uid => {
             const uData = allUserData[uid] || {};
             const name = uData.displayName || "Cư dân mới";
@@ -799,16 +765,16 @@
             const isVip = uData.isVip === true;
 
             return `
-                <div class="bg-white rounded-xl p-4 border shadow-sm flex items-center justify-between gap-4 text-left ${isVip ? 'user-vip-row' : ''} text-black text-left text-left text-left text-left text-left">
-                    <div class="flex items-center gap-3 min-w-0 flex-1 text-left text-left text-left text-left text-left">
-                        <img src="${pic}" class="w-10 h-10 rounded-full border border-gray-100 object-cover shadow-sm text-center text-center text-center text-center text-center">
-                        <div class="min-w-0 text-left text-left text-left text-left text-left">
-                            <div class="text-[10px] font-black text-gray-800 uppercase flex items-center gap-1 truncate text-left text-left text-left text-left text-left">
+                <div class="bg-white rounded-xl p-4 border shadow-sm flex items-center justify-between gap-4 text-left ${isVip ? 'user-vip-row' : ''} text-black text-left text-left text-left text-left text-left text-left">
+                    <div class="flex items-center gap-3 min-w-0 flex-1 text-left text-left text-left text-left text-left text-left">
+                        <img src="${pic}" class="w-10 h-10 rounded-full border border-gray-100 object-cover shadow-sm text-center text-center text-center text-center text-center text-center text-center">
+                        <div class="min-w-0 text-left text-left text-left text-left text-left text-left">
+                            <div class="text-[10px] font-black text-gray-800 uppercase flex items-center gap-1 truncate text-left text-left text-left text-left text-left text-left">
                                 ${name} 
-                                ${isVip ? '<i class="fa-solid fa-crown vip-badge text-xs text-center text-center text-center"></i>' : ''}
+                                ${isVip ? '<i class="fa-solid fa-crown vip-badge text-xs text-center text-center text-center text-center text-center text-center"></i>' : ''}
                             </div>
-                            <div class="text-[8px] text-blue-600 font-bold mt-0.5 truncate text-left text-left text-left text-left text-left italic">${emailDisplay}</div>
-                            <div class="text-[8px] text-orange-600 font-bold uppercase mt-0.5 text-left text-left text-left text-left text-left text-left">Số bài: ${allPosts.filter(p => p.userId === uid).length}</div>
+                            <div class="text-[8px] text-blue-600 font-bold mt-0.5 truncate text-left italic text-left text-left text-left text-left text-left">${emailDisplay}</div>
+                            <div class="text-[8px] text-orange-600 font-bold uppercase mt-0.5 text-left text-left text-left text-left text-left text-left text-left">Số bài: ${allPosts.filter(p => p.userId === uid).length}</div>
                         </div>
                     </div>
                     <button onclick="window.adminToggleUserVip('${uid}', ${isVip})" class="${isVip ? 'bg-red-50 text-red-600 border-red-100' : 'bg-yellow-50 text-yellow-700 border-yellow-100'} px-4 py-2 border rounded-xl text-[9px] font-black uppercase active-scale whitespace-nowrap text-center text-center text-center text-center text-center text-center">
@@ -821,27 +787,27 @@
     function renderBqtMessages(msgs = []) {
         const wrap = document.getElementById('bqt-admin-messages'); if(!wrap) return;
         const sortedMsgs = msgs.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-        if(!sortedMsgs.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400 font-black text-xs uppercase text-black text-center text-center text-center text-center text-center">Trống</p>'; return; }
+        if(!sortedMsgs.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400 font-black text-xs uppercase text-black text-center text-center text-center text-center text-center text-center text-center text-center">Trống</p>'; return; }
         wrap.innerHTML = sortedMsgs.map(m => `
-            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-black text-left mb-3 text-left text-left text-left text-left text-left text-left text-left">
-                <div class="flex justify-between items-start mb-2 text-left text-left text-left text-left text-left text-left text-left text-left">
-                    <div class="flex items-center gap-2 text-left text-left text-left text-left text-left text-left text-left text-left text-left">
-                         <img src="${allUserData[m.userId]?.photoURL || 'https://ui-avatars.com/api/?name=Guest'}" class="w-6 h-6 rounded-full object-cover text-center text-center text-center text-center text-center text-center text-center text-center text-center">
-                         <span class="text-[9px] font-black text-orange-600 uppercase bg-orange-50 px-2 py-0.5 rounded text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left">${m.userName}</span>
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-black text-left mb-3 text-left text-left text-left text-left text-left text-left text-left text-left">
+                <div class="flex justify-between items-start mb-2 text-left text-left text-left text-left text-left text-left text-left text-left text-left">
+                    <div class="flex items-center gap-2 text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left">
+                         <img src="${allUserData[m.userId]?.photoURL || 'https://ui-avatars.com/api/?name=Guest'}" class="w-6 h-6 rounded-full object-cover text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center">
+                         <span class="text-[9px] font-black text-orange-600 uppercase bg-orange-50 px-2 py-0.5 rounded text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left">${m.userName}</span>
                     </div>
-                    <button onclick="deleteDoc(doc(db,'artifacts','${appId}','public','data','messages','${m.id}'))" class="text-red-300 text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"><i class="fa-solid fa-trash text-xs text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"></i></button>
+                    <button onclick="deleteDoc(doc(db,'artifacts','${appId}','public','data','messages','${m.id}'))" class="text-red-300 text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"><i class="fa-solid fa-trash text-xs text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"></i></button>
                 </div>
                 <div class="text-sm font-medium mb-2 text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left">${m.content}</div>
-                ${m.file ? `<img src="${m.file}" class="w-full rounded-xl max-h-48 object-cover cursor-zoom-in border text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center" onclick="window.openLightbox('${m.file}')">` : ''}
+                ${m.file ? `<img src="${m.file}" class="w-full rounded-xl max-h-48 object-cover cursor-zoom-in border text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center" onclick="window.openLightbox('${m.file}')">` : ''}
             </div>`).join('');
     }
 
     // --- FORM SUBMIT ---
     document.getElementById('post-form')?.addEventListener('submit', async e => {
         e.preventDefault();
-        if (!currentUser) return window.showToast("Đăng nhập!");
+        if (!currentUser) return window.toggleModal('modal-login');
         const btn = document.getElementById('submit-btn'); 
-        btn.disabled = true; btn.innerHTML = `<div class="loader mr-2 text-center text-center text-center text-center"></div> ĐANG LƯU...`;
+        btn.disabled = true; btn.innerHTML = `<div class="loader mr-2 text-center text-center text-center text-center text-center text-center text-center"></div> ĐANG LƯU...`;
         try {
             const data = { 
                 title: document.getElementById('p-title').value, price: document.getElementById('p-price').value, 
@@ -860,22 +826,18 @@
             }
             window.toggleModal('modal-post');
         } catch(e) { window.showToast("Lỗi!"); } 
-        finally { btn.disabled = false; btn.innerText = editingPostId ? "CẬP NHẬT NGAY" : "XÁC NHẬN BÀI ĐĂNG"; }
+        finally { btn.disabled = false; btn.innerText = editingPostId ? "CẬP NHẬT" : "XÁC NHẬN BÀI ĐĂNG"; }
     });
 
     document.getElementById('receipt-upload')?.addEventListener('change', async e => {
-        const file = e.target.files[0]; if(!file) return;
+        const file = e.target.files[0]; if(!file || !currentPayingPostId) return;
         const status = document.getElementById('receipt-status');
         status.innerText = "ĐANG TẢI...";
         try {
             const base64 = await compress(file);
-            if(currentPayingPostId) {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', currentPayingPostId), { receiptProof: base64 });
-            } else if(paymentType === 'VIP') {
-                // Tùy chọn lưu bill VIP vào user profile nếu cần
-            }
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', currentPayingPostId), { receiptProof: base64 });
             status.innerText = "ĐÃ GỬI BILL!";
-            window.showToast("Đã lưu bill minh chứng!");
+            window.showToast("Đã gửi minh chứng giao dịch!");
         } catch(err) { window.showToast("Lỗi!"); status.innerText = "THỬ LẠI"; }
     });
 
@@ -884,64 +846,70 @@
         for(let f of files) { uploadedImages.push(await compress(f)); }
         renderPrev();
     });
-    const renderPrev = () => { document.getElementById('preview-list').innerHTML = uploadedImages.map((s,i) => `<div class="w-16 h-16 relative rounded-xl overflow-hidden border shadow-sm text-left text-left text-left text-left"><img src="${s}" class="w-full h-full object-cover text-center text-center text-center text-center text-center text-center"><div onclick="window.removeImg(${i})" class="absolute top-0 right-0 bg-red-600 text-white w-4 h-4 flex items-center justify-center rounded-full text-[8px] cursor-pointer shadow-lg transition-transform hover:scale-110 text-center text-center text-center text-center text-center text-center text-center text-center"><i class="fa-solid fa-xmark text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"></i></div></div>`).join(''); };
+    const renderPrev = () => { document.getElementById('preview-list').innerHTML = uploadedImages.map((s,i) => `<div class="w-16 h-16 relative rounded-xl overflow-hidden border shadow-sm text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left text-left"><img src="${s}" class="w-full h-full object-cover text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"><div onclick="window.removeImg(${i})" class="absolute top-0 right-0 bg-red-600 text-white w-4 h-4 flex items-center justify-center rounded-full text-[8px] cursor-pointer shadow-lg transition-transform hover:scale-110 text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"><i class="fa-solid fa-xmark text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"></i></div></div>`).join(''); };
 
-    // --- AUTH OBSERVER ---
-    function updateAuthUI() {
-        const user = auth.currentUser;
-        const topAuth = document.getElementById('top-auth-section');
-        const adminBtn = document.getElementById('admin-bqt-nav-btn');
-        const statusBar = document.getElementById('auth-status-bar');
-        const upgradeVip = document.getElementById('upgrade-vip-btn');
-
-        if(user){
-            const name = user.displayName || 'Người dùng';
-            const pic = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`;
-            const isVip = allUserData[user.uid]?.isVip === true;
-
-            if(topAuth) topAuth.innerHTML = `<img src="${pic}" class="w-9 h-9 rounded-full border-2 border-white shadow cursor-pointer active-scale text-center text-center text-center text-center text-center text-center text-center" onclick="openUserAdmin()">`;
-            if(statusBar) statusBar.classList.remove('hidden');
-            document.getElementById('auth-user-name').innerHTML = `${name} ${isVip ? '<i class="fa-solid fa-crown vip-badge text-[10px] ml-1"></i>' : ''}`;
-            
-            if(upgradeVip) upgradeVip.classList.toggle('hidden', isVip || user.isAnonymous);
-
-            if(user.email === 'phamvanconcn@gmail.com') {
-                if(adminBtn) { adminBtn.classList.remove('hidden'); adminBtn.classList.add('flex', 'bg-red-600', 'text-white', 'px-3', 'animate-pulse'); adminBtn.innerHTML = '<i class="fa-solid fa-crown text-white text-center text-center text-center text-center text-center"></i> BQT ADMIN'; }
-            } else if(adminBtn) adminBtn.classList.add('hidden');
-        } else {
-            if(topAuth) topAuth.innerHTML = `<button onclick="window.loginGoogle()" class="bg-white px-3 py-2 rounded-xl text-[10px] font-black shadow text-black active-scale text-black text-center text-center text-center text-center text-center text-center text-center"><i class="fa-brands fa-google text-red-600 text-center text-center text-center text-center text-center text-center text-center text-center"></i> ĐĂNG NHẬP</button>`;
-            if(statusBar) statusBar.classList.add('hidden');
-            if(adminBtn) adminBtn.classList.add('hidden');
-        }
-    }
-
-    onAuthStateChanged(auth, async (user) => {
+    // --- MAIN ENTRY ---
+    const initApp = async () => {
         const isManualLogout = sessionStorage.getItem('manualLogout') === 'true';
-        currentUser = user;
-        updateAuthUI();
-
-        if(user){
-            if (!user.isAnonymous) {
-                const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
-                await setDoc(userRef, { displayName: user.displayName, photoURL: user.photoURL, email: user.email, lastSeen: serverTimestamp() }, { merge: true }).catch(() => {});
-            }
-            sessionStorage.removeItem('manualLogout');
-            startSync();
-        } else {
-            if(!isManualLogout) { document.getElementById('modal-login').classList.remove('hidden'); }
-        }
-    });
-
-    window.initAuth = async () => {
+        
         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            try { await signInWithCustomToken(auth, __initial_auth_token); } catch(e) {}
+            await signInWithCustomToken(auth, __initial_auth_token).catch(() => {});
         }
+        if (!auth.currentUser && !isManualLogout) {
+            await signInAnonymously(auth).catch(() => {});
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            const topAuth = document.getElementById('top-auth-section');
+            const adminBtn = document.getElementById('admin-bqt-nav-btn');
+            const statusBar = document.getElementById('auth-status-bar');
+
+            if(user){
+                const name = user.displayName || 'Người dùng';
+                const pic = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`;
+                
+                if (!user.isAnonymous) {
+                    const userRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
+                    await setDoc(userRef, { 
+                        displayName: name, 
+                        photoURL: pic, 
+                        email: user.email, 
+                        lastSeen: serverTimestamp() 
+                    }, { merge: true }).catch(() => {});
+                }
+
+                if(topAuth) topAuth.innerHTML = `<img src="${pic}" class="w-9 h-9 rounded-full border-2 border-white shadow cursor-pointer active-scale text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center" onclick="openUserAdmin()">`;
+                if(statusBar) statusBar.classList.remove('hidden');
+                document.getElementById('auth-user-name').innerText = name;
+                
+                if(user.email === 'phamvanconcn@gmail.com') {
+                    if(adminBtn) { 
+                        adminBtn.classList.remove('hidden'); 
+                        adminBtn.classList.add('flex', 'bg-red-600', 'text-white', 'px-3', 'animate-pulse'); 
+                        adminBtn.innerHTML = '<i class="fa-solid fa-crown text-white text-center text-center text-center text-center text-center text-center text-center text-center"></i> BQT ADMIN'; 
+                    }
+                } else if(adminBtn) adminBtn.classList.add('hidden');
+                
+                sessionStorage.removeItem('manualLogout');
+                document.getElementById('modal-login').classList.add('hidden');
+                startSync();
+            } else {
+                if(topAuth) topAuth.innerHTML = `<button onclick="window.loginGoogle()" class="bg-white px-3 py-2 rounded-xl text-[10px] font-black shadow text-black active-scale text-black text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"><i class="fa-brands fa-google text-red-600 text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center text-center"></i> ĐĂNG NHẬP</button>`;
+                if(statusBar) statusBar.classList.add('hidden');
+                if(adminBtn) adminBtn.classList.add('hidden');
+                
+                if(!isManualLogout) {
+                    document.getElementById('modal-login').classList.remove('hidden');
+                }
+            }
+        });
     };
 
     document.getElementById('p-price')?.addEventListener('input', (e) => { e.target.value = formatPrice(e.target.value.replace(/[^\d-]/g, "")); });
     document.getElementById('searchInput')?.addEventListener('input', renderPosts);
 
-    window.initAuth();
+    initApp();
 </script>
 </body>
 </html>
