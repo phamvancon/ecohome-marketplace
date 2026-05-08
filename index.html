@@ -13,6 +13,8 @@
             --shopee-red: #ee4d2d;
             --shopee-bg: #f5f5f5;
             --vip-gold: #FFD700;
+            --vip-s-blue: #0068ff;
+            --vip-ss-purple: #9c27b0;
         }
         body {
             background-color: var(--shopee-bg);
@@ -59,593 +61,899 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .vip-badge {
-            background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 1px rgba(0,0,0,0.2));
+        .qr-frame {
+            border: 8px solid white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 16px;
         }
-        
-        .success-checkmark {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto;
-            background: #4bb543;
-            border-radius: 50%;
+
+        .vip-badge-common {
+            font-size: 7px;
+            font-weight: 900;
+            padding: 2px 5px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 40px;
-            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            gap: 2px;
         }
-        @keyframes bounceIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+
+        .vip-badge { background: var(--vip-gold); color: #000; }
+        .vip-s-badge { background: var(--vip-s-blue); color: #fff; }
+        .vip-ss-badge { background: var(--vip-ss-purple); color: #fff; }
+        
+        .tab-active { color: #ee4d2d; border-bottom: 2px solid #ee4d2d; }
     </style>
 </head>
 <body class="min-h-screen pb-24 md:pb-10">
 
+<!-- BẢN TIN BQT TRÊN CÙNG -->
+<div id="bqt-announcement" class="hidden bg-red-600 text-white py-2 px-4 text-center text-[10px] font-black uppercase tracking-widest relative">
+    <span id="announcement-text">Thông báo từ Ban Quản Trị</span>
+</div>
+
 <!-- HEADER -->
-<header class="chotot-yellow sticky top-0 z-50 shadow-sm text-black">
+<header class="chotot-yellow sticky top-0 z-50 shadow-sm">
     <div class="max-w-6xl mx-auto px-3 py-2">
-        <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar text-[10px] md:text-xs mb-2 font-bold whitespace-nowrap border-b border-black/5 pb-1.5 uppercase tracking-tighter">
-            <a href="#" class="hover:text-black">Trang chủ</a>
-            <a href="https://www.ecohome.id.vn/trang-ch%E1%BB%A7" target="_blank" class="flex items-center gap-1 opacity-80 hover:text-black">
-                <i class="fa-solid fa-newspaper"></i> Bản tin cư dân
-            </a>
-            <button onclick="toggleModal('modal-contact-bqt')" class="flex items-center gap-1 opacity-80 hover:text-black">
-                <i class="fa-solid fa-headset"></i> Hỗ trợ BQT
-            </button>
-            <button id="admin-bqt-nav-btn" onclick="accessAdminBQT()" class="hidden items-center gap-1 text-red-700 bg-red-500/10 px-2 py-0.5 rounded-full hover:bg-red-500/20 transition active-scale font-black">
-                <i class="fa-solid fa-shield-halved"></i> BQT ADMIN
+        <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar text-[10px] md:text-xs mb-2 font-bold whitespace-nowrap border-b border-black/5 pb-1.5 uppercase tracking-tighter text-black text-center">
+            <a href="#" class="hover:opacity-70">Trang chủ</a>
+            <a href="https://www.ecohome.id.vn/trang-ch%E1%BB%A7" target="_blank" class="flex items-center gap-1 opacity-80"><i class="fa-solid fa-newspaper text-center"></i> Bản tin cư dân</a>
+            <button onclick="toggleModal('modal-price-list')" class="flex items-center gap-1 opacity-80 text-orange-900"><i class="fa-solid fa-tags text-center"></i> Bảng giá dịch vụ</button>
+            <button id="admin-bqt-nav-btn" onclick="accessAdminBQT()" class="hidden items-center gap-1 text-red-700 bg-red-500/10 px-2 py-0.5 rounded-full font-black">
+                <i class="fa-solid fa-shield-halved text-center"></i> BQT ADMIN
             </button>
         </div>
 
         <div class="flex items-center gap-2.5">
-            <div class="flex items-center gap-1 cursor-pointer shrink-0 active-scale" onclick="window.location.reload()">
-                <div class="bg-orange-600 text-white w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shadow-lg transform rotate-2">
-                    <span class="font-black text-sm md:text-xl tracking-tighter">BQT</span>
-                </div>
-                <div class="hidden xs:block leading-tight border-l border-black/10 pl-2 text-black text-left">
-                    <h1 class="font-black text-xs md:text-base">Chợ Ecohome</h1>
-                    <p class="text-[8px] font-bold uppercase opacity-60">Nhơn Bình</p>
+            <div class="flex items-center gap-1 cursor-pointer shrink-0 active-scale text-center" onclick="window.location.reload()">
+                <div class="bg-orange-600 text-white w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center shadow-lg transform rotate-2 border-2 border-white/20 text-center">
+                    <span class="font-black text-sm md:text-lg text-center">BQT</span>
                 </div>
             </div>
 
             <div class="flex-1 relative">
-                <input id="searchInput" type="text" placeholder="Tìm kiếm sản phẩm..." 
-                    class="w-full py-2.5 px-3.5 pr-10 rounded-xl border-none focus:ring-2 focus:ring-orange-500 outline-none shadow-sm text-sm text-black">
+                <input id="searchInput" type="text" placeholder="Tìm sản phẩm cư dân..." 
+                    class="w-full py-2.5 px-3.5 pr-10 rounded-xl border-none focus:ring-2 focus:ring-orange-500 outline-none shadow-inner text-sm">
                 <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
             </div>
 
-            <div class="flex items-center gap-2 shrink-0">
-                <button onclick="checkAuthAndPost()" class="flex flex-col items-center text-[#222] active-scale p-1">
-                    <i class="fa-solid fa-camera-retro text-xl md:text-2xl"></i>
-                    <span class="text-[8px] font-black uppercase mt-0.5">Đăng tin</span>
+            <div class="flex items-center gap-2 shrink-0 text-center">
+                <button onclick="checkAuthAndPost()" class="flex flex-col items-center text-[#222] active-scale p-1 text-center">
+                    <i class="fa-solid fa-camera-retro text-xl md:text-2xl text-center"></i>
+                    <span class="text-[8px] font-black uppercase mt-0.5 text-center text-center">Đăng tin</span>
                 </button>
-                <button id="user-manage-btn" onclick="openUserAdmin()" class="flex flex-col items-center text-[#222] active-scale p-1">
-                    <i class="fa-solid fa-box-archive text-xl md:text-2xl"></i>
-                    <span class="text-[8px] font-black uppercase mt-0.5">Kho tin</span>
+                <button onclick="checkAuthAndOpenAdmin()" class="flex flex-col items-center text-[#222] active-scale p-1 text-center">
+                    <i class="fa-solid fa-box-archive text-xl md:text-2xl text-center"></i>
+                    <span class="text-[8px] font-black uppercase mt-0.5 text-center text-center">Kho tin</span>
                 </button>
-                <div id="top-auth-section" class="flex items-center pl-1 border-l border-black/10"></div>
+                <div id="top-auth-section" class="flex items-center pl-1 border-l border-black/10 text-center"></div>
             </div>
         </div>
     </div>
 </header>
 
-<main class="max-w-6xl mx-auto px-2 md:px-4 py-4 text-black text-left">
-    <div id="auth-status-bar" class="hidden mb-5 p-4 bg-white rounded-xl shadow-sm border border-orange-100 flex items-center justify-between">
-        <div class="flex items-center gap-3.5 text-left">
-            <div id="auth-type-icon" class="w-10 h-10 rounded-full flex items-center justify-center text-white shadow-inner bg-gray-200 overflow-hidden"></div>
-            <div class="text-left">
-                <p id="auth-user-name" class="text-sm font-black text-gray-800 uppercase tracking-tighter flex items-center text-left"></p>
-                <p id="auth-user-rank" class="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Thành viên Ecohome</p>
-            </div>
+<main class="max-w-6xl mx-auto px-2 md:px-4 py-4 text-center">
+    <!-- TIN TÀI TRỢ -->
+    <div id="sponsored-section" class="hidden mb-8 text-center">
+        <div class="flex items-center justify-between mb-3 px-1 text-center">
+            <h3 class="text-[11px] font-black text-orange-600 uppercase tracking-widest flex items-center gap-2 text-center">
+                <i class="fa-solid fa-crown text-sm animate-bounce text-center"></i> Tin tài trợ ưu tiên
+            </h3>
         </div>
-        <div class="flex items-center gap-2">
-            <button id="upgrade-vip-btn" onclick="startPayment('VIP')" class="hidden text-[10px] font-black text-yellow-700 bg-yellow-400 hover:bg-yellow-500 px-3 py-2 rounded-xl transition active-scale uppercase">Nâng cấp VIP</button>
-            <button onclick="switchAccount()" class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-2 rounded-xl active-scale uppercase">Đổi tài khoản</button>
-            <button onclick="logout()" class="text-[10px] font-black text-red-600 bg-red-50 hover:bg-red-100 px-3 py-2 rounded-xl active-scale uppercase">Thoát</button>
-        </div>
+        <div id="sponsored-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 text-center"></div>
     </div>
 
-    <div id="sponsored-section" class="hidden mb-8 text-left text-black">
-        <h3 class="text-[11px] font-black text-orange-600 uppercase tracking-widest mb-3 px-1">
-            <i class="fa-solid fa-award text-orange-500"></i> Tin tài trợ nổi bật
-        </h3>
-        <div id="sponsored-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+    <!-- FEED -->
+    <div class="mb-5 px-1 flex items-center justify-between text-center">
+        <h2 class="text-base font-black text-gray-800 uppercase tracking-tighter text-center">Bài đăng cư dân mới</h2>
+        <p id="post-count-label" class="text-[10px] text-gray-400 font-bold uppercase italic text-center"></p>
     </div>
-
-    <div class="mb-5 px-1 flex items-center justify-between">
-        <h2 class="text-base font-black text-gray-800 uppercase tracking-tighter">Tin rao vặt mới nhất</h2>
-        <p id="post-count-label" class="text-[10px] text-gray-400 font-bold uppercase italic"></p>
-    </div>
-    <div id="posts-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2"></div>
+    <div id="posts-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 text-center"></div>
 </main>
 
-<!-- MODALS -->
-<div id="modal-login" class="hidden fixed inset-0 bg-black/90 z-[1000] flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl modal-animate-in text-center">
-        <div class="w-16 h-16 chotot-orange rounded-2xl flex items-center justify-center text-white text-2xl font-black mx-auto mb-6 shadow-lg transform rotate-3">BQT</div>
-        <h3 class="text-2xl font-black text-gray-800 mb-2 uppercase tracking-tighter">Chào cư dân!</h3>
-        <p class="text-gray-400 text-[11px] font-bold mb-10 uppercase tracking-widest">Chọn hình thức truy cập để bắt đầu</p>
-        <div class="space-y-4">
-            <button onclick="loginGoogle()" class="w-full flex items-center justify-center gap-3 border-2 border-orange-100 py-4.5 rounded-2xl font-black active-scale text-sm hover:bg-orange-50 transition text-black shadow-sm">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-6"> TIẾP TỤC VỚI GOOGLE
-            </button>
-            <button onclick="loginAnonymously()" class="w-full flex items-center justify-center gap-3 bg-gray-100 py-4.5 rounded-2xl font-black active-scale text-sm text-gray-600 uppercase">
-                <i class="fa-solid fa-user-secret text-lg"></i> TRẢI NGHIỆM ẨN DANH
-            </button>
+<!-- MODAL BẢNG GIÁ DỊCH VỤ (ĐỒNG BỘ GIÁ MỚI) -->
+<div id="modal-price-list" class="hidden fixed inset-0 bg-black/80 z-[1000] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-center">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar text-center">
+        <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10 text-center">
+            <h3 class="text-lg font-black uppercase tracking-tighter text-center w-full">Bảng giá dịch vụ SePay</h3>
+            <button onclick="toggleModal('modal-price-list')" class="absolute right-4 text-gray-400 text-2xl text-center"><i class="fa-solid fa-xmark text-center text-center text-center"></i></button>
+        </div>
+        <div class="p-6 space-y-4 text-left text-center">
+            <!-- Dịch vụ bài đăng -->
+            <div class="border rounded-2xl p-4 bg-gray-50 text-left text-center">
+                <p class="text-[10px] font-black text-gray-400 uppercase mb-2 text-left">Dịch vụ tin rao</p>
+                <div class="flex justify-between items-center mb-2 text-left">
+                    <span class="text-sm font-bold text-left">Đẩy tin (1 lần)</span>
+                    <span class="text-blue-600 font-black text-left">10.000đ</span>
+                </div>
+                <div class="flex justify-between items-center mb-2 border-t pt-2 text-left">
+                    <span class="text-sm font-bold text-red-600 text-left">Tin tài trợ (Ads đầu trang)</span>
+                    <span class="text-red-600 font-black text-left">50.000đ/tin</span>
+                </div>
+                <div class="flex justify-between items-center border-t pt-2 text-left">
+                    <span class="text-sm font-bold text-left">Gia hạn bài đăng (30 ngày)</span>
+                    <span class="text-orange-600 font-black text-left">50.000đ</span>
+                </div>
+            </div>
+            <!-- VIP TIERS -->
+            <div class="space-y-3 text-center">
+                <p class="text-[10px] font-black text-gray-400 uppercase px-1 text-left">Tài khoản cư dân VIP</p>
+                <!-- VIP -->
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl p-4 flex justify-between items-center text-left">
+                    <div class="text-left">
+                        <h4 class="font-black text-yellow-700 uppercase text-sm text-left">Gói VIP</h4>
+                        <p class="text-[10px] text-yellow-600 font-bold italic text-left">Gia hạn bài viết 60 ngày</p>
+                    </div>
+                    <p class="font-black text-lg text-orange-600 text-left text-center text-center">100k</p>
+                </div>
+                <!-- VIP S -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-4 flex justify-between items-center text-left text-center text-center text-center text-center text-center text-center">
+                    <div class="text-left">
+                        <h4 class="font-black text-blue-700 uppercase text-sm text-left">Gói VIP S</h4>
+                        <p class="text-[10px] text-blue-600 font-bold italic text-left">Gia hạn bài viết 120 ngày</p>
+                    </div>
+                    <p class="font-black text-lg text-blue-600 text-left text-center">200k</p>
+                </div>
+                <!-- VIP SS -->
+                <div class="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-2xl p-4 flex justify-between items-center text-left text-center text-center text-center text-center text-center text-center">
+                    <div class="text-left">
+                        <h4 class="font-black text-purple-700 uppercase text-sm text-left">Gói VIP SS</h4>
+                        <p class="text-[10px] text-purple-600 font-bold italic text-left">Bài đăng vĩnh viễn</p>
+                    </div>
+                    <p class="font-black text-lg text-purple-600 text-left text-center">500k</p>
+                </div>
+            </div>
+            <p class="text-[9px] text-gray-400 font-bold italic text-center pt-2 leading-relaxed text-center">Vui lòng tải ảnh Bill chuyển khoản sau khi thanh toán để BQT kích hoạt ngay.</p>
         </div>
     </div>
 </div>
 
-<div id="modal-payment" class="hidden fixed inset-0 bg-black/95 z-[1500] flex items-center justify-center p-4 backdrop-blur-md">
-    <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl modal-animate-in overflow-y-auto max-h-[95vh] hide-scrollbar text-black">
-        <div id="payment-process-ui">
-            <div class="flex justify-between items-center mb-4">
-                <div class="text-left text-black">
-                    <h3 class="text-lg font-black uppercase tracking-tighter" id="payment-title">Thanh toán</h3>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase">Giao dịch qua SePay</p>
-                </div>
-                <button onclick="closePaymentModal()" class="text-gray-400 text-2xl p-1"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="qr-frame bg-white p-3 mb-4"><img id="payment-qr" src="" class="w-full aspect-square object-contain mx-auto"></div>
-            <a id="payment-app-link" href="#" target="_blank" class="w-full bg-[#00457C] text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg active-scale mb-4 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-mobile-screen-button"></i> MỞ APP NGÂN HÀNG
-            </a>
-            <div class="bg-gray-50 rounded-2xl p-4 text-left border border-gray-100 mb-4 text-black text-[10px] font-bold">
-                <div>Ngân hàng: MB BANK</div>
-                <div class="text-blue-700 text-lg">STK: 5555553659999</div>
-                <div class="uppercase">Chủ TK: PHAM VAN CON</div>
-            </div>
-            <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 mb-4">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[9px] font-bold text-blue-400 uppercase">Nội dung CK:</span>
-                    <button onclick="copyPaymentCode()" class="text-[8px] font-black bg-blue-600 text-white px-1.5 py-0.5 rounded uppercase">Copy</button>
-                </div>
-                <span id="payment-code" class="text-xl font-black text-blue-700 tracking-widest block text-center uppercase">---</span>
-            </div>
-            <div class="flex items-center justify-center gap-2 text-orange-600 animate-pulse">
-                <div class="loader !w-3 !h-3"></div>
-                <span class="text-[10px] font-black uppercase">Đang chờ quét...</span>
-            </div>
-        </div>
-        <div id="payment-success-ui" class="hidden py-10 text-center">
-            <div class="success-checkmark mb-6"><i class="fa-solid fa-check"></i></div>
-            <h3 class="text-2xl font-black text-gray-800 mb-2 uppercase tracking-tighter">THÀNH CÔNG!</h3>
-            <p class="text-gray-500 text-sm font-bold mb-8" id="success-msg">Yêu cầu đã thực hiện.</p>
-            <button onclick="closePaymentModal()" class="w-full bg-black text-white py-4.5 rounded-2xl font-black text-sm uppercase active-scale shadow-xl">Đóng</button>
+<!-- MODAL ĐĂNG NHẬP -->
+<div id="modal-login" class="hidden fixed inset-0 bg-black/90 z-[1000] flex items-center justify-center p-4 backdrop-blur-sm text-center">
+    <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl modal-animate-in relative text-center text-center">
+        <div class="w-16 h-16 chotot-orange rounded-2xl flex items-center justify-center text-white text-2xl font-black mx-auto mb-6 shadow-lg transform rotate-3 text-center">BQT</div>
+        <h3 class="text-2xl font-black text-gray-800 mb-2 uppercase tracking-tighter text-center">Chào cư dân!</h3>
+        <p class="text-gray-400 text-[11px] font-bold mb-10 uppercase tracking-widest leading-relaxed text-center">Hãy đăng nhập để bắt đầu giao dịch <br>an toàn và quản lý gian hàng</p>
+        <div class="space-y-4 text-center">
+            <button onclick="loginGoogle()" class="w-full flex items-center justify-center gap-3 border-2 border-orange-100 py-4 rounded-2xl font-black active-scale text-sm hover:bg-orange-50 transition shadow-sm text-center">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-6 text-center">
+                <span class="text-center">TIẾP TỤC VỚI GOOGLE</span>
+            </button>
+            <button onclick="toggleModal('modal-login')" class="text-[10px] text-gray-400 font-black uppercase underline mt-4 text-center">Tiếp tục xem tin</button>
         </div>
     </div>
 </div>
 
-<div id="modal-post" class="hidden fixed inset-0 bg-black/80 z-[210] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-left text-black">
-    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h3 id="post-modal-title" class="text-lg font-black uppercase tracking-tighter">Đăng tin rao vặt</h3>
-            <button onclick="toggleModal('modal-post')" class="text-gray-400 text-3xl"><i class="fa-solid fa-xmark"></i></button>
+<!-- MODAL HỒ SƠ TÀI KHOẢN -->
+<div id="modal-profile" class="hidden fixed inset-0 bg-black/80 z-[600] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-center">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar text-center text-center">
+        <div class="p-6 text-center">
+            <div class="flex justify-between items-start mb-6 text-center">
+                <h3 class="text-xl font-black uppercase tracking-tighter text-gray-800 text-center">Hồ sơ cá nhân</h3>
+                <button onclick="toggleModal('modal-profile')" class="text-gray-400 text-2xl text-center"><i class="fa-solid fa-xmark text-center text-center"></i></button>
+            </div>
+            
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 mb-6 flex items-center gap-4 text-left text-center">
+                <img id="profile-avatar" src="" class="w-16 h-16 rounded-full border-4 border-white shadow-md text-center">
+                <div class="flex-1 text-left text-center">
+                    <p id="profile-name" class="font-black text-gray-800 uppercase tracking-tight text-left"></p>
+                    <p id="profile-email" class="text-[10px] text-blue-600 font-bold italic mb-1 text-left"></p>
+                    <div id="profile-vip-tag" class="inline-block px-2 py-0.5 rounded bg-gray-200 text-gray-600 text-[8px] font-black uppercase text-left text-center">Thành viên</div>
+                </div>
+            </div>
+
+            <div class="space-y-3 mb-6 text-center text-center">
+                <button onclick="openUserAdmin(); toggleModal('modal-profile')" class="w-full flex items-center justify-between p-4 bg-orange-50 rounded-xl text-orange-700 font-black text-xs uppercase active-scale text-left text-center">
+                    <span class="text-center"><i class="fa-solid fa-box-archive mr-2 text-center text-center"></i> Bài đăng của tôi</span>
+                    <i class="fa-solid fa-chevron-right text-center text-center text-center text-center"></i>
+                </button>
+                <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-100 text-left text-center">
+                    <p class="text-[9px] font-black text-yellow-600 uppercase mb-2 text-center">Nâng cấp VIP</p>
+                    <select onchange="if(this.value) startPayment(this.value); this.value='';" class="w-full bg-white border border-yellow-200 p-2 rounded-lg text-xs font-bold uppercase outline-none text-center text-center">
+                        <option value="">Chọn gói tài khoản</option>
+                        <option value="VIP">Gói VIP (100k/60 ngày)</option>
+                        <option value="VIP_S">Gói VIP S (200k/120 ngày)</option>
+                        <option value="VIP_SS">Gói VIP SS (500k/Vĩnh viễn)</option>
+                    </select>
+                </div>
+                <button onclick="switchAccount()" class="w-full flex items-center justify-between p-4 bg-blue-50 rounded-xl text-blue-700 font-black text-xs uppercase active-scale text-left text-center text-center">
+                    <span class="text-center"><i class="fa-solid fa-user-plus mr-2 text-center text-center text-center text-center"></i> Chuyển tài khoản</span>
+                    <i class="fa-solid fa-rotate text-center text-center text-center text-center"></i>
+                </button>
+                <button onclick="showConfirmModal('Xác nhận đăng xuất?', logout)" class="w-full flex items-center justify-between p-4 bg-red-50 rounded-xl text-red-600 font-black text-xs uppercase active-scale text-left text-center text-center">
+                    <span class="text-center"><i class="fa-solid fa-right-from-bracket mr-2 text-center text-center text-center text-center text-center text-center"></i> Thoát tài khoản</span>
+                </button>
+            </div>
+
+            <div id="acc-history-sec" class="hidden border-t pt-4 text-left text-center">
+                <p class="text-[10px] font-black text-gray-400 uppercase mb-3 italic text-left">Đã đăng nhập trước đó</p>
+                <div id="acc-history-list" class="space-y-2 text-left text-center"></div>
+            </div>
         </div>
-        <form id="post-form" class="space-y-6">
-            <div>
-                <label class="block text-[11px] font-black text-gray-400 uppercase mb-3">Hình ảnh *</label>
-                <div class="flex flex-wrap gap-4">
-                    <label class="w-20 h-20 border-2 border-dashed border-gray-200 rounded-2xl flex items-center justify-center cursor-pointer hover:border-orange-500 group transition-colors">
-                        <i class="fa-solid fa-plus text-xl text-gray-400"></i>
-                        <input type="file" id="image-upload" multiple accept="image/*" class="hidden">
+    </div>
+</div>
+
+<!-- MODAL QUẢN TRỊ BQT (FULL CONTROL) -->
+<div id="modal-bqt-admin" class="hidden fixed inset-0 bg-black/95 z-[2000] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-md text-center text-center">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-5xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl text-center text-center">
+        <div class="px-6 py-4 bg-red-700 text-white flex justify-between items-center text-center text-center">
+            <h2 class="text-xl font-black uppercase tracking-tighter text-center">Quản Trị Ecohome</h2>
+            <button onclick="toggleModal('modal-bqt-admin')" class="bg-white/20 p-2 rounded-xl text-center text-center"><i class="fa-solid fa-xmark text-center text-center text-center text-center text-center text-center text-center"></i></button>
+        </div>
+        
+        <div class="flex border-b bg-gray-50 text-[10px] font-black uppercase text-center text-center text-center">
+            <button onclick="switchAdminTab('posts')" id="tab-posts" class="flex-1 py-4 tab-active text-center text-center text-center text-center text-center">Tin Rao</button>
+            <button onclick="switchAdminTab('bills')" id="tab-bills" class="flex-1 py-4 text-center text-center text-center text-center text-center text-center">Duyệt Bill</button>
+            <button onclick="switchAdminTab('system')" id="tab-system" class="flex-1 py-4 text-center text-center text-center text-center text-center text-center text-center">Hệ thống</button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 bg-gray-100 text-center text-center text-center text-center">
+            <!-- Tin rao -->
+            <div id="admin-sec-posts" class="space-y-3 text-center text-center text-center text-center"></div>
+            <!-- Duyệt Bill -->
+            <div id="admin-sec-bills" class="hidden space-y-4 text-center text-center text-center text-center"></div>
+            <!-- Hệ thống -->
+            <div id="admin-sec-system" class="hidden space-y-4 text-left text-center text-center text-center text-center">
+                <div class="bg-white p-4 rounded-xl shadow-sm text-left text-center">
+                    <h4 class="text-[10px] font-black uppercase mb-2 text-left">Thông báo hệ thống cho cư dân</h4>
+                    <textarea id="system-announcement-input" class="w-full bg-gray-50 p-3 rounded-lg text-sm border outline-none mb-3 text-left" placeholder="Nội dung thông báo (Lịch cắt điện, vệ sinh...)"></textarea>
+                    <button onclick="broadcastAnnouncement()" class="w-full chotot-orange text-white py-3 rounded-lg font-black text-[10px] uppercase shadow-md text-center text-center">Phát thông báo ngay</button>
+                </div>
+                <div id="admin-stats-container" class="grid grid-cols-2 gap-3 text-center text-center text-center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL THANH TOÁN SEPAY -->
+<div id="modal-payment" class="hidden fixed inset-0 bg-black/95 z-[1500] flex items-center justify-center p-4 backdrop-blur-md text-center text-center">
+    <div class="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl modal-animate-in text-center">
+        <div class="flex justify-between items-center mb-4 text-center">
+            <div class="text-left text-center text-center text-center">
+                <h3 class="text-lg font-black uppercase tracking-tighter text-left" id="payment-title">Thanh toán</h3>
+                <p class="text-[10px] text-gray-400 font-bold uppercase text-left">Hệ thống SePay tự động</p>
+            </div>
+            <button onclick="closePaymentModal()" class="text-gray-400 text-2xl text-center text-center text-center text-center text-center"><i class="fa-solid fa-xmark text-center text-center text-center text-center text-center text-center"></i></button>
+        </div>
+        
+        <div class="qr-frame bg-white p-3 mb-4 text-center text-center text-center text-center"><img id="payment-qr" src="" class="w-full aspect-square object-contain mx-auto text-center"></div>
+        
+        <a id="payment-app-link" href="#" target="_blank" class="w-full bg-[#00457C] text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg active-scale mb-4 flex items-center justify-center gap-2 text-center text-center text-center">
+            <i class="fa-solid fa-mobile-screen-button text-center text-center text-center"></i> MỞ APP NGÂN HÀNG
+        </a>
+
+        <div class="space-y-2 mb-4 text-left text-center text-center text-center text-center">
+            <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100 text-left text-center text-center text-center">
+                <span class="text-[9px] font-black text-gray-400 uppercase text-left text-center">Số tiền:</span>
+                <span class="text-lg font-black text-red-600 text-center" id="payment-amount-display">---</span>
+            </div>
+            <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 flex flex-col gap-1 text-center text-center text-center">
+                <div class="flex justify-between items-center text-center text-center text-center">
+                    <span class="text-[9px] font-black text-blue-400 uppercase text-center text-center">Nội dung CK:</span>
+                    <button onclick="copyPaymentCode()" class="text-[8px] font-black bg-blue-600 text-white px-1.5 py-0.5 rounded uppercase text-center">Copy</button>
+                </div>
+                <span id="payment-code" class="text-xl font-black text-blue-700 tracking-[0.1em] text-center uppercase text-center">---</span>
+            </div>
+        </div>
+        
+        <div class="border-t border-dashed border-gray-200 pt-4 text-left text-center text-center">
+            <p class="text-[10px] font-black text-gray-400 uppercase mb-3 text-left text-center">Tải bill minh chứng để duyệt</p>
+            <label class="w-full bg-orange-50 border-2 border-dashed border-orange-200 rounded-xl py-3 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-orange-100 active-scale text-center text-center">
+                <i class="fa-solid fa-cloud-arrow-up text-orange-600 text-center text-center"></i>
+                <span id="receipt-status" class="text-[9px] font-black uppercase text-center text-center">Ảnh bill CK</span>
+                <input type="file" id="receipt-upload" accept="image/*" class="hidden text-center text-center">
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ĐĂNG TIN -->
+<div id="modal-post" class="hidden fixed inset-0 bg-black/80 z-[210] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-center text-center">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar text-center text-center text-center text-center text-center">
+        <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-10 text-center text-center text-center text-center">
+            <h3 id="post-modal-title" class="text-lg font-black uppercase tracking-tighter text-center w-full">Đăng tin rao mới</h3>
+            <button onclick="toggleModal('modal-post')" class="absolute right-4 text-gray-400 text-3xl text-center text-center text-center"><i class="fa-solid fa-xmark text-center text-center text-center text-center"></i></button>
+        </div>
+        <form id="post-form" class="p-6 space-y-6 text-left text-center text-center text-center text-center">
+            <div class="text-left">
+                <label class="block text-[11px] font-black text-gray-400 uppercase mb-4 tracking-widest px-1 text-left text-center text-center">Hình ảnh (Tối đa 5 ảnh) *</label>
+                <div class="flex flex-wrap gap-4 text-center text-center">
+                    <label class="w-20 h-20 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-orange-500 bg-gray-50 relative group transition-colors text-center text-center">
+                        <i class="fa-solid fa-plus text-xl text-gray-400 text-center text-center text-center"></i>
+                        <input type="file" id="image-upload" multiple accept="image/*" class="hidden text-center text-center text-center">
                     </label>
-                    <div id="preview-list" class="flex flex-wrap gap-4"></div>
+                    <div id="preview-list" class="flex flex-wrap gap-4 text-center text-center text-center text-center"></div>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input id="p-title" placeholder="Tiêu đề bài đăng *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500">
-                <select id="p-category" class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 font-bold">
-                    <option>Gia dụng</option><option>Xe cộ</option><option>Đồ điện tử</option><option>Thời trang</option><option>Thú cưng</option><option>Thực phẩm</option><option>Bất động sản</option>
+            
+            <div class="flex items-center gap-3 bg-orange-50 p-4 rounded-2xl border border-orange-100 shadow-sm text-center text-center text-center">
+                <input type="checkbox" id="p-is-anon" class="w-6 h-6 accent-orange-500 cursor-pointer text-center text-center text-center text-center" onchange="toggleAnonField()">
+                <div class="flex-1">
+                    <label for="p-is-anon" class="block text-[12px] font-black uppercase text-gray-700 cursor-pointer text-left text-center">Sử dụng tên ẩn danh</label>
+                    <input id="p-anon-name" placeholder="Vd: Tòa A2, Hàng xóm..." class="hidden w-full mt-2 bg-white rounded-xl p-3 text-sm border border-orange-200 outline-none focus:ring-2 focus:ring-orange-500 text-left text-center">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left text-center text-center">
+                <input id="p-title" placeholder="Tiêu đề rao bán *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 text-left text-center">
+                <select id="p-category" class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 font-bold text-left text-center text-center">
+                    <option>Gia dụng</option><option>Xe cộ</option><option>Điện tử</option><option>Thời trang</option><option>Dịch vụ</option><option>Thực phẩm</option><option>Bất động sản</option>
                 </select>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
-                <input id="p-price" type="text" placeholder="Giá tiền (Vd: 100.000đ) *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 font-bold">
-                <input id="p-phone" placeholder="Số Zalo liên hệ *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 font-bold">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left text-center text-center text-center">
+                <input id="p-price" type="text" placeholder="Giá thanh lý *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 font-bold text-left text-center">
+                <input id="p-phone" placeholder="Số điện thoại / Zalo *" required class="w-full bg-gray-50 rounded-xl p-3.5 text-sm outline-none border border-transparent focus:border-orange-500 font-bold text-left text-center text-center">
             </div>
-            <textarea id="p-desc" rows="4" placeholder="Mô tả chi tiết..." required class="w-full bg-gray-50 rounded-xl p-4 text-sm outline-none border border-transparent focus:border-orange-500"></textarea>
-            <button id="submit-btn" class="w-full chotot-orange text-white py-4 rounded-2xl font-black shadow-xl active-scale text-base uppercase">Xác nhận</button>
+            <textarea id="p-desc" rows="4" placeholder="Mô tả sơ lược tình trạng sản phẩm..." required class="w-full bg-gray-50 rounded-xl p-4 text-sm outline-none border border-transparent focus:border-orange-500 text-left text-center"></textarea>
+            <button id="submit-btn" class="w-full chotot-orange text-white py-4 rounded-2xl font-black shadow-xl active-scale text-base uppercase text-center text-center">ĐĂNG BÀI NGAY</button>
         </form>
     </div>
 </div>
 
-<div id="modal-bqt-admin" class="hidden fixed inset-0 bg-black/95 z-[400] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-md">
-    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl text-black">
-        <div class="px-6 py-4 bg-red-700 text-white shadow-lg flex justify-between items-center">
-            <h2 class="text-lg font-black uppercase tracking-tighter">BQT ADMIN</h2>
-            <div class="flex gap-4">
-                <button onclick="switchBqtTab('posts')" id="tab-btn-posts" class="text-[10px] font-black uppercase pb-1 opacity-60 tab-active">Bài đăng</button>
-                <button onclick="switchBqtTab('users')" id="tab-btn-users" class="text-[10px] font-black uppercase pb-1 opacity-60">Tài khoản</button>
-                <button onclick="switchBqtTab('messages')" id="tab-btn-messages" class="text-[10px] font-black uppercase pb-1 opacity-60">Tin nhắn</button>
-            </div>
-            <button onclick="toggleModal('modal-bqt-admin')" class="bg-white/20 px-4 py-2 rounded-xl text-xs font-black uppercase">Đóng</button>
+<!-- CUSTOM CONFIRM MODAL -->
+<div id="modal-confirm" class="hidden fixed inset-0 bg-black/60 z-[3000] flex items-center justify-center p-4 backdrop-blur-sm text-center text-center text-center text-center">
+    <div class="bg-white rounded-3xl p-6 w-full max-w-xs text-center shadow-2xl modal-animate-in text-center text-center">
+        <h3 id="confirm-msg" class="text-sm font-black text-gray-800 uppercase mb-6 leading-relaxed text-center text-center">Xác nhận thao tác?</h3>
+        <div class="flex gap-3 text-center text-center text-center text-center">
+            <button id="confirm-cancel" class="flex-1 bg-gray-100 py-3 rounded-2xl font-black text-[10px] uppercase text-gray-500 text-center text-center">Hủy</button>
+            <button id="confirm-ok" class="flex-1 bg-red-600 py-3 rounded-2xl font-black text-[10px] uppercase text-white shadow-lg text-center text-center text-center">Đồng ý</button>
         </div>
-        <div id="bqt-tab-content-posts" class="flex-1 overflow-y-auto p-4 bg-gray-100 text-black"></div>
-        <div id="bqt-tab-content-users" class="hidden flex-1 overflow-y-auto p-4 bg-gray-100 text-black"></div>
-        <div id="bqt-tab-content-messages" class="hidden flex-1 overflow-y-auto p-4 bg-gray-100 text-black"></div>
     </div>
 </div>
 
-<div id="modal-detail" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-black">
-    <div class="bg-[#f5f5f5] rounded-t-3xl sm:rounded-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto relative shadow-2xl modal-animate-in hide-scrollbar">
-        <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-40 shadow-sm">
-            <h3 class="text-sm font-black uppercase tracking-tighter truncate pr-4" id="detail-header-title">Chi tiết</h3>
-            <button onclick="toggleModal('modal-detail')" class="text-gray-400 text-2xl p-1"><i class="fa-solid fa-xmark"></i></button>
+<!-- MODAL CHI TIẾT TIN -->
+<div id="modal-detail" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-center text-center text-center">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-4xl max-h-[92vh] overflow-y-auto relative shadow-2xl hide-scrollbar text-left text-center text-center">
+        <div class="sticky top-0 bg-white px-6 py-4 border-b flex justify-between items-center z-40 text-center text-center">
+            <h3 class="text-sm font-black text-gray-800 uppercase truncate text-center text-center text-center" id="detail-header-title">Chi tiết</h3>
+            <button onclick="toggleModal('modal-detail')" class="text-gray-400 text-2xl text-center text-center text-center text-center text-center"><i class="fa-solid fa-xmark text-center text-center text-center text-center"></i></button>
         </div>
-        <div id="detail-content" class="pb-24 sm:pb-8 bg-white"></div>
+        <div id="detail-content" class="pb-24 sm:pb-8 text-center text-center text-center"></div>
     </div>
 </div>
 
-<div id="image-lightbox" class="hidden fixed inset-0 z-[2000] bg-black/95 flex flex-col items-center justify-center p-4 backdrop-blur-md text-white">
-    <button onclick="closeLightbox()" class="absolute top-5 right-5 text-white text-4xl active-scale"><i class="fa-solid fa-xmark"></i></button>
-    <img id="lightbox-image" class="max-w-full max-h-[80vh] rounded shadow-2xl object-contain mx-auto">
+<!-- KHO TIN CÁ NHÂN -->
+<div id="admin-panel" class="hidden fixed inset-0 bg-black/80 z-[220] flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm text-center text-center text-center text-center text-center text-center">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl text-center text-center text-center text-center">
+        <div class="px-6 py-5 border-b flex justify-between items-center bg-gray-50 text-center text-center text-center text-center">
+            <h2 class="text-lg font-black uppercase tracking-tighter text-center text-center text-center text-center text-center">Kho tin cư dân</h2>
+            <button onclick="toggleModal('admin-panel')" class="text-red-500 font-black uppercase text-xs text-center text-center text-center text-center text-center">Đóng</button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 text-center text-center text-center text-center" id="admin-posts"></div>
+    </div>
 </div>
+
+<div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 z-[5000] transform -translate-y-24 transition-all duration-300 bg-black/90 text-white px-6 py-4 rounded-2xl text-[11px] font-black shadow-2xl flex items-center gap-3 pointer-events-none text-center text-center text-center text-center text-center text-center"></div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, deleteDoc, doc, updateDoc, getDoc, Timestamp, setDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, deleteDoc, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-    const firebaseConfig = { apiKey : "AIzaSyDueCwieBqfBHSjdKMZ5O-Y8Z1rPB-sFVM" , authDomain : "ecohome-marketplace-97aa6.firebaseapp.com" , projectId : "ecohome-marketplace-97aa6" , appId : "1:1010934843766:web:c2ad5a5dbf43913bd8d257" };
-    const appId = 'ecohome-marketplace-97aa6';
+    // --- CONFIG ---
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { 
+        apiKey : "AIzaSyDueCwieBqfBHSjdKMZ5O-Y8Z1rPB-sFVM" , 
+        authDomain : "ecohome-marketplace-97aa6.firebaseapp.com" , 
+        projectId : "ecohome-marketplace-97aa6" , 
+        storageBucket : "ecohome-marketplace-97aa6.appspot.com" , 
+        messagingSenderId : "1010934843766" , 
+        appId : "1:1010934843766:web:c2ad5a5dbf43913bd8d257" 
+    };
+    
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'ecohome-marketplace-97aa6';
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
 
-    const bank = 'MB'; const stk = '5555553659999';
-    const RENEW_PRICE = 50000; const VIP_PRICE = 100000;
+    const STK = '5555553659999';
+    const BANK = 'MB';
+    const ADMIN_EMAIL = 'phamvanconcn@gmail.com';
+    
+    // ĐỒNG BỘ GIÁ VÀ THỜI GIAN THEO YÊU CẦU
+    const PRICE_LIST = { 
+        RENEW: 50000, 
+        ADS: 50000,
+        PUSH: 10000,
+        VIP: 100000,     // 60 ngày
+        VIP_S: 200000,   // 120 ngày
+        VIP_SS: 500000   // Vĩnh viễn
+    };
 
-    let currentUser = null, allPosts = [], allUserData = {}, allMessages = [], uploadedImages = [], editingPostId = null;
-    let unsubscribePosts = null, unsubscribeUsers = null, unsubscribeMessages = null, paymentInterval = null, currentPayingPostId = null;
+    const TIME = {
+        DEFAULT: 30 * 24 * 60 * 60 * 1000,
+        VIP: 60 * 24 * 60 * 60 * 1000,
+        VIP_S: 120 * 24 * 60 * 60 * 1000,
+        VIP_SS: 36500 * 24 * 60 * 60 * 1000 // Coi như vĩnh viễn (100 năm)
+    };
 
-    const EXP_ANON = 3 * 24 * 60 * 60 * 1000;
-    const EXP_USER = 30 * 24 * 60 * 60 * 1000;
+    let currentUser = null;
+    let allPosts = [];
+    let allUserData = {};
+    let uploadedImages = [];
+    let unsubPosts = null;
+    let unsubUsers = null;
+    let currentPayingPostId = null;
 
-    // --- UTILS ---
+    // --- UTILITIES ---
     window.showToast = (text, icon = 'fa-circle-info') => {
-        const toast = document.getElementById('toast'); if (!toast) return;
-        toast.innerHTML = `<i class="fa-solid ${icon} text-orange-400"></i> <span>${text}</span>`;
+        const toast = document.getElementById('toast');
+        toast.innerHTML = `<i class="fa-solid ${icon} text-orange-400 text-lg"></i> <span>${text}</span>`;
         toast.classList.remove('-translate-y-24');
-        setTimeout(() => { if(toast) toast.classList.add('-translate-y-24'); }, 4000);
+        setTimeout(() => toast.classList.add('-translate-y-24'), 3000);
     };
 
-    window.toggleModal = (id) => {
-        const el = document.getElementById(id); if(!el) return;
-        el.classList.toggle('hidden');
-        document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+    window.showConfirmModal = (msg, onConfirm) => {
+        const modal = document.getElementById('modal-confirm');
+        const ok = document.getElementById('confirm-ok');
+        const cancel = document.getElementById('confirm-cancel');
+        document.getElementById('confirm-msg').innerText = msg;
+        modal.classList.remove('hidden');
+        ok.onclick = () => { onConfirm(); modal.classList.add('hidden'); };
+        cancel.onclick = () => modal.classList.add('hidden');
     };
 
-    window.formatPrice = (v) => { let num = v.toString().replace(/\D/g, ""); return num ? num.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ" : "0đ"; };
-
-    // --- AUTH ---
-    window.loginGoogle = async () => { try { await signInWithPopup(auth, provider); } catch(e) { window.showToast("Lỗi đăng nhập!"); } };
-    window.loginAnonymously = async () => { try { await signInAnonymously(auth); } catch(e) { window.showToast("Lỗi!"); } };
-    window.switchAccount = async () => { if(confirm("Đổi tài khoản?")) { sessionStorage.removeItem('manualLogout'); await signOut(auth); document.getElementById('modal-login').classList.remove('hidden'); } };
-    window.logout = async () => { if(confirm("Thoát?")) { sessionStorage.setItem('manualLogout', 'true'); await signOut(auth); window.location.reload(); } };
-
-    // --- SYNC ---
-    function startSync() {
-        if (!auth.currentUser) return; 
-        
-        if(unsubscribePosts) unsubscribePosts();
-        unsubscribePosts = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), snap => {
-            allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            renderPosts(); renderAdmin(); if(!document.getElementById('modal-bqt-admin').classList.contains('hidden')) renderBqtAdmin();
-        }, (err) => console.warn("Posts restrict"));
-
-        if(unsubscribeUsers) unsubscribeUsers();
-        unsubscribeUsers = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'users'), snap => {
-            allUserData = {}; snap.docs.forEach(d => { allUserData[d.id] = d.data(); });
-            updateAuthUI(); renderPosts(); if(!document.getElementById('modal-bqt-admin').classList.contains('hidden')) renderBqtUsers();
-        }, (err) => console.warn("Users restrict"));
-
-        if(unsubscribeMessages) unsubscribeMessages();
-        unsubscribeMessages = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), snap => {
-            allMessages = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            if(!document.getElementById('modal-bqt-admin').classList.contains('hidden')) renderBqtMessages(allMessages);
-        }, (err) => console.warn("Msgs restrict"));
+    function formatPrice(v) {
+        if (!v) return "Liên hệ";
+        let clean = v.toString().replace(/\D/g, "");
+        if (!clean) return "Liên hệ";
+        return new Intl.NumberFormat('vi-VN').format(clean) + "đ";
     }
 
-    // --- RENDER FUNCTIONS ---
+    async function compress(file) { 
+        return new Promise(res => { 
+            const reader = new FileReader(); 
+            reader.onload = (e) => { 
+                const img = new Image(); 
+                img.onload = () => { 
+                    const canvas = document.createElement('canvas'); 
+                    const scale = img.width > 600 ? 600 / img.width : 1; 
+                    canvas.width = img.width * scale; canvas.height = img.height * scale; 
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); 
+                    res(canvas.toDataURL('image/jpeg', 0.6)); 
+                }; 
+                img.src = e.target.result; 
+            }; 
+            reader.readAsDataURL(file); 
+        }); 
+    }
+
+    window.toggleAnonField = () => {
+        const isChecked = document.getElementById('p-is-anon').checked;
+        const field = document.getElementById('p-anon-name');
+        field.classList.toggle('hidden', !isChecked);
+        if(!isChecked) field.value = "";
+    };
+
+    // --- AUTH & SYNC ---
+    const initApp = async () => {
+        try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        } catch (e) { console.error("Initial Auth Error:", e); }
+
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            updateAuthUI();
+            if (user && !user.isAnonymous) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid), {
+                    displayName: user.displayName, photoURL: user.photoURL, email: user.email, lastSeen: serverTimestamp()
+                }, { merge: true });
+                saveToAccountHistory(user);
+            }
+            startSync();
+        });
+    };
+
+    const saveToAccountHistory = (user) => {
+        let history = JSON.parse(localStorage.getItem('ecohome_auth_history') || '[]');
+        const entry = { uid: user.uid, email: user.email, name: user.displayName, pic: user.photoURL };
+        history = [entry, ...history.filter(h => h.uid !== user.uid)].slice(0, 5);
+        localStorage.setItem('ecohome_auth_history', JSON.stringify(history));
+    };
+
+    const startSync = () => {
+        if (!currentUser) return;
+        if (unsubPosts) unsubPosts();
+        if (unsubUsers) unsubUsers();
+
+        unsubPosts = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), 
+            snap => { allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderPosts(); if(!document.getElementById('admin-panel').classList.contains('hidden')) renderUserAdmin(); if(!document.getElementById('modal-bqt-admin').classList.contains('hidden')) renderBqtAdminContent(); },
+            err => console.error(err)
+        );
+
+        unsubUsers = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'users'), 
+            snap => { allUserData = {}; snap.docs.forEach(d => allUserData[d.id] = d.data()); renderPosts(); if(currentUser) renderProfileData(); if(!document.getElementById('modal-bqt-admin').classList.contains('hidden')) renderBqtAdminContent(); },
+            err => console.error(err)
+        );
+
+        onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'system', 'config'), d => {
+            const data = d.data();
+            const bar = document.getElementById('bqt-announcement');
+            if(data?.announcement) { bar.classList.remove('hidden'); document.getElementById('announcement-text').innerText = data.announcement; }
+            else bar.classList.add('hidden');
+        });
+    };
+
+    // --- RENDER ---
+    const updateAuthUI = () => {
+        const topAuth = document.getElementById('top-auth-section');
+        const adminBtn = document.getElementById('admin-bqt-nav-btn');
+        if (currentUser && !currentUser.isAnonymous) {
+            topAuth.innerHTML = `<img src="${currentUser.photoURL || 'https://ui-avatars.com/api/?name=User'}" class="w-9 h-9 rounded-full border-2 border-white shadow cursor-pointer active-scale text-center" onclick="window.openProfileModal()">`;
+            const isAdmin = currentUser.email === ADMIN_EMAIL;
+            adminBtn.classList.toggle('hidden', !isAdmin);
+            if(isAdmin) adminBtn.classList.add('flex');
+        } else {
+            topAuth.innerHTML = `<button onclick="window.toggleModal('modal-login')" class="bg-white px-3 py-2 rounded-xl text-[10px] font-black shadow uppercase text-center">Đăng nhập</button>`;
+            adminBtn.classList.add('hidden');
+        }
+    };
+
+    const renderPosts = () => {
+        const wrap = document.getElementById('posts-container');
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const now = Date.now();
+
+        // Lọc bài đăng dựa trên thời hạn gia hạn của gói VIP
+        let list = allPosts.filter(p => {
+            const owner = allUserData[p.userId];
+            const tier = owner?.vipTier || 'DEFAULT';
+            const limit = TIME[tier] || TIME.DEFAULT;
+            const isFresh = p.createdAt && (now - (p.createdAt.seconds * 1000)) < limit;
+            const matchesSearch = p.title?.toLowerCase().includes(search);
+            return isFresh && matchesSearch;
+        });
+
+        list.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+        const sponsored = list.filter(p => p.isPromoted);
+        const regular = list.filter(p => !p.isPromoted);
+
+        const spSec = document.getElementById('sponsored-section');
+        if(sponsored.length > 0) {
+            spSec.classList.remove('hidden');
+            document.getElementById('sponsored-container').innerHTML = sponsored.map(p => renderCard(p, true)).join('');
+        } else spSec.classList.add('hidden');
+
+        document.getElementById('post-count-label').innerText = `${list.length} tin`;
+        wrap.innerHTML = regular.map(p => renderCard(p)).join('');
+    };
+
+    const renderCard = (p, isSp = false) => {
+        const owner = allUserData[p.userId];
+        const tier = owner?.vipTier;
+        const name = p.isAnonymous ? (p.anonName || "Ẩn danh") : (owner?.displayName || "Cư dân");
+        
+        let badgeHtml = '';
+        if(tier === 'VIP_SS') badgeHtml = '<div class="absolute top-1 right-1 vip-badge-common vip-ss-badge"><i class="fa-solid fa-gem text-[6px]"></i> VIP SS</div>';
+        else if(tier === 'VIP_S') badgeHtml = '<div class="absolute top-1 right-1 vip-badge-common vip-s-badge"><i class="fa-solid fa-bolt text-[6px]"></i> VIP S</div>';
+        else if(tier === 'VIP') badgeHtml = '<div class="absolute top-1 right-1 vip-badge-common vip-badge"><i class="fa-solid fa-crown text-[6px]"></i> VIP</div>';
+
+        return `
+            <div class="post-card flex flex-col h-full active-scale cursor-pointer text-left" onclick="window.viewPostDetail('${p.id}')">
+                <div class="relative pt-[100%] bg-gray-50 text-center text-center">
+                    <img src="${p.images?.[0]}" class="absolute inset-0 w-full h-full object-cover">
+                    ${isSp ? '<div class="absolute top-1 left-1 bg-red-600 text-white text-[7px] font-black px-1.5 py-0.5 rounded shadow text-center">Tài trợ</div>' : ''}
+                    ${badgeHtml}
+                </div>
+                <div class="p-2.5 flex flex-col flex-1">
+                    <h3 class="text-[11px] font-bold line-clamp-2 h-8 mb-1 uppercase tracking-tighter text-left text-center text-center">${p.title}</h3>
+                    <div class="text-[#ee4d2d] font-black text-sm mb-1 text-left text-center text-center">${formatPrice(p.price)}</div>
+                    <div class="mt-auto flex items-center justify-between opacity-60 text-center text-center">
+                        <span class="text-[8px] font-bold truncate max-w-[60%] text-left text-center">${name}</span>
+                        <span class="text-[8px] text-blue-500 font-black text-left text-center">XEM ></span>
+                    </div>
+                </div>
+            </div>`;
+    };
+
     window.viewPostDetail = (id) => {
-        const p = allPosts.find(x => x.id === id); if(!p) return;
-        const isVip = allUserData[p.userId]?.isVip === true;
+        const p = allPosts.find(x => x.id === id);
+        if(!p) return;
+        const owner = allUserData[p.userId];
+        const tier = owner?.vipTier;
+        const name = p.isAnonymous ? (p.anonName || "Ẩn danh") : (owner?.displayName || "Cư dân");
+        const isMyPost = currentUser && p.userId === currentUser.uid;
+
+        let tierIcon = '';
+        if(tier === 'VIP_SS') tierIcon = '<i class="fa-solid fa-gem text-purple-600 ml-1 text-center text-center"></i>';
+        else if(tier === 'VIP_S') tierIcon = '<i class="fa-solid fa-bolt text-blue-600 ml-1 text-center text-center"></i>';
+        else if(tier === 'VIP') tierIcon = '<i class="fa-solid fa-crown text-yellow-500 ml-1 text-center text-center text-center"></i>';
+        
         const content = document.getElementById('detail-content');
         document.getElementById('detail-header-title').innerText = p.title;
         content.innerHTML = `
-            <div class="flex flex-col sm:flex-row bg-white text-left text-black">
-                <div class="w-full sm:w-1/2 p-2">
-                    <img src="${p.images?.[0]}" class="w-full aspect-square object-cover rounded-xl cursor-zoom-in" onclick="window.openLightbox('${p.images[0]}')">
+            <div class="flex flex-col sm:flex-row text-center text-center text-center">
+                <div class="w-full sm:w-1/2 bg-black flex items-center justify-center text-center text-center">
+                    <img src="${p.images?.[0]}" class="w-full h-full object-contain mx-auto text-center text-center text-center">
                 </div>
-                <div class="w-full sm:w-1/2 p-6 space-y-4">
-                    <h2 class="text-xl font-black uppercase leading-tight">${isVip ? '<i class="fa-solid fa-crown vip-badge mr-2"></i>' : ''}${p.title}</h2>
-                    <div class="text-3xl font-black text-[#ee4d2d]">${window.formatPrice(p.price)}</div>
-                    <div class="bg-gray-50 p-4 rounded-xl text-sm whitespace-pre-line">${p.desc}</div>
-                    <div class="border-t pt-4 space-y-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600"><i class="fa-solid fa-house-user"></i></div>
-                            <div><p class="text-xs font-black uppercase">${isVip ? 'Cư dân VIP' : 'Cư dân'}</p><p class="text-[9px] text-green-500 font-bold italic">Online</p></div>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <a href="tel:${p.phone}" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-2"><i class="fa-solid fa-phone-volume"></i> GỌI ĐIỆN: ${p.phone}</a>
-                            <a href="https://zalo.me/${p.phone}" target="_blank" class="w-full bg-[#0068ff] text-white py-4 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-2"><i class="fa-solid fa-comment-dots"></i> ZALO NGAY</a>
+                <div class="w-full sm:w-1/2 p-6 space-y-5 text-left text-center text-center">
+                    <div class="flex items-center gap-3 pb-4 border-b text-left text-center text-center">
+                        <img src="${p.isAnonymous ? 'https://ui-avatars.com/api/?name=?' : (owner?.photoURL || '')}" class="w-10 h-10 rounded-full border shadow-sm text-center">
+                        <div>
+                            <p class="text-xs font-black uppercase text-gray-800 text-left text-center">${name} ${tierIcon}</p>
+                            <p class="text-[9px] text-green-500 font-bold uppercase text-left text-center text-center text-center text-center"><i class="fa-solid fa-circle text-[6px] mr-1 text-center"></i>Đang trực tuyến</p>
                         </div>
                     </div>
+                    <div>
+                        <h2 class="text-lg font-black uppercase text-gray-800 leading-tight mb-2 text-left text-center text-center">${p.title}</h2>
+                        <div class="text-2xl font-black text-red-600 text-left text-center text-center">${formatPrice(p.price)}</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl text-sm text-gray-600 whitespace-pre-line border text-left text-center text-center">${p.desc}</div>
+                    
+                    ${isMyPost ? `
+                        <div class="grid grid-cols-3 gap-2 pt-2 text-center text-center text-center">
+                            <button onclick="startPayment('PUSH', '${p.id}')" class="bg-green-600 text-white py-3 rounded-xl font-black text-[9px] uppercase shadow text-center">Đẩy tin</button>
+                            <button onclick="startPayment('ADS', '${p.id}')" class="bg-red-600 text-white py-3 rounded-xl font-black text-[9px] uppercase shadow text-center">Tài trợ</button>
+                            <button onclick="startPayment('RENEW', '${p.id}')" class="bg-blue-600 text-white py-3 rounded-xl font-black text-[9px] uppercase shadow text-center">Gia hạn</button>
+                        </div>
+                    ` : `
+                        <div class="flex flex-col gap-2 text-center text-center text-center">
+                            <a href="tel:${p.phone}" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-2 active-scale shadow-lg text-center text-center">
+                                <i class="fa-solid fa-phone text-center text-center text-center text-center"></i> GỌI ĐIỆN: ${p.phone}
+                            </a>
+                            <a href="https://zalo.me/${p.phone}" target="_blank" class="w-full bg-[#0068ff] text-white py-4 rounded-2xl font-black text-xs uppercase flex items-center justify-center gap-2 active-scale shadow-lg text-center text-center">
+                                <i class="fa-solid fa-comment-dots text-center text-center text-center"></i> NHẮN ZALO
+                            </a>
+                        </div>
+                    `}
                 </div>
             </div>`;
         window.toggleModal('modal-detail');
     };
 
-    function renderPosts() {
-        const wrap = document.getElementById('posts-container'); if(!wrap) return;
-        const now = Date.now();
-        const list = allPosts.filter(p => { 
-            const limit = (p.isAnonymous && !p.isRenewedPaid) ? EXP_ANON : EXP_USER; 
-            return p.createdAt && (now - (p.createdAt.seconds * 1000)) < limit; 
-        }).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    window.openProfileModal = () => { renderProfileData(); window.toggleModal('modal-profile'); };
+
+    const renderProfileData = () => {
+        if(!currentUser || currentUser.isAnonymous) return;
+        document.getElementById('profile-avatar').src = currentUser.photoURL || '';
+        document.getElementById('profile-name').innerText = currentUser.displayName || 'Cư dân';
+        document.getElementById('profile-email').innerText = currentUser.email || '';
         
-        const sponsored = list.filter(p => p.isPromoted);
-        const regular = list.filter(p => !p.isPromoted);
+        const tier = allUserData[currentUser.uid]?.vipTier;
+        const tag = document.getElementById('profile-vip-tag');
+        
+        if(tier === 'VIP_SS') { tag.innerText = "VIP SS (Vĩnh viễn)"; tag.className = "inline-block px-2 py-0.5 rounded bg-purple-600 text-white text-[8px] font-black uppercase text-center text-center"; }
+        else if(tier === 'VIP_S') { tag.innerText = "VIP S (120 ngày)"; tag.className = "inline-block px-2 py-0.5 rounded bg-blue-600 text-white text-[8px] font-black uppercase text-center text-center"; }
+        else if(tier === 'VIP') { tag.innerText = "VIP (60 ngày)"; tag.className = "inline-block px-2 py-0.5 rounded bg-yellow-400 text-black text-[8px] font-black uppercase text-center text-center"; }
+        else { tag.innerText = "THÀNH VIÊN"; tag.className = "inline-block px-2 py-0.5 rounded bg-gray-200 text-gray-600 text-[8px] font-black uppercase text-center text-center"; }
 
-        if(sponsored.length > 0) {
-            document.getElementById('sponsored-section').classList.remove('hidden');
-            document.getElementById('sponsored-container').innerHTML = sponsored.map(p => renderCardHtml(p, true)).join('');
-        } else document.getElementById('sponsored-section').classList.add('hidden');
-
-        document.getElementById('post-count-label').innerText = `${list.length} tin`;
-        wrap.innerHTML = regular.map(p => renderCardHtml(p, false)).join('');
-    }
-
-    function renderCardHtml(p, isSp) {
-        const isVip = allUserData[p.userId]?.isVip === true;
-        const limit = (p.isAnonymous && !p.isRenewedPaid) ? EXP_ANON : EXP_USER;
-        const daysLeft = Math.max(0, Math.ceil((limit - (Date.now() - (p.createdAt?.seconds*1000 || Date.now()))) / (1000*60*60*24)));
-        return `
-            <div class="post-card shadow-sm flex flex-col h-full active-scale text-black text-left">
-                <div class="relative pt-[100%] bg-gray-50 cursor-pointer" onclick="window.viewPostDetail('${p.id}')">
-                    <img src="${p.images?.[0]}" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute top-1 right-1 bg-black/70 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase z-10">Còn: ${daysLeft}N</div>
-                    <div class="absolute top-1 left-1 flex flex-col gap-1 items-start">
-                        ${isSp ? '<div class="bg-red-600 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase">Tài trợ</div>' : ''}
-                        ${isVip ? '<div class="bg-yellow-400 text-black text-[7px] font-black px-1.5 py-0.5 rounded uppercase flex items-center gap-0.5"><i class="fa-solid fa-crown text-[6px]"></i> VIP</div>' : ''}
-                    </div>
-                </div>
-                <div class="p-2 flex flex-col flex-1">
-                    <h3 class="text-[11px] font-bold line-clamp-2 h-8 mb-1 uppercase text-gray-800" onclick="window.viewPostDetail('${p.id}')">${p.title}</h3>
-                    <div class="text-[#ee4d2d] font-black text-sm mb-0.5">${window.formatPrice(p.price)}</div>
-                    <div class="text-[9px] text-gray-500 font-bold mb-1.5"><i class="fa-solid fa-phone text-[8px]"></i> ${p.phone}</div>
-                    <div class="mt-auto text-[8px] text-blue-500 font-black">Xem ngay ></div>
-                </div>
-            </div>`;
-    }
-
-    function renderAdmin() {
-        const wrap = document.getElementById('admin-posts'); if(!wrap || !currentUser) return;
-        const my = allPosts.filter(p => p.userId === currentUser.uid);
-        if(!my.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400 font-black uppercase text-[10px]">Trống</p>'; return; }
-        wrap.innerHTML = my.map(p => `
-            <div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4 text-black text-left mb-3">
-                <img src="${p.images?.[0]}" class="w-14 h-14 rounded-lg object-cover">
-                <div class="flex-1 min-w-0">
-                    <div class="text-[11px] font-black truncate uppercase text-gray-800">${p.title}</div>
-                    <div class="text-orange-600 font-black text-xs">${window.formatPrice(p.price)}</div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="window.openEditModal('${p.id}')" class="bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-[8px] font-black uppercase">Sửa</button>
-                    <button onclick="window.startPayment('RENEW', '${p.id}')" class="bg-green-50 text-green-600 px-3 py-2 rounded-lg text-[8px] font-black uppercase text-center">Gia hạn</button>
-                    <button onclick="window.confirmDeletePost('${p.id}')" class="bg-red-50 text-red-600 px-3 py-2 rounded-lg text-[8px] font-black uppercase">Xóa</button>
-                </div>
-            </div>`).join('');
-    }
-
-    // --- BQT ADMIN FUNCTIONS ---
-    window.renderBqtAdmin = () => {
-        const wrap = document.getElementById('bqt-admin-posts'); if(!wrap) return;
-        const now = Date.now();
-        wrap.innerHTML = allPosts.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).map(p => {
-            const limit = (p.isAnonymous && !p.isRenewedPaid) ? EXP_ANON : EXP_USER;
-            const daysLeft = Math.max(0, Math.ceil((limit - (now - (p.createdAt?.seconds*1000 || now))) / (1000*60*60*24)));
-            return `
-                <div class="bg-white rounded-xl p-4 border shadow-sm flex flex-col gap-4 text-left text-black mb-3">
-                    <div class="flex items-center gap-4">
-                        <img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover cursor-pointer" onclick="window.viewPostDetail('${p.id}')">
-                        <div class="flex-1 min-w-0 text-left">
-                            <div class="text-[10px] font-black truncate uppercase text-gray-800">${p.title}</div>
-                            <div class="text-orange-600 font-black text-[10px]">${window.formatPrice(p.price)}</div>
-                            <div class="text-[9px] text-gray-400 font-bold uppercase mt-1 text-left">Còn: <span class="text-red-600">${daysLeft} ngày</span></div>
-                        </div>
-                        <div class="flex flex-wrap gap-1 shrink-0 justify-end">
-                            <button onclick="window.pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase">Đẩy</button>
-                            <button onclick="window.togglePromote('${p.id}', ${p.isPromoted || false})" class="${p.isPromoted ? 'bg-orange-600' : 'bg-gray-200'} text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase">Ads</button>
-                            <button onclick="window.confirmDeletePost('${p.id}')" class="bg-red-600 text-white px-2 py-1.5 rounded-lg text-[8px] font-black uppercase">Xóa</button>
+        const history = JSON.parse(localStorage.getItem('ecohome_auth_history') || '[]');
+        const histSec = document.getElementById('acc-history-sec');
+        if(history.length > 1) {
+            histSec.classList.remove('hidden');
+            document.getElementById('acc-history-list').innerHTML = history.filter(h => h.uid !== currentUser.uid).map(h => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border active-scale cursor-pointer text-left text-center text-center text-center" onclick="window.switchAccount()">
+                    <div class="flex items-center gap-3 text-left text-center">
+                        <img src="${h.pic}" class="w-8 h-8 rounded-full border text-center text-center">
+                        <div class="min-w-0 text-left text-center">
+                            <p class="text-[10px] font-black text-gray-800 uppercase truncate text-left text-center">${h.name}</p>
+                            <p class="text-[8px] text-gray-400 truncate text-left text-center">${h.email}</p>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between border-t pt-3 gap-2">
-                        <input type="number" id="extend-days-${p.id}" placeholder="Số ngày..." class="flex-1 bg-gray-50 border rounded-lg px-2 py-1.5 text-[10px] font-black text-black">
-                        <button onclick="window.adminExtendPost('${p.id}')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-[8px] font-black uppercase">Cộng</button>
-                        ${p.receiptProof ? `<button onclick="window.openLightbox('${p.receiptProof}')" class="bg-black text-white px-3 py-1.5 rounded-lg text-[8px] font-black uppercase">Bill</button>` : ''}
-                    </div>
-                </div>`;
-        }).join('');
+                    <i class="fa-solid fa-rotate text-gray-300 text-[10px] text-center text-center"></i>
+                </div>`).join('');
+        } else histSec.classList.add('hidden');
     };
 
-    window.renderBqtUsers = () => {
-        const wrap = document.getElementById('bqt-admin-users'); if(!wrap) return;
-        const uids = [...new Set(allPosts.map(p => p.userId))];
-        if(!uids.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400">TRỐNG</p>'; return; }
-        wrap.innerHTML = uids.map(uid => {
-            const u = allUserData[uid] || {};
-            const isVip = u.isVip === true;
-            return `
-                <div class="bg-white rounded-xl p-4 border shadow-sm flex items-center justify-between gap-4 mb-3 ${isVip ? 'user-vip-row' : ''}">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <img src="${u.photoURL || 'https://ui-avatars.com/api/?name=?'}" class="w-10 h-10 rounded-full border">
-                        <div class="min-w-0">
-                            <div class="text-[10px] font-black text-gray-800 uppercase flex items-center gap-1 truncate text-left">${u.displayName || 'Ẩn danh'} ${isVip ? '<i class="fa-solid fa-crown vip-badge"></i>' : ''}</div>
-                            <div class="text-[8px] text-blue-600 truncate italic text-left">${u.email ? u.email.split('@')[0] : 'Guest'}</div>
-                            <div class="text-[8px] text-orange-600 font-bold uppercase text-left">Số bài: ${allPosts.filter(p => p.userId === uid).length}</div>
-                        </div>
-                    </div>
-                    <button onclick="window.adminToggleUserVip('${uid}', ${isVip})" class="${isVip ? 'bg-red-50 text-red-600' : 'bg-yellow-50 text-yellow-700'} px-4 py-2 border rounded-xl text-[9px] font-black uppercase">
-                        ${isVip ? 'Hủy VIP' : 'Cấp VIP'}
-                    </button>
-                </div>`;
-        }).join('');
-    };
-
-    window.renderBqtMessages = (msgs = []) => {
-        const wrap = document.getElementById('bqt-admin-messages'); if(!wrap) return;
-        const sortedMsgs = msgs.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-        if(!sortedMsgs.length) { wrap.innerHTML = '<p class="text-center py-20 text-gray-400 uppercase">Trống</p>'; return; }
-        wrap.innerHTML = sortedMsgs.map(m => `
-            <div class="bg-white rounded-2xl p-4 shadow-sm border mb-3 text-left">
-                <div class="flex justify-between items-start mb-2">
-                    <div class="flex items-center gap-2">
-                         <img src="${allUserData[m.userId]?.photoURL || 'https://ui-avatars.com/api/?name=Guest'}" class="w-6 h-6 rounded-full">
-                         <span class="text-[9px] font-black text-orange-600 uppercase bg-orange-50 px-2 py-0.5 rounded">${m.userName}</span>
-                    </div>
-                    <button onclick="deleteDoc(doc(db,'artifacts','${appId}','public','data','messages','${m.id}'))" class="text-red-300"><i class="fa-solid fa-trash text-xs"></i></button>
-                </div>
-                <div class="text-sm font-medium mb-2 text-black">${m.content}</div>
-                ${m.file ? `<img src="${m.file}" class="w-full rounded-xl max-h-48 object-cover cursor-zoom-in border" onclick="window.openLightbox('${m.file}')">` : ''}
-            </div>`).join('');
-    };
-
-    // --- SEPAY PROCESS ---
-    window.startPayment = (type, targetId = null) => {
-        if(!currentUser) return toggleModal('modal-login');
-        document.getElementById('payment-process-ui').classList.remove('hidden');
-        document.getElementById('payment-success-ui').classList.add('hidden');
-        currentPayingPostId = targetId;
-        const amount = (type === 'VIP') ? VIP_PRICE : RENEW_PRICE;
-        const transId = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const code = (type === 'VIP') ? `VIP${transId}` : `GH${transId}`;
-        document.getElementById('payment-title').innerText = (type === 'VIP') ? "Đăng ký VIP tài khoản" : "Gia hạn bài đăng";
-        document.getElementById('payment-amount-display').innerText = amount.toLocaleString('vi-VN') + " đ";
-        document.getElementById('payment-code').innerText = code;
-        document.getElementById('payment-qr').src = `https://qr.sepay.vn/img?acc=${stk}&bank=MB&amount=${amount}&des=${code}`;
-        document.getElementById('payment-app-link').href = `https://dl.vietqr.io/pay?bank=MB&amount=${amount}&des=${code}&acc=${stk}`;
-        toggleModal('modal-payment');
-        if (paymentInterval) clearInterval(paymentInterval);
-        paymentInterval = setInterval(async () => {
-            try {
-                const res = await fetch(`https://sepay-webhook-1l8y.onrender.com/webhook-sepay?code=${code}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.paid === true) { 
-                        clearInterval(paymentInterval);
-                        if(type === 'VIP') await finalizeVipUpgrade(); else await finalizeRenewPost(targetId);
-                    }
-                }
-            } catch(e) {}
-        }, 3000); 
-    };
-
-    async function finalizeRenewPost(postId) {
-        const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId);
-        const postSnap = await getDoc(postRef);
-        const now = Date.now();
-        const postData = postSnap.data();
-        const limit = (postData.isAnonymous && !postData.isRenewedPaid) ? EXP_ANON : EXP_USER;
-        const currentExpiry = (postData.createdAt?.seconds * 1000 || now) + limit;
-        await updateDoc(postRef, { createdAt: Timestamp.fromDate(new Date(Math.max(currentExpiry, now))), isRenewedPaid: true });
-        showSuccessPage("Bài đăng đã gia hạn thành công.");
-    }
-
-    async function finalizeVipUpgrade() {
-        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid), { isVip: true }, { merge: true });
-        showSuccessPage("Tài khoản của bạn đã được nâng cấp lên VIP.");
-    }
-
-    function showSuccessPage(msg) {
-        document.getElementById('payment-process-ui').classList.add('hidden');
-        document.getElementById('payment-success-ui').classList.remove('hidden');
-        document.getElementById('success-msg').innerText = msg;
-    }
-
-    window.closePaymentModal = () => { if (paymentInterval) clearInterval(paymentInterval); document.getElementById('modal-payment').classList.add('hidden'); document.body.style.overflow = 'auto'; };
-
-    // --- FORM EVENTS ---
-    document.getElementById('image-upload')?.addEventListener('change', async e => {
-        const files = Array.from(e.target.files); 
-        for(let f of files) {
-            const reader = new FileReader();
-            reader.onload = (ev) => { uploadedImages.push(ev.target.result); renderPrev(); };
-            reader.readAsDataURL(f);
-        }
-    });
-
-    function renderPrev() {
-        document.getElementById('preview-list').innerHTML = uploadedImages.map((s,i) => `<div class="w-16 h-16 relative rounded-xl overflow-hidden border"><img src="${s}" class="w-full h-full object-cover"><div onclick="window.removeImg(${i})" class="absolute top-0 right-0 bg-red-600 text-white w-4 h-4 flex items-center justify-center rounded-full text-[8px] cursor-pointer shadow-lg"><i class="fa-solid fa-xmark"></i></div></div>`).join('');
-    }
-    window.removeImg = i => { uploadedImages.splice(i,1); renderPrev(); };
-
-    document.getElementById('post-form')?.addEventListener('submit', async e => {
-        e.preventDefault(); if (!currentUser) return toggleModal('modal-login');
-        const btn = document.getElementById('submit-btn'); btn.disabled = true; btn.innerHTML = `<div class="loader mr-2 text-center text-center"></div> ĐANG LƯU...`;
+    // --- ACTIONS ---
+    window.loginGoogle = async () => {
         try {
-            const data = { title: document.getElementById('p-title').value, price: document.getElementById('p-price').value, category: document.getElementById('p-category').value, phone: document.getElementById('p-phone').value, desc: document.getElementById('p-desc').value, images: uploadedImages, userId: currentUser.uid, isAnonymous: currentUser.isAnonymous || false };
-            if (editingPostId) await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', editingPostId), data);
-            else await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), { ...data, createdAt: serverTimestamp(), isPromoted: false, isRenewedPaid: false, isVip: false });
-            window.showToast("Đăng tin thành công!", "fa-circle-check"); window.toggleModal('modal-post');
-        } catch(e) { window.showToast("Lỗi hệ thống!"); } finally { btn.disabled = false; btn.innerText = "XÁC NHẬN"; }
+            const provider = new GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+            await signInWithPopup(auth, provider);
+            document.getElementById('modal-login').classList.add('hidden');
+            window.showToast("Đăng nhập thành công!", "fa-circle-check");
+        } catch(e) { window.showToast("Lỗi kết nối Google!"); }
+    };
+
+    window.logout = async () => { 
+        await signOut(auth); 
+        sessionStorage.setItem('manualLogout', 'true');
+        window.location.reload(); 
+    };
+
+    window.switchAccount = async () => { await signOut(auth); window.loginGoogle(); };
+
+    window.toggleModal = (id) => {
+        const el = document.getElementById(id);
+        el.classList.toggle('hidden');
+        document.body.style.overflow = el.classList.contains('hidden') ? 'auto' : 'hidden';
+    };
+
+    window.checkAuthAndPost = () => (currentUser && !currentUser.isAnonymous) ? window.toggleModal('modal-post') : window.toggleModal('modal-login');
+    window.checkAuthAndOpenAdmin = () => (currentUser && !currentUser.isAnonymous) ? window.openUserAdmin() : window.toggleModal('modal-login');
+
+    window.openUserAdmin = () => { renderUserAdmin(); window.toggleModal('admin-panel'); };
+
+    const renderUserAdmin = () => {
+        const my = allPosts.filter(p => p.userId === currentUser.uid);
+        document.getElementById('admin-posts').innerHTML = my.length === 0 ? `<div class="py-20 text-center text-gray-400 font-bold uppercase text-[10px] text-center text-center text-center text-center">Chưa có bài đăng nào</div>` : my.map(p => `
+            <div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-4 text-left text-center text-center">
+                <img src="${p.images?.[0]}" class="w-14 h-14 rounded-lg object-cover text-center text-center text-center text-center">
+                <div class="flex-1 min-w-0 text-left text-center">
+                    <p class="text-[11px] font-black truncate uppercase text-gray-800 text-left text-center">${p.title}</p>
+                    <p class="text-orange-600 font-black text-xs text-left text-center">${formatPrice(p.price)}</p>
+                </div>
+                <div class="flex gap-1 text-center text-center">
+                    <button onclick="window.viewPostDetail('${p.id}')" class="bg-blue-50 text-blue-600 p-2 rounded-lg text-lg text-center text-center"><i class="fa-solid fa-eye text-center"></i></button>
+                    <button onclick="window.showConfirmModal('Bạn muốn xóa tin?', () => window.deletePost('${p.id}'))" class="bg-red-50 text-red-600 p-2 rounded-lg text-lg text-center text-center"><i class="fa-solid fa-trash-can text-center"></i></button>
+                </div>
+            </div>`).join('');
+    };
+
+    window.deletePost = async (id) => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id)); window.showToast("Đã xóa bài!"); };
+
+    // --- FORM ---
+    document.getElementById('post-form')?.addEventListener('submit', async e => {
+        e.preventDefault();
+        if(uploadedImages.length === 0) return window.showToast("Cần ít nhất 1 ảnh!");
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true; btn.innerHTML = "ĐANG TẢI TIN...";
+        try {
+            const isAnon = document.getElementById('p-is-anon').checked;
+            const data = {
+                title: document.getElementById('p-title').value.trim(),
+                price: document.getElementById('p-price').value.replace(/\D/g, ""),
+                category: document.getElementById('p-category').value,
+                phone: document.getElementById('p-phone').value.trim(),
+                desc: document.getElementById('p-desc').value.trim(),
+                images: uploadedImages,
+                userId: currentUser.uid,
+                isAnonymous: isAnon,
+                anonName: isAnon ? (document.getElementById('p-anon-name').value.trim() || "Cư dân ẩn danh") : ""
+            };
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'posts'), { ...data, createdAt: serverTimestamp(), isPromoted: false });
+            window.showToast("Đăng bài thành công!");
+            document.getElementById('post-form').reset();
+            uploadedImages = []; document.getElementById('preview-list').innerHTML = "";
+            window.toggleModal('modal-post');
+        } catch(e) { window.showToast("Lỗi đăng tin!"); }
+        finally { btn.disabled = false; btn.innerText = "ĐĂNG BÀI NGAY"; }
     });
 
-    // --- INIT ---
-    const initApp = async () => {
-        const isManualLogout = sessionStorage.getItem('manualLogout') === 'true';
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token).catch(()=>{});
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user; updateAuthUI();
-            if(user){
-                if (!user.isAnonymous) await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid), { displayName: user.displayName, photoURL: user.photoURL, email: user.email, lastSeen: serverTimestamp() }, { merge: true });
-                sessionStorage.removeItem('manualLogout'); startSync();
-            } else if(!isManualLogout) document.getElementById('modal-login').classList.remove('hidden');
-        });
+    document.getElementById('image-upload')?.addEventListener('change', async e => {
+        for(let f of Array.from(e.target.files)) { uploadedImages.push(await compress(f)); }
+        document.getElementById('preview-list').innerHTML = uploadedImages.map((s,i) => `
+            <div class="w-20 h-20 relative rounded-xl overflow-hidden border text-center text-center">
+                <img src="${s}" class="w-full h-full object-cover text-center text-center">
+                <div onclick="window.removeImg(${i})" class="absolute top-0 right-0 bg-red-600 text-white w-5 h-5 flex items-center justify-center rounded-bl-lg cursor-pointer text-center text-center text-center"><i class="fa-solid fa-xmark text-[10px] text-center"></i></div>
+            </div>`).join('');
+    });
+    window.removeImg = (i) => { uploadedImages.splice(i,1); document.getElementById('image-upload').dispatchEvent(new Event('change')); };
+
+    // --- SEPAY PAYMENT SYSTEM (FIXED & SYNCED) ---
+    window.startPayment = (type, postId = null) => {
+        const amount = PRICE_LIST[type] || 0;
+        const shortId = postId ? postId.slice(-6).toUpperCase() : (currentUser?.uid ? currentUser.uid.slice(-6).toUpperCase() : 'GUEST');
+        const description = `${type} ${shortId}`;
+        currentPayingPostId = postId;
+        
+        let displayTitle = type;
+        if(type === 'PUSH') displayTitle = "Đẩy bài rao";
+        if(type === 'ADS') displayTitle = "Tin tài trợ";
+        if(type === 'RENEW') displayTitle = "Gia hạn 30 ngày";
+        if(type === 'VIP') displayTitle = "Gói VIP (60 ngày)";
+        if(type === 'VIP_S') displayTitle = "Gói VIP S (120 ngày)";
+        if(type === 'VIP_SS') displayTitle = "Gói VIP SS (Vĩnh viễn)";
+
+        document.getElementById('payment-qr').src = `https://qr.sepay.vn/img?acc=${STK}&bank=${BANK}&amount=${amount}&des=${description}&template=compact`;
+        document.getElementById('payment-app-link').href = `https://qr.sepay.vn/api/merchant/2.0/deeplink?acc=${STK}&bank=${BANK}&amount=${amount}&des=${description}`;
+        document.getElementById('payment-amount-display').innerText = formatPrice(amount);
+        document.getElementById('payment-code').innerText = description;
+        document.getElementById('payment-title').innerText = displayTitle;
+        window.toggleModal('modal-payment');
     };
 
-    function updateAuthUI() {
-        const user = auth.currentUser;
-        const topAuth = document.getElementById('top-auth-section');
-        const adminBtn = document.getElementById('admin-bqt-nav-btn');
-        const statusBar = document.getElementById('auth-status-bar');
-        const upgradeVip = document.getElementById('upgrade-vip-btn');
-        if(user){
-            const isVip = allUserData[user.uid]?.isVip === true;
-            if(topAuth) topAuth.innerHTML = `<img src="${user.photoURL || 'https://ui-avatars.com/api/?name=User'}" class="w-9 h-9 rounded-full border-2 border-white shadow cursor-pointer active-scale" onclick="openUserAdmin()">`;
-            if(statusBar) statusBar.classList.remove('hidden');
-            document.getElementById('auth-user-name').innerHTML = `${user.displayName || 'Cư dân'} ${isVip ? '<i class="fa-solid fa-crown vip-badge text-[10px] ml-1"></i>' : ''}`;
-            if(upgradeVip) upgradeVip.classList.toggle('hidden', isVip || user.isAnonymous);
-            if(user.email === 'phamvanconcn@gmail.com') adminBtn.classList.remove('hidden');
-        } else {
-            if(topAuth) topAuth.innerHTML = `<button onclick="toggleModal('modal-login')" class="bg-white px-3 py-2 rounded-xl text-[10px] font-black shadow text-black"><i class="fa-brands fa-google text-red-600"></i> ĐĂNG NHẬP</button>`;
-            if(statusBar) statusBar.classList.add('hidden'); if(adminBtn) adminBtn.classList.add('hidden');
+    window.copyPaymentCode = () => { navigator.clipboard.writeText(document.getElementById('payment-code').innerText).then(() => window.showToast("Đã copy mã nội dung!")); };
+    window.closePaymentModal = () => { document.getElementById('modal-payment').classList.add('hidden'); currentPayingPostId = null; };
+
+    document.getElementById('receipt-upload')?.addEventListener('change', async e => {
+        const file = e.target.files[0]; if(!file) return;
+        const status = document.getElementById('receipt-status'); status.innerText = "ĐANG TẢI BILL...";
+        try {
+            const base64 = await compress(file);
+            const desc = document.getElementById('payment-code').innerText;
+            if(currentPayingPostId) {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', currentPayingPostId), { receiptBill: base64, billInfo: desc });
+            } else {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid), { lastVipBill: base64, lastVipInfo: desc, billPending: true });
+            }
+            status.innerText = "ĐÃ GỬI - CHỜ DUYỆT"; window.showToast("Bill đã gửi, vui lòng chờ Admin!");
+        } catch(err) { status.innerText = "LỖI TẢI ẢNH"; }
+    });
+
+    // --- BQT ADMIN ---
+    let currentAdminTab = 'posts';
+    window.switchAdminTab = (tab) => {
+        currentAdminTab = tab;
+        document.querySelectorAll('#modal-bqt-admin [id^="tab-"]').forEach(el => el.classList.remove('tab-active'));
+        document.getElementById('tab-' + tab).classList.add('tab-active');
+        document.querySelectorAll('#modal-bqt-admin [id^="admin-sec-"]').forEach(el => el.classList.add('hidden'));
+        document.getElementById('admin-sec-' + tab).classList.remove('hidden');
+        renderBqtAdminContent();
+    };
+
+    const renderBqtAdminContent = () => {
+        const now = serverTimestamp();
+        if(currentAdminTab === 'posts') {
+            document.getElementById('admin-sec-posts').innerHTML = allPosts.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0)).map(p => `
+                <div class="bg-white rounded-xl p-3 border shadow-sm flex items-center gap-3 text-left text-center">
+                    <img src="${p.images?.[0]}" class="w-12 h-12 rounded object-cover text-center">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[10px] font-black uppercase truncate text-left text-center">${p.title}</p>
+                        <p class="text-orange-600 font-black text-[10px] text-left text-center">${formatPrice(p.price)}</p>
+                    </div>
+                    <div class="flex gap-1 text-center">
+                        <button onclick="window.toggleAds('${p.id}', ${p.isPromoted})" class="px-2 py-1 rounded text-[8px] font-black uppercase ${p.isPromoted ? 'bg-orange-600 text-white shadow' : 'bg-gray-100 text-gray-400'}">Ads</button>
+                        <button onclick="window.pushToTop('${p.id}')" class="bg-green-600 text-white px-2 py-1 rounded text-[8px] font-black uppercase shadow text-center">Đẩy</button>
+                        <button onclick="window.showConfirmModal('Xác nhận xóa?', () => window.deletePost('${p.id}'))" class="bg-red-600 text-white px-2 py-1 rounded text-[8px] font-black uppercase shadow text-center">Xóa</button>
+                    </div>
+                </div>`).join('');
+        } else if(currentAdminTab === 'bills') {
+            let bills = [];
+            // Bills từ users (VIP tiers)
+            Object.keys(allUserData).forEach(uid => { if(allUserData[uid].lastVipBill) bills.push({ id: uid, type: 'USER_VIP', data: allUserData[uid], bill: allUserData[uid].lastVipBill, info: allUserData[uid].lastVipInfo }); });
+            // Bills từ posts (Ads, Push, Renew)
+            allPosts.forEach(p => { if(p.receiptBill) bills.push({ id: p.id, type: 'POST_SVC', data: p, bill: p.receiptBill, info: p.billInfo }); });
+            
+            document.getElementById('admin-sec-bills').innerHTML = bills.length === 0 ? `<div class="py-10 text-center text-gray-400 text-[10px] font-bold uppercase text-center text-center">Không có bill nào đang chờ</div>` : bills.map(b => `
+                <div class="bg-white rounded-2xl p-4 border text-left mb-3 text-center">
+                    <div class="flex justify-between items-center mb-2 text-left">
+                        <p class="text-[8px] font-black text-gray-400 uppercase text-left">${b.type} - ${b.info || ''}</p>
+                        <span class="bg-red-100 text-red-600 px-2 py-0.5 rounded text-[8px] font-black uppercase italic text-center">Chờ duyệt</span>
+                    </div>
+                    <h4 class="text-xs font-black uppercase mb-3 truncate text-left text-center">${b.data.displayName || b.data.title}</h4>
+                    <img src="${b.bill}" class="w-full h-56 object-contain rounded-xl bg-gray-50 mb-4 border cursor-pointer text-center" onclick="window.open(this.src)">
+                    <div class="flex gap-2 text-center text-center">
+                        <button onclick="window.approveBill('${b.id}', '${b.type}', '${b.info || ''}')" class="flex-1 bg-blue-600 text-white py-3 rounded-lg text-[10px] font-black uppercase shadow text-center text-center text-center">Duyệt kích hoạt</button>
+                        <button onclick="window.rejectBill('${b.id}', '${b.type}')" class="bg-gray-200 text-gray-500 px-4 py-3 rounded-lg text-[10px] font-black uppercase text-center text-center">Hủy bill</button>
+                    </div>
+                </div>`).join('');
+        } else if(currentAdminTab === 'system') {
+            document.getElementById('admin-stats-container').innerHTML = `
+                <div class="bg-white p-4 rounded-xl border text-center text-center"><p class="text-[8px] text-gray-400 uppercase font-black text-center text-center">Tổng bài đăng</p><p class="text-xl font-black text-center text-center">${allPosts.length}</p></div>
+                <div class="bg-white p-4 rounded-xl border text-center text-center"><p class="text-[8px] text-gray-400 uppercase font-black text-center text-center">Cư dân (Google)</p><p class="text-xl font-black text-center text-center">${Object.keys(allUserData).length}</p></div>`;
         }
-    }
-
-    document.getElementById('searchInput')?.addEventListener('input', renderPosts);
-    initApp();
-
-    window.adminToggleUserVip = async (uid, current) => { await updateDoc(doc(db,'artifacts',appId,'public','data','users',uid), {isVip: !current}); };
-    window.switchBqtTab = (tab) => {
-        ['posts','users','messages'].forEach(t => { 
-            document.getElementById(`bqt-tab-content-${t}`).classList.add('hidden');
-            document.getElementById(`tab-btn-${t}`).classList.remove('tab-active');
-        });
-        document.getElementById(`bqt-tab-content-${tab}`).classList.remove('hidden');
-        document.getElementById(`tab-btn-${tab}`).classList.add('tab-active');
-        if(tab === 'posts') renderBqtAdmin(); else if(tab === 'users') renderBqtUsers(); else renderBqtMessages(allMessages);
     };
 
-    window.openLightbox = (src) => { document.getElementById('lightbox-image').src = src; document.getElementById('image-lightbox').classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
-    window.closeLightbox = () => { document.getElementById('image-lightbox').classList.add('hidden'); if(document.getElementById('modal-detail').classList.contains('hidden')) document.body.style.overflow = 'auto'; };
-    window.copyPaymentCode = () => { navigator.clipboard.writeText(document.getElementById('payment-code').innerText); window.showToast("Đã copy!"); };
-    window.openEditModal = (id) => { editingPostId = id; const p = allPosts.find(x => x.id === id); document.getElementById('p-title').value = p.title; document.getElementById('p-price').value = p.price; document.getElementById('p-category').value = p.category; document.getElementById('p-phone').value = p.phone; document.getElementById('p-desc').value = p.desc; uploadedImages = [...p.images]; renderPrev(); toggleModal('modal-post'); };
-    window.adminExtendPost = async (id) => { const days = parseInt(document.getElementById(`extend-days-${id}`).value); const postRef = doc(db, 'artifacts', appId, 'public', 'data', 'posts', id); const postSnap = await getDoc(postRef); const postData = postSnap.data(); const now = Date.now(); const limit = (postData.isAnonymous && !postData.isRenewedPaid) ? EXP_ANON : EXP_USER; const curExp = (postData.createdAt?.seconds * 1000 || now) + limit; await updateDoc(postRef, { createdAt: Timestamp.fromDate(new Date(Math.max(curExp, now) + (days * 24 * 60 * 60 * 1000) - limit)), isRenewedPaid: true }); window.showToast(`Đã cộng ${days} ngày!`); };
+    window.broadcastAnnouncement = async () => { const val = document.getElementById('system-announcement-input').value.trim(); await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'system', 'config'), { announcement: val }); window.showToast("Thông báo đã được phát!"); };
+    window.toggleAds = async (id, current) => await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), { isPromoted: !current });
+    window.pushToTop = async (id) => { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), { createdAt: serverTimestamp() }); window.showToast("Đã đẩy tin lên đầu!"); };
+    
+    window.approveBill = async (id, type, info) => {
+        if(type === 'USER_VIP') {
+            let tier = 'VIP';
+            if(info.includes('VIP_SS')) tier = 'VIP_SS';
+            else if(info.includes('VIP_S')) tier = 'VIP_S';
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', id), { vipTier: tier, lastVipBill: null, lastVipInfo: null, billPending: false });
+        } else {
+            const isAds = info.includes('ADS');
+            const isRenewOrPush = info.includes('RENEW') || info.includes('PUSH');
+
+            let updateObj = { receiptBill: null, billInfo: null };
+            if(isRenewOrPush) updateObj.createdAt = serverTimestamp();
+            if(isAds) updateObj.isPromoted = true;
+            
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), updateObj);
+        }
+        window.showToast("Kích hoạt dịch vụ thành công!");
+    };
+
+    window.rejectBill = async (id, type) => { 
+        if(type === 'USER_VIP') await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', id), { lastVipBill: null, lastVipInfo: null, billPending: false }); 
+        else await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), { receiptBill: null, billInfo: null }); 
+        window.showToast("Đã từ chối bill!");
+    };
+    
+    window.accessAdminBQT = () => { window.toggleModal('modal-bqt-admin'); switchAdminTab('posts'); };
+
+    initApp();
+    document.getElementById('searchInput')?.addEventListener('input', renderPosts);
 </script>
 </body>
 </html>
